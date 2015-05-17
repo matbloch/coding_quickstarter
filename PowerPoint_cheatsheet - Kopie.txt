@@ -1,3 +1,0 @@
-/* Folienlayout ändern */
-
-Ansicht > Folienmaster
