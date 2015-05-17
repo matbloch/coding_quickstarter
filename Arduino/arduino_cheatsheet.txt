@@ -1,6 +1,4 @@
-// Fang mal an einfach die Daten die du empfängt über Serial.println() wieder zurückzuschicken. z.B.:
-
-
+﻿
 void serialEvent() 
 {
   while(Serial.available()) 
@@ -10,8 +8,6 @@ void serialEvent()
     Serial.println(inChar);
   }
 }
-
-// Da kannst du auch etwas experimentieren und die Daten mit if-Abfragen auf bestimmte Zeichen testen und dann je nachdem andere Texte ausgeben. z.B.:
 
 
 if(inChar == 'a')
