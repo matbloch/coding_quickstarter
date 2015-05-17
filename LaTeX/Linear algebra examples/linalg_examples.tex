@@ -1,0 +1,237 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{times}
+\newcommand{\A}{\textit{\textbf{A}}}
+\newcommand{\aff}{\textit{\textbf{aff}}}
+\newcommand{\adj}{\textrm{adj}}
+\newcommand{\Aff}{\textit{\textbf{Aff}}}
+\newcommand{\B}{\textit{\textbf{B}}}
+\newcommand{\C}{\textit{\textbf{C}}}
+\newcommand{\co}{\textit{\textbf{co}}}
+\newcommand{\CO}{\textit{\textbf{CO}}}
+\newcommand{\CP}{\textit{\textbf{CP}}}
+\newcommand{\CR}{\textit{\textbf{CR}}}
+\newcommand{\Dz}{\textit{\textbf{D}}}
+\newcommand{\ddo}{\textit{\textbf{do}}}
+\newcommand{\DO}{\textit{\textbf{DO}}}
+\newcommand{\DP}{\textit{\textbf{DP}}}
+\newcommand{\E}{\textit{\textbf{E}}}
+\newcommand{\End}{\textit{\textbf{End}}}
+\newcommand{\F}{\textit{\textbf{F}}}
+\newcommand{\G}{\textit{\textbf{G}}}
+\newcommand{\gl}{\textit{\textbf{gl}}}
+\newcommand{\Gl}{\textit{\textbf{Gl}}}
+\newcommand{\Hh}{\textit{\textbf{H}}}
+\newcommand{\I}{\textit{\textbf{I}}}
+\newcommand{\J}{\textit{\textbf{J}}}
+\newcommand{\K}{\textit{\textbf{K}}}
+\newcommand{\Ll}{\textit{\textbf{L}}}
+\newcommand{\lz}{\textit{\textbf{l}}}
+\newcommand{\M}{\textit{\textbf{M}}}
+\newcommand{\N}{\textit{\textbf{N}}}
+\newcommand{\oo}{\textit{\textbf{o}}}
+\newcommand{\Oo}{\textit{\textbf{O}}}
+\newcommand{\p}{\textit{\textbf{p}}}
+\newcommand{\Pp}{\textit{\textbf{P}}}
+\newcommand{\pl}{\textit{\textbf{pl}}}
+\newcommand{\Pl}{\textit{\textbf{Pl}}}
+\newcommand{\q}{\textit{\textbf{q}}}
+\newcommand{\Q}{\textit{\textbf{Q}}}
+\newcommand{\R}{\textit{\textbf{R}}}
+\newcommand{\Ss}{\textit{\textbf{S}}}
+\newcommand{\Sl}{\textit{\textbf{Sl}}}
+\newcommand{\SO}{\textit{\textbf{SO}}}
+\newcommand{\T}{\textit{\textbf{T}}}
+\newcommand{\U}{\textit{\textbf{U}}}
+\newcommand{\V}{\textit{\textbf{V}}}
+\newcommand{\W}{\textit{\textbf{W}}}
+\newcommand{\w}{\textit{\textbf{w}}}
+\newcommand{\X}{\textit{\textbf{X}}}
+\newcommand{\Y}{\textit{\textbf{Y}}}
+\newcommand{\Z}{\textit{\textbf{Z}}}
+
+
+
+
+
+     
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\thispagestyle{empty}
+\begin{document}
+\noindent \section*{Internet Calculus II
+\hspace{5pt} Homework 3 Solutions\\Sunday November 4th 2001}
+\subsection*{Question 1}
+Find the inverse of the following matrices, $A$, $B$, $C$ and $D$:
+\[ A\hspace{4pt} = \hspace{4pt} \begin{array}{|cc|}2&-5\\-3&8\end{array},\]
+\[ B\hspace{4pt} = \hspace{4pt}\begin{array}{|cc|}3&1\\7&2\end{array},\]
+\[ C = AB, \]
+\[ D = BA.\]
+Also compute the matrices $E = A^{-1}B^{-1}$ and $F = B^{-1}A^{-1}$ and discuss your results.\\
+\\
+We use the formula for the inverse of a matrix $A$: 
+$A^{-1} = \frac{1}{\det(A)}\adj(A)$.
+\begin{itemize}\item $A^{-1}$:
+\[ A\hspace{4pt} = \hspace{4pt} \begin{array}{|cc|}2&-5\\-3&8\end{array},\]
+\[ \adj(A) = \hspace{4pt} \begin{array}{|cc|}8&5\\3&2\end{array}, \]
+\[ \det(A) = 2(8) - (-5)(-3) = 16 - 15 = 1,\]
+\[ A^{-1} = \frac{1}{\det(A)}\adj(A) =  \hspace{4pt} \begin{array}{|cc|}8&5\\3&2\end{array}.\]
+\item $B^{-1}$:
+\[ B\hspace{4pt} = \hspace{4pt}\begin{array}{|cc|}3&1\\7&2\end{array},\]
+\[ \adj(B) = \hspace{4pt} \begin{array}{|cc|}2&-1\\-7&3\end{array}, \]
+\[ \det(B) = 3(2) - 1(7) = 6 - 7 = - 1,\]
+\[ B^{-1} = \frac{1}{\det(B)}\adj(B) =  \hspace{4pt} \begin{array}{|cc|}-2&1\\7&-3\end{array}.\]
+\item $C^{-1}= (AB)^{-1}$.
+\[ C = AB =  \hspace{4pt} \begin{array}{|cc|}2&-5\\-3&8\end{array} \hspace{4pt} \begin{array}{|cc|}3&1\\7&2\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}6 - 35&2 - 10\\-9 + 56&- 3 + 16\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}-29&-8\\47&13\end{array}\]
+\[ \det(C) = (-29)(13) - (-8)(47) = - 377 + 376 = -1, \]
+\[ C^{-1} = \frac{1}{\det(C)} \adj(C) = - \adj(C) = \hspace{4pt} \begin{array}{|cc|}-13&-8\\47&29\end{array}\]
+\item $D^{-1}= (BA)^{-1}$.
+\[ D = BA =  \hspace{4pt} \begin{array}{|cc|}3&1\\7&2\end{array} \hspace{4pt} \begin{array}{|cc|}2&-5\\-3&8\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}6 - 3&- 15 + 8\\14 - 6&- 35 + 16\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}3&-7\\8&-19\end{array}\]
+\[ \det(D) = 3(-19) - (-7)(8) = - 57 + 56 = -1, \]
+\[ D^{-1} = \frac{1}{\det(D)} \adj(D) = - \adj(D) = \hspace{4pt} \begin{array}{|cc|}19&-7\\8&-3\end{array}\]
+\end{itemize}
+Next we have:
+\[ E = A^{-1}B^{-1} =  \hspace{4pt} \begin{array}{|cc|}8&5\\3&2\end{array} \hspace{4pt} \begin{array}{|cc|}-2&1\\7&-3\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}-16 + 35&8- 15\\- 6 + 14&3 - 6\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}19&-7\\8&-3\end{array}\]
+\[ F = B^{-1}A^{-1} = \hspace{4pt}\begin{array}{|cc|}-2&1\\7&-3\end{array}  \hspace{4pt} \begin{array}{|cc|}8&5\\3&2\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}-16 + 3&-10 + 2\\56 - 9&35 - 6\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}-13&-8\\47&29\end{array}\]
+We see that $E = A^{-1}B^{-1} = D = (BA)^{-1}$ and $F = B^{-1}A^{-1} = C = (AB)^{-1}$.\\
+It appears that taking the inverse of a product gives the produc tof the inverses in the opposite order.\\
+We may see this as follows:\\
+The inverse of a matrix $M$, if it exists is the unique matrix $N$ such that $MN = NM = I$.\\
+Put $M = AB$ and $N = (AB)^{-1}$.\\
+Then by definition we have $MN = NM = I$.\\
+Put $N' = B^{-1}A^{-1}$.\\
+Then we have:
+\[ MN' = AB(B^{-1}A^{-1}) = A(BB^{-1})A^{-1} = AIA^{-1} = AA^{-1} = I, \]
+\[ N'M = B^{-1}A^{-1}AB = B^{-1}IB = B^{-1}B = I.\]
+So $N'$ is also an inverse for $M$.\\
+So $N = N'$ and $(AB)^{-1} = B^{-1}A^{-1}$, as required.\\
+More generally, by a similar argument, we have:
+\[ (A_1A_2A_3\dots A_n)^{-1} = A_n^{-1}\dots A^{-1}_3A^{-1}_2A^{-1}_1.\]  
+
+
+
+\subsection*{Question 2}
+Would you expect that the inverse of the square of a matrix is the square of the inverse:
+\[ (G^{-1})^2 = (G^2)^{-1}?\]
+Answer: yes.\\
+Using the result of the last question, we have:
+\[ (G^2)^{-1} = (GG)^{-1} = G^{-1}G^{-1} = (G^{-1})^2.\]
+
+Illustrate your answer, with the case of the matrix:
+\[ G = \begin{array}{|cc|}3&-4\\-2&3\end{array}.\]
+\[ G^2 = GG =  \hspace{4pt} \begin{array}{|cc|}3&-4\\-2&3\end{array} \hspace{4pt} \begin{array}{|cc|}3&-4\\-2&3\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}9 + 8&-12 - 12\\-6 - 6&8 + 9\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}17&-24\\-12&17\end{array}\]
+\[ \det(G^2) = 17(17)-(-24)(-12) = 289 - 288 = 1, \]
+\[ (G^2)^{-1} = \frac{1}{\det(G^2)}\adj(G^2) = \adj(G^2) = \hspace{4pt} \begin{array}{|cc|}17&24\\12&17\end{array}.\]
+Next we have:
+\[ \det(G) = 3(3) - (-2)(-4) = 9 - 8 = 1, \]
+\[ (G)^{-1} = \frac{1}{\det(G)}\adj(G) = \adj(G) = \hspace{4pt} \begin{array}{|cc|}3&4\\2&3\end{array}.\]
+\[ (G^{-1})^2 = G^{-1}G^{-1} =  \hspace{4pt} \begin{array}{|cc|}3&4\\2&3\end{array} \hspace{4pt} \begin{array}{|cc|}3&4\\2&3\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}9 + 8&12 + 12\\6 + 6&8 + 9\end{array}\]
+\[ =  \hspace{4pt} \begin{array}{|cc|}17&24\\12&17\end{array}\]
+So we see that indeed $(G^2)^{-1} = G^{-1})^2$, as expected.
+\subsection*{Question 3}
+Consider the matrix equation:
+\[ AX = B, \]
+\[ A\hspace{4pt} = \hspace{4pt} \begin{array}{|cc|}2&-5\\-3&8\end{array},\]
+\[ X\hspace{4pt} = \hspace{4pt}\begin{array}{|cc|}x&p\\y&q\end{array},\]
+\[ B\hspace{4pt} = \hspace{4pt}\begin{array}{|cc|}3&1\\7&2\end{array}.\]
+By writing out these equations, show that they decouple into a pair of linear equations for the unknowns $x$ and $y$ and another pair for the unknowns $p$ and $q$, with the same matrix of coefficients, the matrix $A$.\\
+By using the inverse of the matrix $A$, solve the system $AX = B$ (i.e. multiply both sides on the left by $A^{-1}$) and show that your solution does give solutions to the decoupled equations.\\
+Can you also see how to solve the system $XA = B$?
+We need $B = AX$:
+\[  \hspace{4pt}\begin{array}{|cc|}3&1\\7&2\end{array}\hspace{4pt} = \hspace{4pt} \begin{array}{|cc|}2&-5\\-3&8\end{array} \hspace{4pt}\begin{array}{|cc|}x&p\\y&q\end{array},\]
+\[ = \begin{array}{|cc|}2x -5y&2p - 5q\\-3x + 8y&-3p + 8q\end{array}.\]
+Comparing entries we find the two decoupled systems, as required:
+\[ 3 = 2x - 5y, \hspace{10pt} 7 = -3x + 8y, \]
+\[ 1 = 2p - 5q, \hspace{10pt} 2 = -3p + 8q.\]
+Multiplying the equation $AX = B$ on the left by $A^{-1}$ gives the equation:
+\[ A^{-1}AX = A^{-1}B, \]
+\[ IX = A^{-1}B.\]
+\[ X = A^{-1}B.\]
+Conversely, if $X = A^{-1}B$, then we have:
+\[ AX = A(A^{-1}B) = (AA^{-1})B = IB = B.\]
+This shows that provided $A^{-1}$ exists the complete solution of the matrix equation $AX = B$ is $X = A^{-1}B$.\\
+So here we get:
+\[ X = A^{-1}B = \frac{1}{\det(A)}\adj(A)B\]
+\[ = \frac{1}{2(8) - (-5)(-3)}\hspace{4pt}\begin{array}{|cc|}8&5\\3&2\end{array}  \hspace{4pt}\begin{array}{|cc|}3&1\\7&2\end{array}\]
+\[ =  \hspace{4pt}\begin{array}{|cc|}24 + 35&8+10\\9 + 14&3 + 4\end{array}\]
+\[ = \hspace{4pt}\begin{array}{|cc|}59&18\\23&7\end{array}\]
+The first column of $X$ gives the solution $x = 59$, $y = 23$ of the first system.\\
+The second column of $X$ gives the solution $p = 18$, $y = 7$ of the second system.\\
+One can check directly that these are indeed the solutions.\\
+By similar arguments to the above, the solution to the equation $XA = B$ is $X = BA^{-1}$.\\
+So here we get:
+\[ X = \hspace{4pt}\begin{array}{|cc|}3&1\\7&2\end{array}  \hspace{4pt}\begin{array}{|cc|}8&5\\3&2\end{array}\]
+\[ =  \hspace{4pt}\begin{array}{|cc|}24 + 3&15+2\\56 + 6&35 + 4\end{array}\]
+\[ = \hspace{4pt}\begin{array}{|cc|}27&17\\62&39\end{array}\] 
+One can check directly that $X$ obeys the equation $XA = B$, as required.
+\subsection*{Question 4}
+Using matrix techniques, find the point of intersection of the following lines $L$ and $M$:
+\[ L: 4x - 5y = 7, \hspace{10pt} M: 3x - 2y = 14.\]
+At the point of intersection, both equations hold.\\
+We may write them in matrix form:
+\[  \begin{array}{|cc|}4&-5\\3&-2\end{array}\hspace{4pt}\begin{array}{|c|}x\\y\end{array} \hspace{4pt} = \hspace{4pt}\begin{array}{|c|}7\\14\end{array},\]
+\[ AX = B,\]
+\[ A =  \begin{array}{|cc|}4&-5\\3&-2\end{array}, \hspace{4pt}X = \hspace{4pt}\begin{array}{|c|}x\\y\end{array}, \hspace{4pt}B = \hspace{4pt}\begin{array}{|c|}7\\14\end{array}.\]
+The solution is then:
+\[ X = A^{-1}B = \frac{1}{\det(A)}\adj(A) B \]
+\[ = \frac{1}{4(-2) - (-5)(3)}\hspace{4pt} \begin{array}{|cc|}-2&5\\-3&4\end{array} \hspace{4pt}\begin{array}{|c|}7\\14\end{array}\]
+\[ = \frac{1}{-8 + 15} \hspace{4pt}\begin{array}{|c|}-14 + 70\\-21 + 56\end{array}\]
+\[ = \frac{1}{7} \hspace{4pt}\begin{array}{|c|}56\\35\end{array}\]
+\[ = \hspace{4pt}\begin{array}{|c|}8\\5\end{array}\]
+So the meeting point is $(8, 5)$.\\
+It is easily checked that this point lies on both lines, as required.
+\subsection*{Question 5}
+Let $P$ and $Q$ be the following lines given in parametric form:
+\[P: [x,y] = [2, -3] + t[4, 1], \]
+\[ Q: [x,y] = [5, -6] + s[3, 2].\]
+Show that the problem of finding the point of intersection gives two linear equations for $s$ and $t$.\\
+Write these in matrix form and solve them, using matrix techniques.\\\\
+At the point of intersection, we have the same $x$ and $y$ for both lines, giving the equations:
+\[ 2 + 4t = 5 + 3s, \hspace{10pt} -3  + t = -6 + 2s, \]
+\[ 3s - 4t = - 3, \hspace{10pt} 2s - t = 3, \]
+\[  \begin{array}{|cc|}3&-4\\2&-1\end{array}\hspace{4pt}\begin{array}{|c|}s\\t\end{array} \hspace{4pt} = \hspace{4pt}\begin{array}{|c|}-3\\3\end{array},\]
+\[ AX = B,\]
+\[ A =  \begin{array}{|cc|}3&-4\\2&-1\end{array}, \hspace{4pt}X = \hspace{4pt}\begin{array}{|c|}s\\t\end{array}, \hspace{4pt}B = \hspace{4pt}\begin{array}{|c|}-3\\3\end{array}.\]
+The solution is then:
+\[ X = A^{-1}B = \frac{1}{\det(A)}\adj(A) B \]
+\[ = \frac{1}{3(-1) - (-4)(2)}\hspace{4pt} \begin{array}{|cc|}-1&4\\-2&3\end{array} \hspace{4pt}\begin{array}{|c|}-3\\3\end{array}\]
+\[ = \frac{1}{-3 + 8} \hspace{4pt}\begin{array}{|c|}3 + 12\\6 + 9\end{array}\]
+\[ = \frac{1}{5} \hspace{4pt}\begin{array}{|c|}15\\15\end{array}\]
+\[ = \hspace{4pt}\begin{array}{|c|}3\\3\end{array}\]
+So the meeting point is given by $s = 3$ and $t =3$.\\
+Indeed putitng $s = 3$ and $t = 3$ in the equations of $P$ and $Q$ gives the same meeting point:
+\[ [2, -3] + 3[4, 1] = [14, 0] = [5, -6] + 3[3, 2].\]
+So the lines $P$ and $Q$ meet at the point $[14, 0]$.
+\end{document}
+\end
+
+
+
+
+
+

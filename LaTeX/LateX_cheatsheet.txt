@@ -1,0 +1,120 @@
+#*********************************#
+#	 array functions
+#*********************************#
+
+
+--------------Linebreaks----------
+
+1. Add new line in sourcecode (adds new paragraph)
+2. Add '\\' at the end of the line
+
+--------------Math----------------
+
+
+1. Inline math mode: '$' before and after equation
+
+	Bsp: ${x+1}$ and some other formula: ${x+3}$.
+	
+1. Displayed math mode: '$$' before and after equation. In own line and centered.
+	Bsp: $${A=x^2+c*13}$$
+	
+\[  \]  to begin multiline math
+
+
+!important! NO EMPTY LINES
+	
+------Operationen-----
+
+x^{a+b}
+
+# tiefgestellter text
+x_\text{max}
+x_{abcd}
+
+# zahl mit komma
+3{,}14
+
+# multilication
+a \cdot b
+	
+--------------Titles----------------
+
+1. headline
+
+	\chapter{Hardware}
+	\label{sec:hardware}
+
+2. Subtitle
+
+	\section{Gliederungen}
+	\label{sec:gliederung}
+
+
+3. References:
+	"\label{sec:YOURTITLE}"
+
+	wieder ansprechbar mit:
+	\ref{sec:Kapitel1}
+	
+
+--------------Fonts----------------
+\Huge Some Text \\
+Some Text \\
+
+\Large Some more text \\
+Some more text \\
+
+\normalsize And even more text \\
+And even more text
+  
+--------------Matrix----------------
+
+# runde klammern
+
+$
+\begin{pmatrix}
+a_1 & a_2 & a_3 & a_4 \\
+b_1 & b_2 & b_3 & b_4 \\
+c_1 & c_2 & c_3 & c_4 \\
+d_1 & d_2 & d_3 & d_4
+\end{pmatrix}
+$  
+
+
+--------------Bibliografy----------------
+> see texmaker settings.
+
+• in text:
+\cite{KinectSpecs}
+
+• in .bib file:
+@online{KinectSpecs,
+author = {Microsoft},
+title  = {Kinect for Windows Sensor Components and Specifications},
+date   = {2014-04},
+url    = {http://msdn.microsoft.com/en-us/library/jj131033}
+}
+
+--------------Footnotes----------------
+
+Es wird eine Zahl über dem hier\footnote{I'm a footnote} stehen
+
+--------------Compile----------------
+
+F1 : make pdf
+
+--------------Images----------------
+
+% links Text rechts zwei Bilder:
+
+\begin{figure}[H]
+  \begin{minipage}[t]{0.2\textwidth}
+    \includegraphics[width = \textwidth]{images/error_acc_rgb.pdf}
+    \caption{RGB image of the scene}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.8\textwidth}
+    \includegraphics[width = \textwidth]{images/error_acc.pdf}
+    \caption{Error accumulation in 300 depth measurements}
+  \end{minipage}
+\end{figure}
