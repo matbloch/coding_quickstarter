@@ -1,0 +1,16 @@
+import cv2
+
+# init display window
+
+cv2.namedWindow("Playback visualization", 0)  # make it resizable
+
+# resize
+width=200
+height=300
+cv2.resizeWindow("Playback visualization", width, height)
+
+# init window thread
+cv2.startWindowThread()
+
+# show an image
+cv2.imshow("Playback visualization", img_array)

@@ -1,0 +1,6 @@
+Fields are not saving
+=================================
+
+workaround:
+I first had to create a normal ACF-Field, fill in some content and then create the repeater field.
+Afterwards the repeater field worked for all Post-Types. This helped on multiple installations of Wordpress.

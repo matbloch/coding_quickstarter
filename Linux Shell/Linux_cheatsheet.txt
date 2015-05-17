@@ -1,0 +1,209 @@
+
+
+
+
+
+
+#*********************************#
+#	ROS
+#*********************************#
+
+#--roscd
+#change directory to package/stack
+% roscd package
+
+#--rospack
+#get information about package
+% rospack find roscpp #find package path
+
+#check ros env variables
+echo $ROS_PACKAGE_PATH #package path
+
+#--rosls
+#get information about files/dirs
+% rosls roscpp_tutorials
+
+#install packages, ros distro: hydro
+% sudo apt-get install ros-hydro-openni-launch
+
+
+#*********************************#
+#	create package
+#*********************************#
+
+% cd ~/catkin_ws/src
+# catkin_create_pkg <package_name> [depend1] [depend2] [depend3]
+% catkin_create_pkg beginner_tutorials std_msgs rospy roscpp
+
+#*********************************#
+#	General
+#*********************************#
+
+#clear screen
+% clear
+
+#help
+% man cd
+
+#auto completion
+# press [tab]
+
+#closing shell scripts
+# [ctrl] + [c] , if in foreground
+
+#*********************************#
+#	File format
+#*********************************#
+
+#list files & directories
+% ls     #not beginning with "."
+% ls -a  #list all files
+
+#list current directory
+% pwd
+
+#make directory "unixstuff"
+% mkdir unixstuff
+
+#change directory to ...
+% cd unixstuff
+% cd unixstuff/backups
+
+#change directory to root
+% cd
+
+#selecting current and parent directory
+% cd .   //current
+% cd ..  //parent
+
+#home directory (tilde)
+% ls ~/unixstuff
+
+#absolut paths/working directory
+% pwd
+
+#wildcards
+
+% ls list*  #beginning with
+% ls *list  #ending with
+% ls ?ouse  #exactly one character
+
+#*********************************#
+#	create, move, copy delte files 
+#*********************************#
+
+
+#create file
+vi filename.py
+
+#copy file1 to ... and name it file2
+cp file1 file2
+% cp ~/tutorial/science.txt .  #copy to current directory, keep name
+
+#move or rename: mv file1 file2
+% mv science.txt backups/.
+
+#delete
+% rm science.txt
+% rmdir backups
+
+
+#*********************************#
+#	file manipulations
+#*********************************#
+
+
+
+#display a file
+cat file
+#display seite für seite anzeigen. Blättern: [leertaste]
+% more file
+
+
+#redirect ouput to file
+% cat > list1
+#Then type in the names of some fruit. Press [Return] after each one.
+# stop: press [Ctrl] and [d] to stop
+
+#display file
+% cat list1
+
+#*********************************#
+#	vi editor commands
+#*********************************#
+
+#open
+%vi file
+
+#in editor:
+% i #insert text
+
+% :q #quit
+% :s #save
+% :wq #save and quit
+
+
+#shell scripts:
+% echo "grabbing URL"
+
+
+#*********************************#
+#	search files
+#*********************************#
+
+% find file
+
+
+#*********************************#
+#	Environment Variables
+#*********************************#
+
+Each time the shell variables home, user and term are changed, the corresponding environment variables HOME, USER and TERM receive the same values. However, altering the environment variables has no effect on the corresponding shell variables.
+PATH and path specify directories to search for commands and programs. Both variables always represent the same directory list, and altering either automatically causes the other to be changed. 
+
+
+
+#show all env variables
+% printenv | less
+% printenv
+
+#show single
+% echo $HOME
+
+#set variable
+% set history = 200
+% echo $history
+
+
+#*********************************#
+#	Shell Variables
+#*********************************#
+
+
+
+
+#*********************************#
+#	search files
+#*********************************#
+
+
+% cd
+% cat .bashrc
+
+#*********************************#
+#	console startup
+#*********************************#
+
+#edit .bashrc in home
+% cd
+% vi .bashrc
+#source ros for shell
+% source /opt/ros/groovy/setup.bash
+
+
+
+
+
+
+
+

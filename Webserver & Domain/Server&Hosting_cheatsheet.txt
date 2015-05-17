@@ -1,0 +1,18 @@
+/* 505-Error */
+
+• sicherstellen, dass cgi-bin in httpdocs und mit allen subordnern auf CHMOD 755
+
+
+/* MX-Records auf externem Sever */
+
+• Mailversand in Plesk deaktivieren (sonst schickt PHP-Mailer lokal weiter)
+
+
+/* DNS Konfiguration für hosttech.ch */
+
+1. Auf Plesk Account Domain eintragen (meinedomain.ch und www.meinedomain.ch)
+2. Im Domaincenter folgende A-Records eintragen:
+
+Host						IP Adresse						TTL
+domain.ch 			(lookup server adress)		10800
+*.domain.ch 			(lookup server adress)		10800

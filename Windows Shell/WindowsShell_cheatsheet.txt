@@ -1,0 +1,16 @@
+/* change directory */
+
+$ cd myfolder
+// one up
+$ cd ..
+
+/* change drive to D:/ */
+
+$ D:
+
+/* make symlinks */
+mklink /D myLinkName C:\xampp\htdocs
+
+
+
+ /D mylink I:\projects_dev\bloch.onl

@@ -1,0 +1,45 @@
+// Fang mal an einfach die Daten die du empfängt über Serial.println() wieder zurückzuschicken. z.B.:
+
+
+void serialEvent() 
+{
+  while(Serial.available()) 
+  {
+    char inChar = (char)Serial.read(); 
+
+    Serial.println(inChar);
+  }
+}
+
+// Da kannst du auch etwas experimentieren und die Daten mit if-Abfragen auf bestimmte Zeichen testen und dann je nachdem andere Texte ausgeben. z.B.:
+
+
+if(inChar == 'a')
+{
+   Serial.println("Received: a");
+}
+else if(inChar == 'b')
+{
+   Serial.println("Received: b");
+}
+
+
+// Wenn das funktioniert kannst du sowas probieren:
+
+
+void serialEvent() 
+{
+  if(Serial.available() >= 2) 
+  {
+    byte pin = Serial.read() - 48;   //Umwandlung ASCII -> Binär
+    byte state = Serial.read() - 48;
+
+    digitalWrite(pin, state);
+  }
+  
+/*------------------------------------*\
+	Printing
+\*------------------------------------*/
+
+Serial.print('something');  // next print will be on the same line
+Serial.println('something');  // new line begins after

@@ -1,0 +1,594 @@
+#************************************************************************************************************#
+#------------------------------------------	Python 3
+#************************************************************************************************************#
+
+
+#*********************************#
+#	 Pycharm
+#*********************************#
+
+#-------- search and replace
+# ctrl + r
+
+
+#*********************************#
+#	 Math
+#*********************************#
+
+
+>>> 1+1  	 #1+1
+>>> 2*3 	 #2*3
+>>> 2**3	 #2^3
+>>> 23/3	 #=7
+>>> 23.0/3.0 #=7.666...
+
+#-------- vector operations
+v = sum(L)
+total = sum(L, subtotal)
+average = float(sum(L)) / len(L)
+
+
+#*********************************#
+#	 General notations
+#*********************************#
+
+#-------- comments
+#this is a comment
+
+"""
+This is a multiline
+comment.
+"""
+
+'''
+This is a multiline
+comment.
+'''
+
+#-------- adding multiple statements on one line
+if x < y < z: print (x); print (y); print (z)
+
+#-------- continue statement on new line
+#A statement can be continued on the next line with the continuation character "\". 
+print(a,\
+b)
+
+#*********************************#
+#	 Print to console
+#*********************************#
+
+#no new line: use comma
+word1 = "Good"
+word2 = "Morning"
+print (word1, word2)
+
+a = 1
+b = 3
+print(a, "+", b, "=", a + b)
+
+#*********************************#
+#	 Datatypes
+#*********************************#
+#-------- strings
+
+word1 = "Good"
+word2 = "Morning"
+sentence = word1 + " " + word2 + " " +word3
+
+
+# using variables inside strings
+
+# concatenation:
+'hanning' + str(num) + '.pdf'
+
+# var 2
+print "He's got %s eyes and %s hair." % (my_eyes, my_hair)
+
+# use {} to get rid of whitespaces
+# use letters to indicate type. 'i': integer, 'f': floating point decimal, 's': string
+
+
+
+#-------- globals
+
+Money = 2000
+def AddMoney():
+   global Money #get global
+   Money = Money + 1
+
+#*******************#
+#	 Lists - iterables
+#*******************#
+#-------- create
+
+A = [1, 2, 3]
+cats = ['Tom', 'Snappy', 'Kitty']
+print (cats[2]) # output: Kitty
+
+#-------- init
+
+
+a = [0]*3  # [0, 0, 0]
+
+a = [[]]*3  # [[], [], []]   # reference to the same sublist
+a = [[] for i in range(12)]  # make individual lists
+
+#-------- select
+
+list = ['a','b','c']
+n = len(list)
+item = list[2]
+
+a[start:end] # items start through end-1
+a[start:]    # items start through the rest of the array
+a[:end]      # items from the beginning through end-1
+a[:]         # a copy of the whole array
+
+x = np.arange(10)
+x[2:5]  # = array([2, 3, 4])
+
+list[-1] #last item
+
+#-------- add
+L.append(item)   		 #append value
+L.extend(sequence) 		 #append sequence
+L.insert(index, item)	 #insert item at index and move other to right
+
+#-------- remove
+
+list.remove('curly') 
+del L[i]
+del L[i:j]
+
+#remove and return
+item = L.pop() # last item
+item = L.pop(0) # first item
+item = L.pop(index)
+
+#-------- modify
+
+list = ['larry', 'curly', 'moe']
+list.append('shemp')         ## append elem at end
+list.insert(0, 'xxx')        ## insert elem at index 0
+list.extend(['yyy', 'zzz'])  ## add list of elems at end
+print list  ## ['xxx', 'larry', 'curly', 'moe', 'shemp', 'yyy', 'zzz']
+
+
+
+
+
+#*******************#
+#	 allocated lists/dictionary
+#*******************#
+
+mystuff = {'apple': "I AM APPLES!"}
+print (mystuff['apple'])
+
+
+# -------- get 
+>>> numbers = {1: 'one', 2:'two', 3:'three'}
+>>> print numbers.get(1, 'Number not defined')
+one
+
+#*******************#
+#	 Generators
+#*******************#
+
+# Generators are iterators, but you can only iterate over them once
+mygenerator = (x*x for x in range(3))
+
+# yield - return a generator
+
+def createGenerator():
+	mylist = range(3)
+	for i in mylist:
+		yield i*i
+		
+for i in mygenerator:
+	print(i)
+
+#*******************#
+#	 Tuples
+#*******************#
+
+#: = lists that cant change their value
+months = ('January','February','March','April','May','June',\
+'July','August','September','October','November','  December')
+
+
+
+#*********************************#
+#	 Memory access and copying
+#*********************************#
+
+#-------- copy list
+M = L[:]
+
+
+
+
+#*********************************#
+#	 loops
+#*********************************#
+
+
+#======================= iterator portocol for lists
+
+list = ['a','b','c']
+
+i = iter(list)
+item = i.next() # fetch first value
+item = i.next() # fetch second value
+
+#======================= for
+
+list = ['a','b','c']
+
+# ---- index & item
+for index, item in enumerate(list):
+    print (index, item)
+
+# ---- start at second value: i=2,3,4,5,...,(len(a) + 2) -1
+for i, word in enumerate(a, 2):
+  print i, word
+ 
+# ---- skip first value: sequence
+	
+for car in cars[1:]:
+    # Do What Ever you want
+
+# ---- skip last value: sequence
+
+for car in cars[:-1]:
+    # Do What Ever you want
+  
+  
+  
+# ---- skip first value: iterators
+
+itercars = iter(cars)
+next(itercars)
+for car in itercars:
+    # do work
+	
+# keep original indices:
+for i, val in enumerate(stack[1:-1], 1):
+	
+# ---- skip last value: iterator
+	
+itercars = iter(cars)
+# add 'next(itercars)' here if you also want to skip the first
+prev = next(itercars)
+for car in itercars:
+    # do work on 'prev' not 'car'
+    # at end of loop:
+    prev = car
+# now you can do whatever you want to do to the last one on 'prev'
+
+
+# ---- only index
+
+for index in range(len(L)):
+    print (index)
+
+# ---- only item
+
+for item in L:
+	print item
+	
+#======================= if
+
+if a > 9:
+    print ("bigger than 9")
+elif z < 7:
+    print ("smaller than 7")
+else:
+    print ("between 7-9")
+	
+
+# variable assignement
+result = n < 0 and 'n is negative' or 'n is positive'
+	
+#======================= while
+
+x = 10
+while x != 0:
+    print x
+    x = x - 1
+    print ("x is now:", x)
+print ("the loop has ended.")
+
+#*********************************#
+#	 list comprehension
+#*********************************#
+
+# -------- get index by value
+
+
+a = [4,2,3,7,1,5,6]
+if 7 in a:
+    print(a.index(7))
+	
+# -------- get multiple values by indices
+
+[a[i] for i in (1,2,5)]
+
+# -------- creating new lists
+
+[[el - 1 for el in row] for row in matrix]
+
+[o.attribute1 for o in objectlist]
+
+
+matrix = [[1, 2], [3, 4]]
+
+[item for row in matrix for item in row] # nesting is in left-to-right order
+[1, 2, 3, 4]
+
+# -------- conditional  [ expression for item in list if conditional ]
+#  example: new_list = [expression(i) for i in old_list if filter(i)]
+
+primes = [x for x in range(2, 50) if x not in noprimes]
+
+[x+1 if x >= 45 else x+5 for x in l]
+
+#*********************************#
+#	 list sorting
+#*********************************#
+
+
+# by value
+sorted([5, 2, 3, 1, 4])
+[1, 2, 3, 4, 5]
+
+
+# sort by second value
+from operator import itemgetter, attrgetter
+[('dave', 'B', 10), ('jane', 'B', 12), ('john', 'A', 15)]
+sorted(student_tuples, key=itemgetter(2))
+
+
+# sort by second value
+sorted([('abc', 121),('abc', 231),('abc', 148), ('abc',221)],key=lambda x: x[1])
+
+
+#*********************************#
+#	 inputs
+#*********************************#
+
+string_var = raw_input("Enter something: ")
+command_var = input('Please enter a value:')
+print "you entered ", string_var
+
+
+
+
+#*********************************#
+#	 functions
+#*********************************#
+
+def myfunction(param_1,param_2):
+	print ("this code is in the function")
+	my_return_val = 42 + param_1
+	return my_return_val
+print ("this is not")
+
+
+# ---- list/dicts as function arguments
+
+def foo(a, b, c, d):
+  print a, b, c, d
+
+l = [0, 1]
+d = {"d":3, "c":2}
+
+foo(*l, **d)
+
+# Will print: 0 1 2 3
+
+# ---- multiple inputs - no keys
+
+def func_with_both(one, two, *args):
+    """
+    This function requires <i>at least</i> two arguments. The *args at the end
+    says that it can take just two arguments or any number of arguments as long
+    as there are at least two.
+    """
+	
+# ---- multiple inputs - with keys
+	
+def print_table(**kwargs):
+    for key, value in kwargs.items():
+        print(key, value)
+
+>>> print_table(a = 5, b = 6, c = 7)
+b 6
+c 7
+a 5
+
+
+
+#*********************************#
+#	 classes
+#*********************************#
+
+#-------- define
+class Team(object):
+    def __init__(self, name=None, logo=None, members=0):
+        self.name = name
+        self.logo = logo
+        self.members = members
+	def showname(self):
+    """display instance attribute and class name"""
+    print 'Your name is', self.name
+    print 'My name is', self.__class__.__name__
+
+	
+	
+class	student:
+	“““A class representing a student ”””
+	def __init__(self,n,a):
+		self.full_name = n
+		self.age = a
+	def get_age (self):
+		return self.age
+	
+	
+	
+	
+	
+#-------- class attributes
+#for all class instances the same
+
+class counter:
+	overall_total = 0
+	# class attribute
+	def__init__(self):
+		self.my_total = 0
+	# data attribute
+	def	increment(self):
+		counter.overall_total = \
+		counter.overall_total + 1
+		self.my_total = \
+		self.my_total + 1 
+	
+
+	
+>>> a = counter()
+>>> b = counter()
+>>> a.increment()
+>>> b.increment()
+>>> b.increment()
+>>> a.my_total
+1
+>>> a.__class__.overall_total
+3
+>>> b.my_total
+2
+>>> b.__class__.overall_total
+3 
+	
+#-------- init
+team = Team("Oscar", "http://...", 10)
+
+team2 = Team()
+team2.name = "Fred"
+
+team3 = Team(name="Joe", members=10)
+
+
+
+
+
+#*********************************#
+#	 packages & modules
+#*********************************#
+
+
+# structure
+
+mypackage/__init__.py #<-- this is what tells Python to treat this directory as a package
+mypackage/mymodule.py
+
+
+#-------- import
+import mypackage.mymodule
+# or
+from mypackage.mymodule import myclass
+from fibo import fib, fib2
+# import all except beginning with "_"
+from fibo import *
+#define what all is in __init.py__
+__all__ = ["module1", "module2", "module3"]
+
+
+#-------- relative references
+
+#-------- subpackages
+
+sound/                          Top-level package
+      __init__.py               Initialize the sound package
+      formats/                  Subpackage for file format conversions
+              __init__.py
+              wavread.py
+			  
+import sound.formats.wavread
+
+
+#-------- usage inside main function
+import somefile
+from somefile import *
+somefile.className.method(“abc”)
+somefile.myFunction(34)
+Somefile.cut_off_theshold
+
+
+#*********************************#
+#	 running python in unix shell
+#*********************************#
+
++ bin
+  - project
++ project
+  - main.py
+  + lib
+  + tests
+
+Now your application can be executed by running:
+
+$ bin/project <parameters>
+
+
+#*********************************#
+#	 argparser
+#*********************************#
+
+import argparse
+parser = argparse.ArgumentParser(description='This is a PyMOTW sample program')
+
+# parameter types
+parser.add_argument('-f', '--my-foo', default='foobar')
+parser.add_argument('-b', '--bar-value', default=3.14)
+parser.add_argument('-b', '--bar-value', type=int)
+parser.add_argument("-runsmth",action = "store_true",help="use to run runsmth")  # if args.runsmth: run_smth()
+
+# required
+parser.add_argument('-o', '--output', required=True)
+
+# choices
+parser.add_argument('move', choices=['rock', 'paper', 'scissors'])
+parser.add_argument('door', type=int, choices=range(1, 4))
+
+# help
+parser.add_argument('foo-bar', help='Hyphens are cumbersome in positional arguments')
+
+# display the help
+$ python test.py -h
+
+# get values
+args = parser.parse_args()
+print args.my_foo
+print args.bar_value
+
+# errors
+parser.error('-b required with -a x')
+
+#*********************************#
+#	 PEP 8
+#*********************************#
+
+# 1. use 4 spaces not tabs
+# Separate top-level function and class definitions with two blank lines.
+# Method definitions inside a class are separated by a single blank line.
+
+#*********************************#
+#	 misc
+#*********************************#
+
+# ---- extract values from object list
+[o.val for o in object_list]
+
+# ---- create array with same values
+a=np.empty(n)
+a.fill(5)
+

@@ -1,0 +1,144 @@
+============================================
+TABLES
+============================================
+
+
+
+
+
+============================================
+GRID LAYOUT
+============================================
+
+
+• all divs are divided into 12 columns
+
+==== basic layout
+
+<div class="row">
+	<div class="col-xs-4">Column 1-a</div>
+	<div class="col-xs-8">Column 1-b</div>
+</div>
+
+
+==== different types of columns
+
+col-md-3 is 3 grid columns wide (25%) on a typical medium device width (more than 992 pixels)
+
+
+
+xs = extra small screens (mobile phones)
+sm = small screens (tablets)
+md = medium screens (some desktops)
+lg = large screens (remaining desktops)
+
+
+The sm, md and lg grids will all "stack" vertically on screens/viewports less than 768 pixels
+
+
+
+==== handle different devices: Mixed: mobile and desktop
+
+div class="col-xs-6 col-sm-4">Column 1</div> <!-- 1/2 width on mobile, 1/3 screen on tablet) -->
+<div class="col-xs-6 col-sm-8">Column 2</div><!-- 1/2 width width on mobile, 2/3 width on tablet -->
+
+
+==== column offset
+
+• example: second div has 4-col margin on left
+
+<div class="row">
+  <div class="col-md-4">.col-md-4</div>
+  <div class="col-md-4 col-md-offset-4">.col-md-4 .col-md-offset-4</div>
+</div>
+
+
+==== column ordering
+
+• example: .col-md-3 .col-md-pull-9 is on the left
+
+<div class="row">
+  <div class="col-md-9 col-md-push-3">.col-md-9 .col-md-push-3</div>
+  <div class="col-md-3 col-md-pull-9">.col-md-3 .col-md-pull-9</div>
+</div>
+
+
+
+
+============================================
+HIDE/SHOW ELEMENTS
+============================================
+
+
+
+    .visible-xs
+    .visible-sm
+    .visible-md
+    .visible-lg
+    .hidden-xs
+    .hidden-sm
+    .hidden-md
+    .hidden-lg
+
+
+
+
+
+
+
+============================================
+BUTTONS
+============================================
+• blue
+btn btn-primary
+
+• gray
+btn btn-default
+
+============================================
+ALERTS
+============================================
+
+<div class="alert alert-success" role="alert">...</div>
+<div class="alert alert-info" role="alert">...</div>
+<div class="alert alert-warning" role="alert">...</div>
+<div class="alert alert-danger" role="alert">...</div>
+
+
+
+
+
+============================================
+CAROUSELS
+============================================
+=> NO JS INITIALIZATION NEEDED
+
+
+
+
+====== carousel with bullet navigation
+
+<div id="news-carousel" class="carousel slide" data-ride="carousel">
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner">
+		<?php
+		$news = get_posts(array('post_type' => 'news', 'nr_posts' => 3));
+		$i=0;
+		foreach($news as $post){
+
+			echo '
+			 <div class="item '.($i==0?"active":"").'">
+			 '.get_field('leadtext', $post->id).'</div>';
+			$i++;
+		}
+		?>
+  </div>
+  
+<!-- Indicators -->
+  <ol class="carousel-indicators">
+	<li data-target="#news-carousel" data-slide-to="0" class="active"></li>
+	<li data-target="#news-carousel" data-slide-to="1"></li>
+	<li data-target="#news-carousel" data-slide-to="2"></li>
+  </ol>
+</div> <!-- Carousel -->

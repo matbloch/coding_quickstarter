@@ -1,0 +1,266 @@
+/* centered, width like content */
+
+margin: 0 auto;
+display:table;
+
+/*------------------------------------*\
+	ANIMATIONS
+\*------------------------------------*/
+
+
+/* color transition */
+
+a:hover{
+  -o-transition: color .2s;
+  -ms-transition: color .2s;
+  -moz-transition: color .2s;
+  -webkit-transition: color .2s;
+  transition: color .2s;
+}
+
+/* class transition */
+
+#test{
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+.blue{
+    background-color: blue;
+    width: 100px;
+    height: 100px;
+}
+.red{
+    background-color: red;
+    border: 3px solid black;
+    width: 150px;
+    height: 150px;
+}
+
+
+/* example: size */
+
+div {
+    height: 200px;
+    width: 200px;
+    -webkit-transition-property: height, width;
+    -webkit-transition-duration: 1s;
+    background: red;
+}
+
+div:hover {
+    width: 500px;
+    height: 500px;
+    -webkit-transition-property: height, width;
+    -webkit-transition-duration: 1s;
+    background: red;
+}
+
+/* example: background-size */
+.logo:hover{
+	background-size: 100% 100%;
+	transition: background-size 0.2s ease-in;
+	-moz-transition: background-size 0.2s ease-in;
+	-ms-transition: background-size 0.2s ease-in;
+	-o-transition: background-size 0.2s ease-in;
+	-webkit-transition: background-size 0.2s ease-in;
+}
+.logo{
+	background-size: 89% 89%;
+	transition: background-size 0.2s ease-in;
+	-moz-transition: background-size 0.2s ease-in;
+	-ms-transition: background-size 0.2s ease-in;
+	-o-transition: background-size 0.2s ease-in;
+	-webkit-transition: background-size 0.2s ease-in;
+}
+
+/*------------------------------------*\
+	PSEUDOELEMENTS
+\*------------------------------------*/
+
+
+.mylink::before{
+content:'';
+position:absolute;
+left:2px;
+top:3px;
+background:url(icon.png) no-repeat center left;
+}
+
+
+/* the content attribute: on ::after and ::before */
+.onlyValidOnPseudoElements:after{
+content:'some Text';
+}
+
+/*------------------------------------*\
+	FOOTER
+\*------------------------------------*/
+
+
+/* sticky footer */
+* {
+  margin: 0;
+}
+html, body {
+  height: 100%;
+}
+#page_wrapper {
+  min-height: 100%;
+  margin-bottom: -35px;  /* equal to footer height */
+}
+#page_wrapper:after {
+  content: "";
+  display: block;
+}
+.footer, #page_wrapper:after {
+  height: 35px;   /* .push must be the same height as footer */
+}
+
+/*------------------------------------*\
+	POSITIONING
+\*------------------------------------*/
+
+/* vertical align */
+ul{
+display:table;
+}
+li{
+vertical-align:middle;
+display:table-cell;
+}
+
+/* inline-block and centering */
+a.aling-mid{
+display:table;
+margin:0 auto;
+}
+
+/* absolute, dynamic width, centered*/
+.abs_percent_mid{
+position:absolute;
+background:red;
+/* center the element */
+right: 0;
+left: 0;
+margin-right: auto;
+margin-left: auto;
+/* give it dimensions (or use width:100%; without height for text) */
+width: 30%;
+height:30%;
+}
+
+/* transparent borders */
+border: 5px solid transparent;
+
+
+/* CLEAR: li with floated elements */
+
+ul{
+overflow: auto;
+}
+ul li{
+float:left;
+}
+
+/* absolute & width as content */
+
+.my-abs-div{
+position:absolute;
+overflow: hidden;
+white-space: nowrap;
+}
+
+
+
+/*------------------------------------*\
+	BACKGROUND POSITIONING
+\*------------------------------------*/
+
+/* full size background */
+.body{
+	-webkit-background-size: cover !important;
+	-moz-background-size: cover !important;
+	-o-background-size: cover !important;
+	background-size: cover !important;
+	background: url(img/bg.jpg) no-repeat center bottom fixed;
+}
+
+/* offset */
+
+body{
+	background-position: right 10px top; /* to position the element 10px from the right */
+}
+
+
+/*------------------------------------*\
+	SHADOWS
+\*------------------------------------*/
+
+/* box - normal */
+.shadow {
+  -moz-box-shadow:    3px 3px 5px 6px #ccc;
+  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+  box-shadow:         3px 3px 5px 6px #ccc;
+}
+
+/* box - inner */
+.shadow {
+   -moz-box-shadow:    inset 0 0 10px #000000;
+   -webkit-box-shadow: inset 0 0 10px #000000;
+   box-shadow:         inset 0 0 10px #000000;
+}
+
+/* box - centered */
+.one-edge-shadow {
+	-webkit-box-shadow: 0 8px 6px -6px black;
+	   -moz-box-shadow: 0 8px 6px -6px black;
+	        box-shadow: 0 8px 6px -6px black;
+}
+
+/* box - centered, light grey */
+.one-edge-shadow {
+	-webkit-box-shadow: 0px 4px 4px -6px #6E6E6E;
+	   -moz-box-shadow: 0px 4px 4px -6px #6E6E6E;
+	        box-shadow: 0px 4px 4px -6px #6E6E6E;
+}
+
+/* text shadow (normal) */
+.shadow{
+text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* stencil */
+
+
+.stencil{
+  -moz-box-shadow: -1px 0px 0px 0px #292929;
+  -webkit-box-shadow: -1px 0px 0px 0px #292929;
+  box-shadow: -1px 0px 0px 0px #292929;
+
+width:1px;
+background:rgba(101, 101, 101, 1);
+}
+
+/*------------------------------------*\
+	ARROWS
+\*------------------------------------*/
+
+.arrow_up{
+	/* arrow up */
+	width: 0; 
+	height: 0; 
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-bottom: 4px solid white;
+
+}
+.arrow_down{
+	/* arrow down */
+	width: 0; 
+	height: 0; 
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: 4px solid white;
+}

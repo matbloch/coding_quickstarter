@@ -1,0 +1,154 @@
+Basic structure
+=================================
+
+View <--> $scope <--> controller
+
+
+
+• HTML
+<html ng-app="myAppName">
+<body>
+	<div ng-controller="MyController">
+	  <input type="text" ng-model="person.name" placeholder="Enter your name" />
+	  <h5>Hello {{ person.name }}</h5>
+	</div>
+</body>
+</html>
+
+
+
+• JS
+// init app
+var app = angular.module('myAppName', []);
+
+// init controllers
+app.controller('MyController', function($scope) {
+
+  // static variable: accessible inside controller "MyController"
+  $scope.person = { name: "Ari Lerner" };
+  
+  var updateClock = function() {
+    $scope.clock = new Date();
+  };
+  var timer = setInterval(function() {
+    $scope.$apply(updateClock);
+  }, 1000);
+  updateClock();
+});
+
+
+
+Data binding: controller -> view
+=================================
+
+
+{{ 8 + 1 }}
+
+{{ yourControllerPropperty }}
+{{ yourControllerFunction(123) }}
+
+
+Data binding: view -> controller
+=================================
+
+Input fields
+-------------------------------------------------------
+
+• HTML
+<input type="text" ng-model="person.name" placeholder="Enter your name..."></input>
+
+• Property output HTML
+{{person.name}}
+
+• JS
+app.controller('myController', function($scope) {
+  $scope.person = {name: 'not yet specified', age: 'not yet specified'};
+});
+
+Function calls
+-------------------------------------------------------
+
+• HTML
+<div ng-controller="DemoController">
+  <button ng-click="add(1)" class="button">Add</button>
+  <button ng-click="subtract(1)" class="button">Subtract</button>
+  <h4>Current count: {{ counter }}</h4>
+</div>
+
+• JS
+app.controller('DemoController', function($scope) {
+  $scope.counter = 0;
+  $scope.add = function(amount) { $scope.counter += amount; };
+  $scope.subtract = function(amount) { $scope.counter -= amount; };
+});
+
+
+
+
+Scopes & scope inheritance: connection between controller & view
+=================================
+
+JS scope inheritance structure:
+In child controller use same structure for parent methods as it where child methods (angular js searches scope tree upwards, till method is found)
+
+
+• HTML
+<div ng-controller="ParentController">
+  <div ng-controller="ChildController">
+    <input type="text" ng-model="person.name" placeholder="Name"></input>
+    <a ng-click="sayHello()">Say hello</a>
+  </div>
+  {{ person }}
+</div>
+
+• JS
+app.controller('ParentController', function($scope) {
+  $scope.person = {greeted: false};
+});
+
+app.controller('ChildController', function($scope) {
+  $scope.sayHello = function() {
+    $scope.person.greeted = true;
+  }
+});
+
+Click binding events on controller functions
+=================================
+
+• HTML
+<a ng-click="sayHello()">Say hello</a>
+Have you greeted? {{greeted}}
+
+• JS
+app.controller('MyClickController', function($scope) {
+  
+  $scope.greeted = false;
+  $scope.sayHello = function() {
+    $scope.greeted = true;
+  }
+});
+
+Adding AJAX
+=================================
+
+
+• JS
+
+
+$http({
+  method: 'JSONP',
+  url: 'https://api.github.com/events?callback=JSON_CALLBACK'
+}).success(function(data, status, headers, config) {
+  // data contains the response
+  // status is the HTTP status
+  // headers is the header getter function
+  // config is the object that was used to create the HTTP request
+}).error(function(data, status, headers, config) {
+});
+
+
+
+
+
+
+
