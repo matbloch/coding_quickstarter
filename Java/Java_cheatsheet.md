@@ -270,7 +270,7 @@ abstract class GraphicObject {
     void moveTo(int newX, int newY) {
         ...
     }
-    
+
     // these methods need to be defined specificly for each graphic object
     abstract void draw();
     abstract void resize();
@@ -290,11 +290,131 @@ class Rectangle extends GraphicObject {
     void resize() {
         ...
     }
-} 
+}
 
 ```
 
 ## Interfaces
+- A class describes the attributes and behaviors of an object. An interface contains behaviors that a class implements.
+- If class does not implement **all methods** of an implemented interface, it has to be abstract
+
+**Differences from classes:**
+- No instances
+- No constructors
+- All methods abstract
+- Interface is not extended but implemented by class
+- Interface can extend multiple interfaces
+
+```java
+[Modifikator] interface Interface
+{
+     [final] [Modifikator] Typ Variable = Wert;
+  [abstract] [Modifikator] Typ Methode();
+}
+```
+
+
+**Example**
+
+```java
+// Interface class, File name : Animal.java
+interface Animal {
+   public organism_type = "Multicellular";
+   public void eat();
+   public void travel();
+}
+
+// Main class, File name : MammalInt.java
+public class MammalInt implements Animal{
+
+   public void eat(){
+      System.out.println("Mammal eats");
+   }
+
+   public void travel(){
+      System.out.println("Mammal travels");
+   } 
+
+   public int noOfLegs(){
+      return 0;
+   }
+
+   public static void main(String args[]){
+      MammalInt m = new MammalInt();
+      m.eat();
+      m.travel();
+   }
+} 
+```
+**Extending interface extending interfaces**
+```
+public interface Hockey extends Sports, Event
+```
+
+### Polymorphism
+
+```java
+public interface Vegetarian{}
+public class Animal{}
+public class Deer extends Animal implements Vegetarian{}
+```
+
+
+## Packages
+Used to avoid namespace conflicts
+
+- `package {packageName}` on top of all source files that define the pack
+- Put files in subdirectory named after the package name
+- Inside package, every member has access to the package methods/classes without using the package name as a prefix (`Class1` instead of `packagename.Class1`)
+
+### Building packages
+
+**File1:** Animal.java
+```Java
+package animals;
+
+interface Animal {
+   public void eat();
+   public void travel();
+}
+```
+**File2:** MammalInt.java
+
+```java
+package animals;
+
+public class MammalInt implements Animal{
+
+   public void eat(){
+      System.out.println("Mammal eats");
+   }
+
+   public void travel(){
+      System.out.println("Mammal travels");
+   }
+
+   public int noOfLegs(){
+      return 0;
+   }
+
+   public static void main(String args[]){
+      MammalInt m = new MammalInt();
+      m.eat();
+      m.travel();
+   }
+}
+```
+
+### Importing packages
+after the package statement and before the class declaration
+
+```java
+// import everything
+import payroll.*;
+
+// import specific class
+import payroll.Employee;
+```
 
 
 ## I/O
