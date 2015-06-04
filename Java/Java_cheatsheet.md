@@ -254,7 +254,7 @@ class Circle extends Shape {
 ```
 
 ### Abstract classes
-** Main usage: ** Subclass for extension
+**Main usage:** Subclass for extension
 
 - Abstract classes can not be instantiated: Must be extended at some point
 - All other functionality sitll exists (constructor, fields, methods)
