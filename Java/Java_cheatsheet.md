@@ -433,6 +433,10 @@ import payroll.*;
 import payroll.Employee;
 ```
 
+## Subpackages
+
+Java file in path `src/main/java/edu/lmu/cs/scratch/A.java`
+Corresponding package name `package edu.lmu.cs.scratch;`
 
 ## I/O
 
