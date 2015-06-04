@@ -1,44 +1,76 @@
 ## Basic concepts
 
-
+### Programm structure
+Java program processing starts from the main() method which is a mandatory part of every Java program.
 
 ```java
+// simple program
 public class Main {		// filename: same as class, Main.java
-
-
     public static void main(String[] args) {
         System.out.println("Hello, World!");
     }
+}
 
+// program with arguments
+public class Arguments {
+    public static void main(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            System.out.println(args[i]);
+        }
+    }
+}
+
+```
+### Compiling and running
+
+Compile: `javac MyFirstClass.java`
+Run: `java MyFirstClass`, with arguments `java MyFirstClass arg0 arg1 arg2`
+
+### Error handling
+
+**Catching**
+```java
+try {
+//Code here
+} catch (ExceptionHere name) {
+    //Replace ExceptionHere with your exception and name with the name of your exception.
+    //Code if exception "ExceptionHere" is thrown.
 }
 ```
+**Throwing**
 
+```java
+throw new IllegalArgumentException("Number not above 0");
+```
 
+You have to use the `throws` keyword when functions throw uncatched exceptions.
 
+```java
+// single exception
+void mymethod(int num) throws IOException{
+    if(num==1)
+    	throw new IOException("Exception Message1");
+}
 
-
-
-
-
-
-public class MyFirstJavaProgram {
-
-   /* This is my first java program.  
-    * This will print 'Hello World' as the output
-    */
-
-    public static void main(String []args) {
-       System.out.println("Hello World"); // prints Hello World
-    }
+// multiple exceptions
+void mymethod(int num) throws IOException, ClassNotFoundException{
+    if(num==1)
+    	throw new IOException("Exception Message1");
+    else
+    	throw new ClassNotFoundException("Exception Message2");
 } 
+```
 
+**Example exceptions**
 
-/*
-
-public static void main(String args[])
-Java program processing starts from the main() method which is a mandatory part of every Java program..
-
-*/
+- `ArrayIndexOutOfBoundsException`
+- `IllegalArgumentException`
+- `NullPointerException` Application attempts to use null in a case where an object is required
+- `ArithmeticException` Thrown for example when a zero division occurs.
+- `IOException`
+- `IllegalAccessException` particular method not found
+- `EmptyStackException`
+- `ClassNotFoundException`
 
 
 ## Datatypes
@@ -150,42 +182,50 @@ for (int el : arr) {
 }
 ```
 
-## Functions
 
 
 ## OOP
 
-// constructors - same name as class
+**Constructors**
 
+```java
 public class Puppy{
 
-	int puppyAge;
-
+int puppyAge;
 
    public Puppy(){		// constructor with no input argument
    }
-
    public Puppy(String name){
       // This constructor has one parameter, name.
    }
-   
    public void setAge( int age ){
        puppyAge = age;
    }
-   
    public static void main(String []args){
       // Following statement would create an object myPuppy
       Puppy myPuppy = new Puppy( "tommy" );
-	  
-	  
 	  myPuppy.setAge( 2 );
    }
-   
 }
+```
 
 
-// accessing parameters & methodsd
+**Reference**
 
+```java
+Student joe = new Student("joe");
+Student s1 = joe;	// same object, s1 == joe: true
+
+
+s1.name = "frank";	// changes also Student joe.name
+s1.setName("frank"); // instead change as a reference
+
+```
+
+
+**Accessing parameters & methods**
+
+```java
 /* First create an object */
 ObjectReference = new Constructor();
 
@@ -194,5 +234,67 @@ ObjectReference.variableName;
 
 /* Now you can call a class method as follows */
 ObjectReference.MethodName();
+```
+
+**Accessebility**
+
+- `public`: everybody has access
+- `private`: only class itself has access
+
+**Inheritance**
+
+```java
+class Circle extends Shape {
+	// functions defined here will overwrite methods of the base class
+
+
+}
+
+
+```
+
+### Abstract classes
+
+**Abstract functions**
+
+```java
+abstract void moveTo(double deltaX, double deltaY);
+```
+
+**Abstract classes and member methods**
+If a class includes abstract methods, then the **class itself must be declared abstract**.
+```java
+abstract class GraphicObject {
+    int x, y;
+    ...
+    void moveTo(int newX, int newY) {
+        ...
+    }
+    
+    // these methods need to be defined specificly for each graphic object
+    abstract void draw();
+    abstract void resize();
+}
+class Circle extends GraphicObject {
+    void draw() {
+        ...
+    }
+    void resize() {
+        ...
+    }
+}
+class Rectangle extends GraphicObject {
+    void draw() {
+        ...
+    }
+    void resize() {
+        ...
+    }
+} 
+
+```
+
+## Interfaces
+
 
 ## I/O
