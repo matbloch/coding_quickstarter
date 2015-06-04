@@ -260,7 +260,7 @@ class Circle extends Shape {
 - All other functionality sitll exists (constructor, fields, methods)
 
 
-**Abstract classes**
+**Abstraction**
 
 
 
