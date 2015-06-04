@@ -254,45 +254,62 @@ class Circle extends Shape {
 ```
 
 ### Abstract classes
+** Main usage: ** Subclass for extension
 
-**Abstract functions**
+- Abstract classes can not be instantiated: Must be extended at some point
+- All other functionality sitll exists (constructor, fields, methods)
+
+
+**Abstract classes**
+
+
 
 ```java
-abstract void moveTo(double deltaX, double deltaY);
-```
+public abstract class Employee
+{
+   private String name;
+   private int number;
+   public Employee(String name, String address, int number)
+   {
+      System.out.println("Constructing an Employee");
+      this.name = name;
+      this.address = address;
+      this.number = number;
+   }
 
-**Abstract classes and member methods**
-If a class includes abstract methods, then the **class itself must be declared abstract**.
-```java
-abstract class GraphicObject {
-    int x, y;
-    ...
-    void moveTo(int newX, int newY) {
-        ...
-    }
-
-    // these methods need to be defined specificly for each graphic object
-    abstract void draw();
-    abstract void resize();
-}
-class Circle extends GraphicObject {
-    void draw() {
-        ...
-    }
-    void resize() {
-        ...
-    }
-}
-class Rectangle extends GraphicObject {
-    void draw() {
-        ...
-    }
-    void resize() {
-        ...
-    }
+   public String getName()
+   {
+      return name;
+   }
+   public int getNumber()
+   {
+     return number;
+   }
 }
 
 ```
+
+
+**Abstract member functions**
+
+- Useful for fixed class definitions, reminders
+- If a class includes abstract methods, then the **class itself must be declared abstract**
+- Any child class must either override the abstract method or declare itself abstract
+
+```java
+public abstract class Employee
+{
+   private String name;
+   private String address;
+   private int number;
+
+   public abstract double computePay();
+
+   //Remainder of class definition
+}
+```
+
+
 
 ## Interfaces
 - A class describes the attributes and behaviors of an object. An interface contains behaviors that a class implements.
@@ -418,3 +435,6 @@ import payroll.Employee;
 
 
 ## I/O
+
+
+## Multithreading
