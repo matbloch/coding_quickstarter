@@ -43,6 +43,8 @@ class Auth
     }
 
 }
+
+
 /*------------------------------------*\
 	ACCESSING THE PROPERTIES
 \*------------------------------------*/
@@ -234,7 +236,7 @@ CURLOPT_POSTFIELDS - Array of data to POST in request
 
 
 
-/* debuggin */
+/* debugging */
 
 try {
 	$ch = curl_init();
@@ -281,5 +283,95 @@ try {
 
 // Continue execution
 echo "Hello World\n";
+
+/*------------------------------------*\
+	DESIGN PATTERNS
+\*------------------------------------*/
+
+
+## Database adapters
+
+```php
+namespace LibraryDatabase;
+ 
+class PdoAdapter implements DatabaseAdapterInterface
+{
+    protected $config = array();
+    protected $connection;
+    protected $statement;
+     
+    public function __construct($dsn, $username = null, $password = null, array $options = array())
+    {
+        // fail early if the PDO extension is not loaded
+        if (!extension_loaded("pdo")) {
+            throw new InvalidArgumentException(
+                "This adapter needs the PDO extension to be loaded.");
+        }
+        // check if a valid DSN has been passed in
+        if (!is_string($dsn) || empty($dsn)) {
+            throw new InvalidArgumentException(
+                "The DSN must be a non-empty string.");
+        }
+        $this->config = compact("dsn", "username",
+            "password", "options");
+    }
+     
+    public function connect()
+    {
+        if ($this->connection) {
+            return;
+        }
+        try {
+            $this->connection = new PDO(
+                $this->config["dsn"], 
+                $this->config["username"], 
+                $this->config["password"], 
+                $this->config["options"]
+            );
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE,
+                PDO::ERRMODE_EXCEPTION);
+            $this->connection->setAttribute(
+                PDO::ATTR_EMULATE_PREPARES, false);
+        }
+        catch (PDOException $e) {
+            throw new RunTimeException($e->getMessage());
+        }
+    }
+     
+    public function disconnect()
+    {
+        $this->connection = null;
+    }
+     
+    public function executeQuery($sql, array $parameters = array())
+    {
+        $this->connect();
+        try {
+           $this->statement = $this->connection->prepare($sql);
+           $this->statement->execute($parameters);
+           return $this->statement->fetchAll(PDO::FETCH_CLASS,
+               "stdClass"); 
+        }
+        catch (PDOException $e) {
+            throw new RunTimeException($e->getMessage());
+        }
+    }
+}
+```
+
+
+Useage:
+
+```php
+$adapter = new PdoAdapter("mysql:dbname=mydatabase",
+    "myfancyusername", "myhardtoguespassword");
+ 
+$guests = $adapter->executeQuery("SELECT * FROM users WHERE role = :role", array(":role" => "Guest"));
+ 
+foreach($guests as $guest) {
+    echo $guest->name . " " . $guest->email . "<br>";
+}
+```
+
 
 
