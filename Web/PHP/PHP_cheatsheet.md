@@ -284,12 +284,42 @@ try {
 // Continue execution
 echo "Hello World\n";
 
-/*------------------------------------*\
-	DESIGN PATTERNS
-\*------------------------------------*/
+
+# Design patterns
+
+## Interfaces
+
+- Defines the functionality of an object
+
+## Traits
+
+- Gives object ability to do smth.
+- Does not rely on inheritance
+- Reduce code duplicates
+
+```php
+// define shared methods in trait
+trait Sharable {
+  public function share($item)
+  {
+    return 'share this item';
+  }
+}
+
+// define class
+class Post {
+  use Sharable;
+}
+
+$post = new Post;
+echo $post->share(''); // 'share this item'
+
+```
 
 
-## Database adapters
+# Example patterns
+
+## 01: Database adapters
 
 ```php
 namespace LibraryDatabase;
@@ -360,7 +390,7 @@ class PdoAdapter implements DatabaseAdapterInterface
 ```
 
 
-Useage:
+Usage:
 
 ```php
 $adapter = new PdoAdapter("mysql:dbname=mydatabase",
