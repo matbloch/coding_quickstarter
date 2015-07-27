@@ -1,5 +1,22 @@
 
 /*------------------------------------*\
+	Namespaces
+\*------------------------------------*/
+
+
+var AppSpace = AppSpace || {};
+
+AppSpace.Podcast = function {
+    this.title = 'Astronomy Cast';
+    this.description = 'A fact-based journey through the galaxy.';
+    this.link = 'http://www.astronomycast.com';
+};
+
+AppSpace.Podcast.prototype.toString = function() {
+    return 'Title: ' + this.title;
+}
+
+/*------------------------------------*\
 	OOP
 \*------------------------------------*/
 
