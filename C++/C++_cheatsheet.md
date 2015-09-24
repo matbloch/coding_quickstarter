@@ -256,21 +256,127 @@ int summe(int a, int b) {
 ```
 
 
+- - -
+
 ##Pointers##
 
-
-###References / Alias
+###Definition
 
 ```cpp
-int var = 100;
+int  var = 20;   		/* actual variable declaration */
+int  *ptr = NULL;       /* pointer variable declaration */
 
-int &rvar1 = var;	// alias 1
-int& rvar1 = var;	// alias 2
-
+ip = &var;  /* store address of var in pointer variable*/
 ```
 
+###Access
 
-##Data structures##
+```cpp
+/* access address */
+cout << ip << endl;
+/* access value */
+cout << *ip << endl;
+```
+
+- `*x`	value pointed to by x
+- `&x`	address of x
+- `x.y`	member y of object x
+- `x->y`	member y of object pointed to by x
+- `(*x).y`	member y of object pointed to by x (equivalent to the previous one)
+- `x[0]`	first object pointed to by x
+- `x[1]`	second object pointed to by x
+- `x[n]`	(n+1)th object pointed to by x
+
+###Extension
+
+**Pointer to array**
+Array name is a constant pointer to `&arrayName[0]`, the address of the first array element.
+
+
+```cpp
+double *p;
+double balance[10];
+
+// assign pointer
+p = balance;	/* balance = &balance[0] */
+
+// access pointer
+cout << *p<< endl;
+cout << *(p+2)<< endl;
+```
+
+**Pointer to Pointers**
+
+```cpp
+int  var;
+int  *ptr;
+int  **pptr;
+
+var = 3000;
+ptr = &var;
+pptr = ptr;
+```
+
+- - -
+
+
+##Compound data types##
+
+###Struct
+
+**Definition**
+
+```cpp
+// define
+struct product {
+  int weight;
+  double price;
+} ;
+
+// define and init
+struct product {
+  int weight;
+  double price;
+} apple, banana, melon;
+```
+
+**Initialization**
+```cpp
+product apple;
+```
+
+**Access**
+```cpp
+apple.weight;
+```
+
+####Pointers to structures
+
+**Definition**
+
+```cpp
+// definition
+struct movie {
+  string title;
+};
+
+// creation
+movie amovie;
+movie * pmovie;
+
+// linking
+pmovie = &amovie;
+```
+
+**Access**
+```cpp
+pmovie->title;
+// equivalent
+(*pmovie).title;
+```
+
+_ _ _
+
 
 ###Array
 
@@ -284,8 +390,27 @@ const int N = 4;
 int a[N];	// only possible with const
 ```
 
-###Vector
+####Unit offset Arrays
+- **Problem**: Some algorithms want to start with `arrayName[1]` istead of `arrayName[0]` 
 
+
+**Solution 1: Additional pointer**
+```cpp
+int numbers[] = {1,2,3,4};
+int *p;
+p = numbers-1; /* p points to the address one field before the array */
+```
+
+**Solution 2: Manipulate function input**
+```cpp
+someMethod(numbers-1, 4);	/* use the shifted address */
+```
+
+
+_ _ _
+
+
+###Vector
 
 > Vector = 2D Array   
 > vector<Datatype> name (nr_elements);
@@ -309,23 +434,35 @@ int a[N];	// only possible with const
     vector<string> delimiters;
     delimiters = {"a", "bc", "lorem pisum"};
     ```
-    
+
 * Manipulation
 
     ```cpp
 	// add elements to end
     vector<string> delimiters;
     delimiters.push_back(",");
-    ```    
+    ```
 
 * Iterate over vector
+
     ```cpp
     for(std::size_t i=0; i < myVector.size(); i++){
         cout << myVector[i] << endl;
     }
-
     ```
 
+
+###Character sequences
+
+
+```cpp
+char myword[] = { 'H', 'e', 'l', 'l', 'o', '\0' };
+char myword[] = "Hello";
+```
+
+
+
+_ _ _
 
 ###String
 
@@ -338,7 +475,7 @@ int a[N];	// only possible with const
 * `myString.max_size()` get maximum size
 * `myString.append(string2)` append strings 
 
-
+- - -
 
 ## Templating
 
@@ -354,7 +491,7 @@ TYPE Twice(TYPE data)
 }
 ```
 
-
+- - -
 
 ## Multithreading
 ```cpp
@@ -412,27 +549,12 @@ thread2.join();
 ```
 
 
+- - -
+
+##OOP##
 
 
-# OOP
-
-## Member functions
-
-- `*x`	pointed to by x
-- `&x`	address of x
-- `x.y`	member y of object x
-- `x->y`	member y of object pointed to by x
-- `(*x).y`	member y of object pointed to by x (equivalent to the previous one)
-- `x[0]`	first object pointed to by x
-- `x[1]`	second object pointed to by x
-- `x[n]`	(n+1)th object pointed to by x
-
-
-## visibility
-
-
-
-
+### visibility
 
 ```cpp
 
@@ -527,7 +649,9 @@ As far as which one to use; you choose the method that works best for you, given
     - If you'd like to return a pointer to your object from a function, you must use new
 
 
+##Type aliases (typedef/using)##
 
+typedef existing_type new_type_name;
 
 ##IO-stream##
 
@@ -543,23 +667,5 @@ int main()
 	return 0;
 }
 ```
-
-##CIMG##
-
-
-/* get dimensions */
-image.dimx(),image.dimy()
-
-/* load */
-CImg<double> image("starwars.bmp"); 
-
-CImgDisplay main_disp(image,"Image",0); 
-
-
-/* looping over dimensions */
-
-cimg_forX(img,x)	/* same for X, Y, Z, V	*/		/* equivalent to : for (int x = 0; x<img.width(); x++) */
-
-
 
 
