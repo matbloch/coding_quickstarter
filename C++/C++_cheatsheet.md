@@ -4,12 +4,44 @@
 ## Table of contents
 
 - [Debugging](#debugging)
-- [Comments](#comments)
 - [Basic Concepts](#basic-concepts)
 - [Control structures](#control-structures)
 - [Functions](#functions)
 - [Pointers](#pointers)
 - [Data structures](#data-structures)
+
+## Project setup
+
+```cpp
+- project_name
+	+ bin 			// output executables
+	+ build			// all object files, gets removed on clean
+	+ lib
+	+ include		// all project and 3rd party header files  (*.h)
+	+ src			// only the application source files (*.cpp)
+	+ test			// all test code
+	+ doc			// Any notes
+	- README.md
+	- CMakeLists.txt
+```
+
+###.gitignore
+
+```git
+# Ignore the build and lib dirs
+build
+lib/*
+
+# Ignore any executables
+bin/*
+
+# Ignore Mac specific files
+.DS_Store
+```
+
+###Makefile
+
+###Code-Compile-Run procedure
 
 ##Debugging##
 
@@ -17,23 +49,10 @@ fatal error LNK1120: 1 nicht aufgeloeste externe Verweise.
 projekt > eigenschaften > linker > system > subSystem auf "Konsole (/SUBSYSTEM:CONSOLE)"
 
 
-
-
-##Comments##
-
-```cpp
-/*
-*	This is a comment
-*/
-
-// this also
-```
-
 ##Basic concepts##
 
 
 ###The `main` function
-
 
 ```cpp
 #include <iostream>
