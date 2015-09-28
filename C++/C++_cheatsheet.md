@@ -3,12 +3,10 @@
 
 ## Table of contents
 
-- [Debugging](#debugging)
-- [Basic Concepts](#basic-concepts)
-- [Control structures](#control-structures)
-- [Functions](#functions)
-- [Pointers](#pointers)
-- [Data structures](#data-structures)
+
+[TOC]
+
+
 
 ## Project setup
 
@@ -43,10 +41,37 @@ bin/*
 
 ###Code-Compile-Run procedure
 
+### Headers and Includes
+
+- header files: (.h/.hpp/.hxx)
+- Source files: (.cpp/.cxx/.cc)
+
+**Headers**
+- forward declaration
+
+
+#### Include guards
+Prevents including the same header file multiple times.
+
+```cpp
+//x.h
+#ifndef __X_H_INCLUDED__   // if x.h hasn't been included yet...
+#define __X_H_INCLUDED__   //   #define this so the compiler knows it has been included
+class X { };
+#endif
+```
+
+#### Circular dependencies
+Use pointers or reference to objects rather than full object.
+
+
+
 ##Debugging##
 
-fatal error LNK1120: 1 nicht aufgeloeste externe Verweise.  
+fatal error LNK1120: 1 nicht aufgeloeste externe Verweise.
 projekt > eigenschaften > linker > system > subSystem auf "Konsole (/SUBSYSTEM:CONSOLE)"
+
+###Exception Handling
 
 
 ##Basic concepts##
@@ -110,6 +135,11 @@ cin >> name;
 cout << "hello world\n";	/* with new line */
 cout << "hello" << name << endl;	/* new line and flush output buffer */
 ```
+
+```cpp
+printf ("%s, %d, %f \n","test", 2, 2.312);
+```
+
 
 ###Using external files and libraries
 
@@ -425,6 +455,35 @@ p = numbers-1; /* p points to the address one field before the array */
 someMethod(numbers-1, 4);	/* use the shifted address */
 ```
 
+####Dynamic Memory
+
+- Allocates memory for the object on the free store (This is frequently the same thing as the heap)
+- Requires you to explicitly delete your object later. (If you don't delete it, you could create a memory leak)
+- Memory stays allocated until you delete it. (i.e. you could return an object that you created using new)
+
+**`new` Operator**
+```cpp
+cin >> i;	// read variable
+
+int * foo;
+foo = new int [i];	// dynamically allocate memory
+```
+
+![dynamic_memory.png](.\img\dynamic_memory.png)
+
+
+**`delete` Operator**
+
+```cpp
+delete[] foo;	// releases memory allocated using `new`
+```
+
+**`nothrow` Method**
+Returns null pointer instead of exception on fail.
+
+```
+foo = new (nothrow) int [5];
+```
 
 _ _ _
 
