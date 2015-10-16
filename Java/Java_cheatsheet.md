@@ -1,3 +1,10 @@
+#Java Cheatsheet
+
+## Project setup
+
+
+
+
 ## Basic concepts
 
 ### Programm structure
@@ -439,6 +446,74 @@ Java file in path `src/main/java/edu/lmu/cs/scratch/A.java`
 Corresponding package name `package edu.lmu.cs.scratch;`
 
 ## I/O
+
+
+**Ressource loading:**
+- location independent
+
+
+
+### Resource names
+
+
+- **absolute** like “/path/resource.xml”
+- **relative** like “path/resource.xml” (relative to method call location)
+
+**Example:**
+> stream1: located in path/resource.xml
+> stream2: located in my/location/path/resource.xml - in class path
+
+```java
+package my.location;
+
+class ResourceFinder {
+
+    public void findResources(){
+       InputStream stream1 = 
+            getClass().getResourceAsStream("/path/resource.xml");
+       InputStream stream2 = 
+            getClass().getResourceAsStream("path/resource.xml");
+    }
+}
+
+```
+
+### Methods
+
+#### `getResource()`
+
+- leading slash to denote the root of the classpath
+- slashes instead of dots in the path
+- you can call `getResource()` directly on the class.
+
+**Example:**
+```java
+class TestClass {
+	  public void loadFile() {
+			URL url1 = TestClass.class.getResource("file.txt");
+            URL url2 = getClass().getResource("file.txt");
+	  }
+}
+```
+
+## OpenCV3
+
+### CV Mat
+
+
+```java
+Mat m = new Mat(5, 10, CvType.CV_8UC1, new Scalar(0));
+
+// change 2nd row
+Mat mr1 = m.row(1);
+mr1.setTo(new Scalar(1));
+
+// change 6th col
+Mat mc5 = m.col(5);
+mc5.setTo(new Scalar(5));
+
+System.out.println("OpenCV Mat data:\n" + m.dump());
+```
 
 
 ## Multithreading
