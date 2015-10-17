@@ -43,3 +43,17 @@ Example: Change Fieldname for different languages
 
 You will notice that WPML shows hidden custom field values such as ‘_image’. These should not be copied as the value relates to a field and because each field is different for each translation, these should also be. In short, ignore the underscore fields and leave as ‘Translate’
 
+
+## Translation Workflow
+
+**Pages**
+Duplicate original language content first, then edit.
+
+![wpml_workflow_1.jpg](img/wpml_workflow_1.jpg)
+
+**Navigation**
+
+"Design > Menüs > Menüs zwischen Sprachen synchronisieren"
+
+![wpml_workflow_menu_1.jpg](img/wpml_workflow_menu_1.jpg)
+
