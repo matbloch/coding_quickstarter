@@ -3,12 +3,15 @@
 ## Setup
 
 1. **Plugin setup:**
+2. 
 ![wpml_setup.jpg](img/wpml_setup.jpg)
 
 2. **URL Format**
+3. 
 ![wpml_settings_1.jpg](img/wpml_settings_1.jpg)
 
 3. **String Translation**
+4. 
 ![wpml_settings_2.jpg](img/wpml_settings_2.jpg)
 
 ## ACF - Advanced Custom Fields
@@ -17,10 +20,12 @@
 
 **Same fields for all languages:**
 Regular case
+
 ![acf_regular.jpg](img/acf_regular.jpg)
 
 **Different fields for individual languages:**
 Example: Change Fieldname for different languages
+
 ![acf_translate.jpg](img/acf_translate.jpg)
 
 ### Field Specific Settings
