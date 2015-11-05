@@ -1,14 +1,121 @@
-# Solutions (.sln and .suo)
-	A solution may contain multiple projects. 
 
-	> View > Solution explorer
+# Microsoft Visual Studio
+
+[TOC]
+
+### Hotkeys
+
+- [CTRL] + M > L: Gesamte Gliederung auf-/zuklappen
+- [CTRL] + M > M: Aktuelle Gliederung auf-/zuklappen
+- [Alt] + Pfeil hoch: Zeile verschieben
+
+### Fenster
+
+**Datei 2x öffnen**
+- Tab anklicken
+- "Fenster" > "neues Fenster"
+
+### Lesezeichen
+
+Ansicht > Lesezeichenfenster
+
+![lesezeichen.jpg](C:\Users\IT-Entwicklung\Desktop\Misc\Microsoft Visual Studio\img\lesezeichen.jpg)
+
+### Version Control
+
+![git_status.jpg](C:\Users\IT-Entwicklung\Desktop\Misc\Microsoft Visual Studio\img\git_status.jpg)
 
 
+## File Structure
 
-# Projects
-Projects are the building blocks of an application.
+**project:**
+```cpp
+/solution
+   /prj1
+      /headers
+        /module1
+        /module2
+      /resource
+      /source
+        /module 1
+        /module 2
+      /test
+   /prj2
+      /headers
+        /module1
+        /module2
+      /resource
+      /source
+        /module 1
+        /module 2
+      /test
+```
 
-# Items
+**files:**
+/solution
+    /prj1
+       /bin
+       /build
+       /include
+          /module1
+          /module2
+       /lib
+       /res
+       /src
+          /module1
+          /module2
+       /test
+    /prj2
+       /bin
+       /build
+       /include
+          /module1
+          /module2
+       /lib
+       /res
+       /src
+          /module1
+          /module2
+       /test
+
+## Build Configurations
+
+**Structuring the Project**
+
+- [RMB] on Project root: Add source files to project
+- [RMB] on Project root > Add > New Filter: Folder to structure source files
+
+![project_1.jpg](C:\Users\IT-Entwicklung\Desktop\Misc\Microsoft Visual Studio\img\project_1.jpg)
+
+**Setup Build Configurations**
+[RMB] in Project Explorer on Project name > Options
+
+[Makro List](https://msdn.microsoft.com/en-us/library/c02as0cs.aspx)
+
+Variables
+- $(SolutionDir): The directory of the solution (defined as drive + path); includes the trailing backslash '\'.
+- $(SolutionName): The base name of the solution.
+- $(Configuration): The name of the current project configuration (for example, "Debug").
+- $(ProjectName): The base name of the project.
+
+**Build Actions**
+
+
+![build_actions.jpg](C:\Users\IT-Entwicklung\Desktop\Misc\Microsoft Visual Studio\img\build_actions.jpg)
+
+Source file path:
+
+![source_path.jpg](C:\Users\IT-Entwicklung\Desktop\Misc\Microsoft Visual Studio\img\source_path.jpg)
+
+
+### Header Files
+
+Visual Studio looks for headers in this order
+
+- in the current source directory
+- in the Additional Include Directories in the project properties. (Under C++ | General)
+- in the Visual Studio C++ Include directories under Tools | Options | Projects and Solutions | VC++ Directories.
+
 
 ## OpenCV
 1. Install OpenCV (Pre-built Libraries, self-extraxting archive) to C:/Software/ (this will create a folder named "opencv" in /Software)
