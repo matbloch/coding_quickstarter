@@ -21,3 +21,31 @@ Nameserver2: ns2.ch-inter.net
 A-Record: 80.74.148.70 (Server-IP unter Abonnements > XY > Websites & Domains)
 
 
+============================================
+DNS Konfiguration
+============================================
+
+
+
+www.example.com. IN A     192.0.2.42
+www.example.net. IN CNAME www.example.com.
+
+
+www.example.com nach IP 192.0.2.42
+www.example.net alias für www.example.com
+
+
+
+
+- wildcards:
+*.beispieladresse.de, *.server.beispieladresse.de
+
+
+- TXT: übergabe von metadaten
+
+
+
+
+
+A-Record "mx0.beispieladresse.de" auf die IP 80.237.138.5 erzeugt und dieser Name dann als MX-Record verwendet.
+Gibt es 2 oder mehrere MX-Einträge mit gleicher Priorität, wird einer davon zufällig ausgewählt.
