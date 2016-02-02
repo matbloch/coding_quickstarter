@@ -1,82 +1,178 @@
-<?php
+# PHP Cheatsheet
 
 
-/*------------------------------------*\
-	OOP
-\*------------------------------------*/
+## Design Patterns
 
-/* create class */
 
+### Factory
+
+Used to create class instances.
+```php
+class Automobile
+{
+    private $vehicleMake;
+    private $vehicleModel;
+
+    public function __construct($make, $model)
+    {
+        $this->vehicleMake = $make;
+        $this->vehicleModel = $model;
+    }
+
+    public function getMakeAndModel()
+    {
+        return $this->vehicleMake . ' ' . $this->vehicleModel;
+    }
+}
+
+class AutomobileFactory
+{
+    public static function create($make, $model)
+    {
+        return new Automobile($make, $model);
+    }
+}
+
+// have the factory create the Automobile object
+$veyron = AutomobileFactory::create('Bugatti', 'Veyron');
+
+print_r($veyron->getMakeAndModel()); // outputs "Bugatti Veyron"
+```
+
+### Singleton
+
+- Makes sure only one class instance exists at a time (e.g. Configuration class or shared ressource)
+
+```php
+class Singleton
+{
+    /**
+     * @var Singleton The reference to *Singleton* instance of this class
+     */
+    private static $instance;
+    
+    /**
+     * Returns the *Singleton* instance of this class.
+     *
+     * @return Singleton The *Singleton* instance.
+     */
+    public static function getInstance()
+    {
+        if (null === static::$instance) {
+            static::$instance = new static();
+        }
+        
+        return static::$instance;
+    }
+
+    /**
+     * Protected constructor to prevent creating a new instance of the
+     * *Singleton* via the `new` operator from outside of this class.
+     */
+    protected function __construct()
+    {
+    }
+
+    /**
+     * Private clone method to prevent cloning of the instance of the
+     * *Singleton* instance.
+     *
+     * @return void
+     */
+    private function __clone()
+    {
+    }
+
+    /**
+     * Private unserialize method to prevent unserializing of the *Singleton*
+     * instance.
+     *
+     * @return void
+     */
+    private function __wakeup()
+    {
+    }
+}
+
+class SingletonChild extends Singleton
+{
+}
+
+$obj = Singleton::getInstance();
+var_dump($obj === Singleton::getInstance());             // bool(true)
+
+$anotherObj = SingletonChild::getInstance();
+var_dump($anotherObj === Singleton::getInstance());      // bool(false)
+
+var_dump($anotherObj === SingletonChild::getInstance()); // bool(true)
+```
+
+
+## OOP
+
+**Class Definition**
+
+```php
 class Auth
 {
 
 	/*
-	
 	called on:
-	
 	$auth = new Auth;
-	
 	*/
     function __construct()
     {
-	
 	}
-
 
 	/* STATIC: method can be called without initialization of the object:
 		Auth::handleLogin();
 	*/
-	
+
 	/* self referencing */
 	public static $my_static = 'foo';
     public static function handleLogin()
-    {	
-	
+    {
+
 		// Use self:: instead of $this-> for static methods. $ needed for variables
         return self::$my_static;
     }
 
-
     public function currentUserCan($action){
-
-
     }
 
 }
+```
 
 
-/*------------------------------------*\
-	ACCESSING THE PROPERTIES
-\*------------------------------------*/
+**Accessing the Properties**
 
 
-/* for reserved names */
-$obj->{'date'}
+- For reserved names:
+`$obj->{'date'}`
 
 
 
-/*------------------------------------*\
-	NAMESPACES
-\*------------------------------------*/
+## Namespaces
 
-/* define */
+**Definition**
 
+```php
 namespace MyProject\Blog\Admin;
 namespace MyNamespace;
+```
 
-/* referencing */
+**Referencing**
 
 
+```php
 My\Foo\Bar // class in My\Foo namespace
 \My\Foo\myFunction() // function
+```
 
+**Example**
 
-/*
-
-EXAMPLE:
-
------------  file1.php
-
+file1.php
+```php
 namespace Mymodule1;
 
 class Testclass
@@ -87,9 +183,10 @@ class Testclass
 	}
 
 }
+```
+file2.php: NO NAMESPACE
 
------------  file2.php: NO NAMESPACE
-
+```php
 include file1.php
 
 class Testclass
@@ -106,9 +203,10 @@ Testclass::welcome();
 
 // the imported class
 \Mymodule\Testclass::hello();
+```
 
------------  file3.php
-
+file3.php
+```php
 namespace Mymodule2;
 
 class Testclass
@@ -116,40 +214,37 @@ class Testclass
 	public static function clone_welcome()
 	{
 		include file2.php
-		
 		// call class in file that has no/top namespace
 		\Testclass::welcome();
-		
 	}
 
 }
+```
 
 
-*/
 
+**Combination**
 
-/* combining */
-
+```php
 namespace \MyProject;
 require_once "file1.php";
 class myClass {}
 function myFunction() {}
- 
+
 // fully-qualified names
 \MyProject\myFunction();
 \MyProject\Blog\myFunction();
- 
+
 // qualified name
 \Blog\myFunction(); //resolves to \MyProject\Blog\myFunction();
- 
+
 // unqualified name
 $test = new myClass();
+```
 
 
 
-/*------------------------------------*\
-	ARRAY HANDLING
-\*------------------------------------*/
+## Array Handling
 
 
 /* array_filter */
@@ -183,9 +278,7 @@ ksort($array) 	// Sorts an array by key (ascending: A-Z, 1-9)
 ksort($array)  // Sort array by key descending (9-1, Z-A)
 
 
-/*------------------------------------*\
-	TYPE CASTING
-\*------------------------------------*/
+## Typecasting
 
 /* object to array */
 $array =  (array) $yourObject;
@@ -199,9 +292,7 @@ $myObj = (object) $array;
 intval($string);
 
 
-/*------------------------------------*\
-	CURL REQUEST
-\*------------------------------------*/
+## CURL
 
 /* standard method (does not work with SSL) */
 
@@ -236,7 +327,7 @@ CURLOPT_POSTFIELDS - Array of data to POST in request
 
 
 
-/* debugging */
+## Debugging and Exceptions
 
 try {
 	$ch = curl_init();
@@ -263,9 +354,7 @@ try {
 
 }
 
-/*------------------------------------*\
-	ERROR HANDLING
-\*------------------------------------*/
+## Error handling
 
 function inverse($x) {
     if (!$x) {

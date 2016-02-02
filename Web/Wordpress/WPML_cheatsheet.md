@@ -8,6 +8,7 @@
 2. **URL Format**
 ![wpml_settings_1.jpg](img/wpml_settings_1.jpg)
 3. **String Translation**
+- Rescan Theme: Disable and enable localisation again
 
 ![wpml_settings_2.jpg](img/wpml_settings_2.jpg)
 
@@ -40,6 +41,10 @@ Example: Change Fieldname for different languages
 
 You will notice that WPML shows hidden custom field values such as ‘_image’. These should not be copied as the value relates to a field and because each field is different for each translation, these should also be. In short, ignore the underscore fields and leave as ‘Translate’
 
+**Example**
+Always copy background image from primary language to all other languages.
+![acf_translate.jpg](img/wpml_copy_bg.png)
+
 
 ## Translation Workflow
 
@@ -54,3 +59,6 @@ Duplicate original language content first, then edit.
 
 ![wpml_workflow_menu_1.jpg](img/wpml_workflow_menu_1.jpg)
 
+## Translations
+
+- Bloginfo and site name: String-Translation > WP-Domain

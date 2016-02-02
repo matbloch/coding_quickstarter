@@ -1,5 +1,27 @@
 #Java Cheatsheet
 
+
+## Standard Directory Layout
+
+
+```java
+- project_name
+	+ bin 			// output executables
+	+ src
+		+ main
+			+ java			// Application/Library sources
+			+ resources		// Application/Library resources
+			+ filters
+		+ test
+			+ java			// Test sources
+			+ resources
+			+ filters
+		+ site	// Site
+	+ doc			// Any notes
+	- README.md
+	- LICENSE.txt
+```
+
 ## Project setup
 
 
