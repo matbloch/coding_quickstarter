@@ -243,6 +243,24 @@ width:1px;
 background:rgba(101, 101, 101, 1);
 }
 
+
+
+
+/*------------------------------------*\
+	BOX-SIZING
+\*------------------------------------*/
+
+/* maintain aspect ration */
+  .thumbnail{
+    position: relative;
+    width:40%;
+    &:before{
+      content:'';
+      display:block;
+      padding-top:100%;
+    }
+  }
+
 /*------------------------------------*\
 	ARROWS
 \*------------------------------------*/

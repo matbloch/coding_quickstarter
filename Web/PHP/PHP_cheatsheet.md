@@ -110,6 +110,8 @@ var_dump($anotherObj === SingletonChild::getInstance()); // bool(true)
 
 ## OOP
 
+As of PHP 5, all objects are passed and assigned by reference.
+
 **Class Definition**
 
 ```php
