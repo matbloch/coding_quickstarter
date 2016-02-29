@@ -96,8 +96,6 @@ project_name
 
 **CMakeLists.txt in /**
 ```cmake
-include_directories( ${MY_SOURCE_DIR}/src )
-
 cmake_minimum_required(VERSION 2.8)
 
 # Ensure that nobody builds in the source tree
