@@ -12,6 +12,7 @@
 
 ```cpp
 - project_name
+	+ cmake 		// CMake module path (.cmake files to find libraries)
 	+ bin 			// output executables
 	+ build			// all object files, gets removed on clean
 	+ lib

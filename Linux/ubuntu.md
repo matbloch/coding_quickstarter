@@ -1,7 +1,23 @@
 # Ubuntu 14.04
 
 
+## Basic Commands
+
+
+- `[ctrl]` + `[alt]` + `[t]`: open terminal
+- `[ctrl]` + `[shift]` + `[t]`: terminal tab
+- `[ctrl]` + `[win]` + `[d]`: show desktop
+- `cd ~` change dir to home
+- `pwd` show current path
+
+**File/directory manipulation**
+- `rmdir` remove empty folder
+- `rm -r myDirectoryName` remove folder and files
+- `mkdir myDirectoryName` create folder
+
+
 ## Linux file system
+
 
 
 ### Folder Structure
@@ -27,17 +43,34 @@ ext4
 
 
 
-## Software Installation (configure, make, make install)
+## Software Installation from Source (configure, make, make install)
 
-### configure
+**Installing build essentials (gcc compiler)**
+```
+$ sudo apt-get update
+$ sudo apt-get upgrade
+$ sudo apt-get install build-essential
+$ gcc -v
+$ make -v
+```
 
 
-### make
+### ` ./configure` configure
+- Runs `configure` script in the current directory
+- Checks software dependencies
+- Creates `Makefile` depending on the result of the dependecy checks (for compilation)
 
+### `make`
+- Compile code and build binaries (uses makefile for compilation steps/dependencies)
 
-### make install
+### `make install`
+- Execute `install` section of the *Makefile*
+- Binaries and other required files are copied to local machine e.g. the final directories
+- Default install path: `/usr/local`
+- `/usr/local/bin` Binaries (available for all users)
 
-
+### Uninstall
+`$ make uninstall` (if available)
 
 
 ## 3rd Party Packages
