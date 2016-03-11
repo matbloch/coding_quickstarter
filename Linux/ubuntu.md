@@ -9,6 +9,7 @@
 - `[ctrl]` + `[win]` + `[d]`: show desktop
 - `cd ~` change dir to home
 - `pwd` show current path
+- `[ctrl] + H` show hidden files and directories
 
 **File/directory manipulation**
 - `rmdir` remove empty folder

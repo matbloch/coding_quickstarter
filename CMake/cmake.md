@@ -2,6 +2,9 @@
 
 - Build system to generate various `make` commands
 - Written in `CMakeLists.txt` file
+- `<packageName>.cmake` for CMake package configuration
+
+
 
 
 ## Project Structure
@@ -19,6 +22,51 @@ proejct2
 ....
 include
 CMakeLists.txt
+```
+
+## CMake Packages
+
+###Package Setup
+Consider a project "Foo" that installs the following files:
+
+`<prefix>/include/foo-1.2/foo.h`
+`<prefix>/lib/foo-1.2/libfoo.a`
+
+It may also provide a CMake package configuration file
+
+`<prefix>/lib/foo-1.2/foo-config.cmake`
+
+with content such as:
+
+```cmake
+# ...
+# (compute PREFIX relative to file location)
+# ...
+set(foo_INCLUDE_DIRS ${PREFIX}/include/foo-1.2)
+set(foo_LIBRARY ${PREFIX}/lib/foo-1.2/libfoo.a)
+```
+
+###Using external Packages
+
+**1. `find_package()`**
+
+`find_package(Foo)`
+
+- Given the name "Foo", it looks for a file called "FooConfig.cmake" or "foo-config.cmake"
+
+**2. `find<packageName>.cmake`**
+
+###Examples
+
+####`find_package`: Module Mode
+
+`Find<package>.cmake` file located within your project
+
+```cpp
+CMakeLists.txt
+	+ cmake
+        FindFoo.cmake
+        FindBoo.cmake
 ```
 
 
@@ -45,7 +93,6 @@ set (OTHER_VAR "${MY_VAR} world!")
 
 **Globals**
 
-
 ```cmake
 # This is the source directory of the most recent project() command (dirpath to CMakeLists.txt).
 ${PROJECT_SOURCE_DIR}
@@ -56,7 +103,17 @@ ${PROJECT_SOURCE_DIR}
 include_directories( ${MY_SOURCE_DIR}/src )
 ```
 
+**.cmake files to find custom/user-built modules**
+```cmake
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
+```
 
+`Find<package>.cmake`
+
+<prefix>/include/foo-1.2/foo.h
+<prefix>/lib/foo-1.2/libfoo.a
+
+<prefix>/lib/foo-1.2/foo-config.cmake
 
 # Add Source files
 add_executable(Tutorial tutorial.cxx)
@@ -75,7 +132,7 @@ target_link_libraries (Tutorial MathFunctions)
 
 
 
-## Example
+## Examples
 
 **Project Structure**
 

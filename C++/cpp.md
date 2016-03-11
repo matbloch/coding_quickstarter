@@ -42,22 +42,23 @@ bin/*
 
 ###Code-Compile-Run procedure
 
-### Headers and Includes
+## Headers and Includes
 
+**Usage**
+- To foraddeclare of functions and Classes
+
+**File Extension**
 - header files: (.h/.hpp/.hxx)
 - Source files: (.cpp/.cxx/.cc)
 
-**Headers**
-- forward declaration
 
-
-#### Include guards
+### Include guards
 Prevents including the same header file multiple times.
 
 ```cpp
 //x.h
-#ifndef __X_H_INCLUDED__   // if x.h hasn't been included yet...
-#define __X_H_INCLUDED__   //   #define this so the compiler knows it has been included
+#ifndef __X_H___   // if x.h hasn't been included yet...
+#define __X_H___   //   #define this so the compiler knows it has been included
 class X { };
 #endif
 ```
@@ -65,6 +66,90 @@ class X { };
 #### Circular dependencies
 Use pointers or reference to objects rather than full object.
 
+
+###Using external files and libraries
+
+> `lib::method` use method without inlcuding the library  
+>  Example: `std::cout << "Test line\n";`
+
+
+```cpp
+#include <iostream>   // includes file from the include folder
+#include "datei.cpp"
+#include "../lib/camera_connector.hh"
+```
+
+
+### Example Include Structure
+
+**in myclass.h**
+```cpp
+// forward declaration
+class MyClass
+{
+public:
+  void foo();
+  int bar;
+};
+```
+**in myclass.cpp**
+```cpp
+// include forward declaration
+#include "myclass.h"
+
+// explicite declaration
+void MyClass::foo()
+{
+}
+```
+**in main.cpp**
+```cpp
+#include "myclass.h"  // defines MyClass
+
+int main()
+{
+  MyClass a; // no longer produces an error, because MyClass is defined
+  return 0;
+}
+```
+
+
+### Example Header
+
+- Because `MyClass` only uses a pointer to Foo and not a full Foo object, we can forward declare Foo, and don't need to `#include "foo.h"`
+- always forward declare when you're only using a pointer or reference
+
+```cpp
+//=================================
+// include guard
+#ifndef __MYCLASS_H_INCLUDED__
+#define __MYCLASS_H_INCLUDED__
+
+//=================================
+// forward declared dependencies
+class Foo;
+class Bar;
+
+//=================================
+// included dependencies
+#include <vector>
+#include "parent.h"
+
+//=================================
+// the actual class
+class MyClass : public Parent  // Parent object, so #include "parent.h"
+{
+public:
+  std::vector<int> avector;    // vector object, so #include <vector>
+  Foo* foo;                    // Foo pointer, so forward declare Foo
+  void Func(Bar& bar);         // Bar reference, so forward declare Bar
+
+  friend class MyFriend;       // friend declaration is not a dependency
+                               //   don't do anything about MyFriend
+};
+
+#endif // __MYCLASS_H_INCLUDED__
+``` 
 
 
 ##Debugging##
@@ -141,18 +226,6 @@ cout << "hello" << name << endl;	/* new line and flush output buffer */
 printf ("%s, %d, %f \n","test", 2, 2.312);
 ```
 
-
-###Using external files and libraries
-
-> `lib::method` use method without inlcuding the library  
->  Example: `std::cout << "Test line\n";`
-
-
-```cpp
-#include <iostream>   // includes file from the include folder
-#include "datei.cpp"
-#include "../lib/camera_connector.hh"
-```
 
 ##Control structures##
 
