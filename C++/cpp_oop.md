@@ -27,6 +27,8 @@ Line::Line( double len)
 void Line::setLength( double len )
 {
     length = len;
+    // or
+	this->length = len;
 }
 
 double Line::getLength( void )
@@ -94,3 +96,45 @@ As far as which one to use; you choose the method that works best for you, given
 
     - If you don't want to worry about calling delete, (and the potential to cause memory leaks) you shouldn't use new.
     - If you'd like to return a pointer to your object from a function, you must use new
+
+## Dynamic Memory
+
+
+### Vector
+
+
+
+```cpp
+int size = 5;                    // declare the size of the vector
+vector<int> myvector(size, 0);   // create a vector to hold "size" int's
+                                 // all initialized to zero
+myvector[0] = 1234;              // assign values like a c++ array
+```
+
+
+#### As Class member
+-  No need to initialize it, as it gets automatically initialized in the constructor of your class and deallocated when your class is destroyed
+- If, instead, you want to create the array only after a particular condition, you have to resort to a (smart) pointer and dynamic allocation
+
+```cpp
+class YourClass
+{
+    std::vector<int> myVector;
+
+	public void addElementToEnd(int elem){
+    	myVector.push_back(elem);
+    }
+    public void displaySize(){
+    	std::cout << myVector.size() << std::endl;
+    }
+    // manipulation of the returned vector won't affect the class instance
+    public std::vector<int> GetCopyOfVector(){
+    	return myVector;
+    }
+    public void replaceElement(int newElem, int position){
+		myVector.at(position) = newElem;
+        // without range check
+        myVector[position] = newElem;
+    }
+};
+```

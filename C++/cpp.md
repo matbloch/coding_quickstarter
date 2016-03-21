@@ -331,14 +331,75 @@ int a(int x){
 }
 ```
 
-##### Call by reference
+##### Pointer and Reference arguments
 
+- Reference Argument: allways use const e.g. `void test(const &int inputvar)`
+
+```cpp
+void pointer_function(int* param){
+	// dereference pointer and set pointed value to 7
+	*param = 7;
+}
+
+int a = 4;
+pointer_function(&a);
+
+int *myVariable;
+*myVariable = 3;
+// alternatively
+*myVariable = &4;
+
+pointer_function(myVariable);
+```
+**Example 2**
+```cpp
+// pass a reference
+void Foo(int &x)
+{
+  x = 2;
+}
+
+//pass a pointer
+void Foo_p(int *p)
+{
+   *x = 9;
+}
+
+// pass by value
+void Bar(int x)
+{
+   x = 7;
+}
+int x = 4;
+Foo(x);  // x now equals 2.
+Foo_p(&x); // x now equals 9.
+Bar(x);  // x still equals 9.
+```
+
+**Example 3**
 ```cpp
 void swap(int &a, int &b) {
     int tmp = a; // "temporaerer" Variable den Wert von Variable a zuweisen
     a = b;       // set a to b
     b = tmp;     // and b to a, saved in tmp
 }
+
+int a = 2;
+int b = 3;
+swap(&a, &b);
+
+```
+
+**Example 4**
+
+```cpp
+void ProcessImage(const cv::Mat &img, const cv::Mat &img_clr){
+
+}
+
+// image containers
+cv::Mat image, image_color;
+ProcessImage(image, image_color);
 ```
 
 ##### Default parameters
@@ -410,7 +471,9 @@ cout << *ip << endl;
 - `x[1]`	second object pointed to by x
 - `x[n]`	(n+1)th object pointed to by x
 
-###Extension
+### Pointer vs References
+
+###Examples
 
 **Pointer to array**
 Array name is a constant pointer to `&arrayName[0]`, the address of the first array element.

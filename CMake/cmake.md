@@ -52,7 +52,7 @@ set(foo_LIBRARY ${PREFIX}/lib/foo-1.2/libfoo.a)
 
 `find_package(Foo)`
 
-- Given the name "Foo", it looks for a file called "FooConfig.cmake" or "foo-config.cmake"
+- Given the name "Foo", it looks for a file called "FooConfig.cmake" or "foo-config.cmake" in the directories listed in `CMAKE_MODULE_PATH`
 
 **2. `find<packageName>.cmake`**
 
