@@ -97,6 +97,60 @@ As far as which one to use; you choose the method that works best for you, given
     - If you don't want to worry about calling delete, (and the potential to cause memory leaks) you shouldn't use new.
     - If you'd like to return a pointer to your object from a function, you must use new
 
+
+## Constructors
+### Copy constructors
+
+```cpp
+MyClass( MyClass* other );
+MyClass( const MyClass* other );
+
+// leads to infinite loop!
+MyClass( MyClass other );
+```
+
+**Compiler provided copy constructor**
+
+```cpp
+class MyClass {
+  int x;
+  char c;
+  std::string s;
+};
+```
+```cpp
+MyClass::MyClass( const MyClass& other ) :
+ x( other.x ), c( other.c ), s( other.s )
+{}
+```
+
+
+## Member Initialization
+
+
+### Method 1: Class constructor
+### Method 2: Initialization list
+- If a member class does not have a default constructor: It MUST be initialized wth an initialization list
+
+```cpp
+class A
+{
+    public:
+        A() { x = 0; }
+        A(int x_) { x = x_; }
+        int x;
+};
+// Default Constructor of A is called anyways
+class B
+{
+    public:
+        B(){a.x = 3;}
+    private:
+        A a;
+};
+```
+
+
 ## Dynamic Memory
 
 
