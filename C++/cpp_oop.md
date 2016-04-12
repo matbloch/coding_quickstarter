@@ -95,7 +95,7 @@ As far as which one to use; you choose the method that works best for you, given
 * Some easy cases:
 
     - If you don't want to worry about calling delete, (and the potential to cause memory leaks) you shouldn't use new.
-    - If you'd like to return a pointer to your object from a function, you must use new
+    - If you'd like to return a pointer to your object from a function, you **must** use new
 
 
 ## Constructors
@@ -125,11 +125,11 @@ MyClass::MyClass( const MyClass& other ) :
 ```
 
 
-## Member Initialization
+## Member Classes
 
-
-### Method 1: Class constructor
-### Method 2: Initialization list
+### Ininitialization
+#### Method 1: Class constructor
+#### Method 2: Initialization list
 - If a member class does not have a default constructor: It MUST be initialized wth an initialization list
 
 ```cpp
@@ -149,6 +149,8 @@ class B
         A a;
 };
 ```
+### Pointers
+
 
 
 ## Dynamic Memory

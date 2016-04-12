@@ -53,7 +53,8 @@ bin/*
 
 
 ### Include guards
-Prevents including the same header file multiple times.
+- Prevents including the same header file multiple times.
+- <PROJECT>_<PATH>_<FILE>_H_
 
 ```cpp
 //x.h
@@ -225,6 +226,36 @@ cout << "hello" << name << endl;	/* new line and flush output buffer */
 ```cpp
 printf ("%s, %d, %f \n","test", 2, 2.312);
 ```
+
+##Basic Variable Types
+
+
+----------
+###Character sequences
+
+
+```cpp
+char myword[] = { 'H', 'e', 'l', 'l', 'o', '\0' };
+char myword[] = "Hello";
+```
+
+
+
+_ _ _
+
+###String
+
+
+> Usage: `#include <string>`
+
+##### Object methods
+
+* `myString.size()` get size
+* `myString.max_size()` get maximum size
+* `myString.append(string2)` append strings 
+
+- - -
+
 
 
 ##Control structures##
@@ -563,6 +594,8 @@ pmovie->title;
 
 _ _ _
 
+## Sequential Containers
+index based
 
 ###Array
 
@@ -574,6 +607,85 @@ int a[3,2] = {{1,2}, {3,4}, {5,6}}	// **2D-array**: a[y,x], reihen eingeben
 // init with variable
 const int N = 4;
 int a[N];	// only possible with const
+```
+
+#### Multidimensional Arrays
+
+```cpp
+
+int a[MAX_ROWS][MAX_COLS];
+int i,j,k = 0;
+
+for(i = 0; i < MAX_ROWS; i++)
+  for(j = 0; j < MAX_COLS; j++)
+       a[i][j] = k++;
+
+
+int **arr = new int* [sizeX];
+for (int i = 0; i < sizeX; i++)
+    arr[i] = new int[sizeY];
+
+
+    //simulate 2-dimension array with 1-dimension array
+    {
+        int x = 20;
+        int y = 40;
+        int * ar = new int(x*y);
+        int idx_x =9;
+        int idx_y=12;
+        ar[idx_x + idx_y * x] = 23;
+    }
+    //simulate 2-dimension array with array of array
+    {
+        int x = 20;
+        int y = 40;
+        int**ar = new int*[y];
+        for(int i = 0; i< y; ++i)
+        {
+            ar[i] = new int[x];
+        }
+        ar[9][12] = 0;      
+    }
+
+```
+
+```cpp
+
+class Diagram {
+    private:
+        static const int TABLE_ROWS = 3;
+        static const int TABLE_COLS = 3;
+        char table[TABLE_ROWS][TABLE_COLS];
+    public:
+        Diagram(){
+
+        }
+};
+
+
+
+class Container{
+
+	public:
+	int **relTransl;
+		int maxMarkers = 10;
+		void initTranslations(){
+
+			relTransl = new int*[maxMarkers];
+
+			for (int i = 0; i < maxMarkers; i++){
+				relTransl[i] = new int[maxMarkers];
+				for (int j = 0; j < maxMarkers; j++){
+					relTransl[i][j] = 123;
+				}
+			}
+		}
+		void show(){
+			cout << relTransl[0][3] << endl;
+		}
+
+};
+
 ```
 
 ####Unit offset Arrays
@@ -627,8 +739,9 @@ _ _ _
 
 ###Vector
 
-> Vector = 2D Array   
-> vector<Datatype> name (nr_elements);
+- Vector = 1D Array
+- No need for memory management
+- guaranteed to be stored as a contiguous block of memory
 
 ##### Object methods
 
@@ -645,9 +758,20 @@ _ _ _
     vector<int> myVector (10);
     myVector[2] = 7;			// assign value 7 to 3rd element
 
-	// add elements to end
-    vector<string> delimiters;
-    delimiters = {"a", "bc", "lorem pisum"};
+    // list
+    vector<string> delimiters = {"a", "bc", "lorem pisum"};
+
+    // c++11 initializer list syntax:
+    std::vector<std::string> words1 {"the", "frogurt", "is", "also", "cursed"};
+
+    // section of vector
+    std::vector<std::string> words2(words1.begin(), words1.end());
+
+    // copy
+    std::vector<std::string> words3(words1);
+
+    // same value {"Mo", "Mo", "Mo", "Mo", "Mo"}
+    std::vector<std::string> words4(5, "Mo");
     ```
 
 * Manipulation
@@ -667,30 +791,82 @@ _ _ _
     ```
 
 
-###Character sequences
+* Search
 
-
-```cpp
-char myword[] = { 'H', 'e', 'l', 'l', 'o', '\0' };
-char myword[] = "Hello";
-```
+    ```cpp
+    int pos = std::find(myvec.begin(), myvec.end(), elem) - myvec.begin();
+    ```
 
 
 
-_ _ _
+## Assoziative Containers
+Key - Value
 
-###String
+###Map
 
 
-> Usage: `#include <string>`
 
-##### Object methods
+* Search
 
-* `myString.size()` get size
-* `myString.max_size()` get maximum size
-* `myString.append(string2)` append strings 
+    ```cpp
+    if ( m.find("f") == m.end() ) {
+      // not found
+    } else {
+      // found
+    }
+    ```
 
-- - -
+
+###Set
+
+- Values are always **SORTED**
+- `end` past-the-last element (placeholder)
+- Unique set of values (insertion of duplicate has no effect)
+
+
+##### Examples
+
+- **Initialization**
+
+    ```cpp
+      std::set<std::string> a;
+      a.insert("something");
+    ```
+
+
+- **Searching elements**
+
+    ```cpp
+    if (myset.count(x)) {
+       // x is in the set, count is 1
+    } else {
+       // count zero, i.e. x not in the set
+    }
+
+    set< X >::iterator it = myset.find(x);
+    if (it != myset.end()) {
+       // do something with *it
+    }
+    ```
+
+- **Iteration & Deletion**
+	> `numbers.erase(it)` returns pointer to next element
+
+    ```cpp
+    for (it = numbers.begin(); it != numbers.end(); ) {
+        if (*it % 2 == 0) {
+            it = numbers.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
+    ```
+
+- **Find "Index"/Position**
+    ```cpp
+    std::distance(set.begin(), set.find(search_value))
+    ```
 
 ## Templating
 
@@ -726,6 +902,22 @@ template <class A_Type> A_Type calc<A_Type>::add(A_Type x, A_Type y)
 ```
 
 - - -
+
+## Operator Manipulation
+
+**cout <<**
+```cpp
+template<typename T>
+std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
+    s.put('[');
+    char comma[3] = {'\0', ' ', '\0'};
+    for (const auto& e : v) {
+        s << comma << e;
+        comma[0] = ',';
+    }
+    return s << ']';
+}
+```
 
 ## Multithreading
 ```cpp
