@@ -48,19 +48,11 @@ set(foo_LIBRARY ${PREFIX}/lib/foo-1.2/libfoo.a)
 
 ###Using external Packages
 
-**1. `find_package()`**
+**`find_package(Foo)`**
 
-`find_package(Foo)`
-
-- Given the name "Foo", it looks for a file called "FooConfig.cmake" or "foo-config.cmake" in the directories listed in `CMAKE_MODULE_PATH`
-
-**2. `find<packageName>.cmake`**
-
-###Examples
-
-####`find_package`: Module Mode
-
-`Find<package>.cmake` file located within your project
+- Given the name "Foo", it looks for a file called "FooConfig.cmake" or "foo-config.cmake" in the directories listed in `CMAKE_MODULE_PATH` (standard e.g.: /usr/share/cmake-2.8/modules, cmake comes with standard .cmake search files)
+- `set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)` to add project based /cmake folder
+- `<package>_FOUND` indicates whether package was found
 
 ```cpp
 CMakeLists.txt
@@ -68,6 +60,7 @@ CMakeLists.txt
         FindFoo.cmake
         FindBoo.cmake
 ```
+
 
 
 ## Main Commands
@@ -103,7 +96,7 @@ ${PROJECT_SOURCE_DIR}
 include_directories( ${MY_SOURCE_DIR}/src )
 ```
 
-**.cmake files to find custom/user-built modules**
+**.cmake files to find custom/user-built modules (optional)**
 ```cmake
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 ```
@@ -114,6 +107,16 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 <prefix>/lib/foo-1.2/libfoo.a
 
 <prefix>/lib/foo-1.2/foo-config.cmake
+
+**Preprocessor Directives (adding compiler commands)**
+```cmake
+add_definitions(-DUSE_ARTOOLKIT)
+```
+Then in C++:
+```cpp
+#ifdef USE_ARTOOLKIT
+#endif
+```
 
 # Add Source files
 add_executable(Tutorial tutorial.cxx)
@@ -131,7 +134,6 @@ target_link_libraries (Tutorial MathFunctions)
 
 
 
-
 ## Examples
 
 **Project Structure**
@@ -144,6 +146,7 @@ project_name
 		+ module1
 		+ module2
 		CMakeLists.txt
+        test_feature1.cc
 	+ external
 		+ eigen3
 		CMakeLists.txt
@@ -151,13 +154,14 @@ project_name
     README.md
 ```
 
-**CMakeLists.txt in /**
+**CMakeLists.txt in `/`**
+
 ```cmake
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 # Ensure that nobody builds in the source tree
 if (${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-  message(FATAL_ERROR "Please do not use the root directory as CMake output directory! mkdir build; cd build; cmake .. And you will have to clean the source directory by deleting CMakeCache.txt and the folder CMakeFiles")
+  message(FATAL_ERROR "Please do not use the root directory as CMake output directory!mkdir build; cd build; cmake .. And you will have to clean the source directory by deleting CMakeCache.txt and the folder CMakeFiles")
 endif ()
 
 # Release as default
@@ -166,16 +170,19 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-########################################################
-##		PATH SETUP
-########################################################
+project (myProjectName C CXX)
 
-# .cmake files to find modules
+# add project based .cmake path to find packages
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 
-# The version number.
-set (SFM_VERSION_MAJOR 0)
-set (SFM_VERSION_MINOR 1)
+# Add additional external libraries (installed on system)
+find_package (OpenCV 2.4 REQUIRED)
+find_package (Threads REQUIRED)
+
+IF(NOT WIN32)
+# Add external source libraries
+add_subdirectory (external)
+ENDIF()
 
 # Set output folders
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -183,74 +190,74 @@ SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # Create "${CMAKE_BINARY_DIR}/bin"
-# ToDo: check why this is needed!
 FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-########################################################
-##		EXTERNAL LIBRARIES INSTALLED ON SYSTEM
-########################################################
-
-find_package (OpenCV 2.4 REQUIRED)
-find_package (Protobuf REQUIRED)
-find_package (OpenGL REQUIRED)
-find_package (GLEW REQUIRED)
-find_package (Threads REQUIRED)
-
-########################################################
-##		ADD SOURCES
-########################################################
-
-# Add external source libraries
-add_subdirectory (external)
-
 # Add the actual source files
 add_subdirectory (src)
-
 ```
 
-**CMakeLists.txt in /src/**
 
+**CMakeLists.txt in `/src/`**
 ```cmake
-# Add all includes
+# add to include search path
 INCLUDE_DIRECTORIES(
   .
   module1
   module2
-  ../external/eigen3
 )
 
-# save library source files into variable
-SET(FEATURES_SRC
-   features/fast.h
-   features/fast.cc
-   features/lehf.h
-   features/lehf.cc
-   features/lsd.h
-   features/lsd.cc
-   features/LSWMS.h
-   features/LSWMS.cpp
-   features/matching.h
-   features/matching.cc
+# conditional external package includes
+IF(ARTK5_FOUND)
+    INCLUDE_DIRECTORIES(
+      ${ARTK5_INCLUDE_DIR}
+    )
+ENDIF(ARTK5_FOUND)
+
+# ----------------- Group sources
+SET(MODULE1_SRC
+   module1/class1.h
+   module1/class1.cc
+)
+SET(MODULE2_SRC
+  module2/definitions2.h
+)
+# ----------------- Set common link libraries
+SET(COMMON_LIBS ${OpenCV_LIBS})
+IF(ARTK5_FOUND)
+  SET(COMMON_LIBS ${COMMON_LIBS} ${ARTK5_LIBRARY})
+ENDIF(ARTK5_FOUND)
+# ----------------- Create libraries
+# Create library (in order to compile files once)
+ADD_LIBRARY(myProjectLib
+  ${MODULE1_SRC}
+  ${MODULE2_SRC}
 )
 
-# Create library (named ${PROJECT_NAME}) to use with "TARGET_LINK_LIBRARIES"
-ADD_LIBRARY(${PROJECT_NAME}
-  ${DISPLAY_SRC}	# define files in variable
-  ${FEATURES_SRC}	# define files in variable
-  ${GEOMETRY_SRC}	# define files in variable
+# test feature1
+ADD_EXECUTABLE(feature1 test_feature1.cc)
+TARGET_LINK_LIBRARIES(px_sfm_mapper
+  sfm
+  ${COMMON_LIBS}
 )
 
-# Add output executables (name file.extension)
-ADD_EXECUTABLE(test_dense test_dense.cc)
-
-TARGET_LINK_LIBRARIES(test_dense 	# name
-  ${PROJECT_NAME} 					# custom library
-  glut								# additional library
-  GL GLEW							# additional library
-)
-
+########################################################
+# Include subfolders (process with cmake)
+add_subdirectory(module1)
+add_subdirectory(module2)
 ```
 
+**CMakeLists.txt in `/src/module1/`**
+```cmake
+cmake_minimum_required(VERSION 2.8.0)
+project(module1)
 
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Werror -Wno-unused-local-typedefs -std=c++11")
 
+# add executables
+add_executable(module1 ${MODULE1_SRC})
+target_link_libraries(module1
+  myProjectLib	# user defined library
+  ${COMMON_LIBS}
+)
+```
