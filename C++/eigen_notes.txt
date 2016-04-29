@@ -203,3 +203,73 @@ EigenSolver<Matrix3d> eig(A);     // [vec val] = eig(A)
 eig.eigenvalues();                // diag(val)
 eig.eigenvectors();               // vec
 // For self-adjoint matrices use SelfAdjointEigenSolver<>
+
+
+## General
+
+- Points = vector (displacement from 0)
+
+## Transformations
+
+**Class Template**
+
+´Eigen::Transform< Scalar, Dim, Mode, _Options >´
+
+**Common API**
+
+- ´gen1 * gen2;´ Concatenation of two transformations	
+- ´vec2 = gen1 * vec1;´ Apply the transformation to a vector	
+- ´gen2 = gen1.inverse();´ Get the inverse of the transformation	
+- ´rot3 = rot1.slerp(alpha,rot2);´ Spherical interpolation (Rotation2D and Quaternion only)	
+
+
+
+### Affine
+
+Affine3f m;
+
+**Typedefs**
+
+- ´Eigen::Isometry3d´: ´Transform<double, 3, AffineCompact, Isometry>´
+
+
+VectorNf p1, p2;
+p2 = t * p1;
+
+### Component Access
+
+**Coefficients**
+t(i,j) = scalar;   <=>   t.matrix()(i,j) = scalar;
+scalar = t(i,j);   <=>   scalar = t.matrix()(i,j);
+
+**Translation Part**
+t.translation() = vecN;
+vecN = t.translation();
+
+**linear part**
+t.linear() = matNxN;
+matNxN = t.linear();
+
+**rotation matrix**
+matNxN = t.rotation();
+
+
+
+
+### Application
+when applying the transform to points, the latters are automatically promoted to homogeneous vectors before doing the matrix product
+
+v' = T * v
+
+
+
+
+
+
+
+
+
+
+
+
+
