@@ -537,6 +537,105 @@ pptr = ptr;
 - - -
 
 
+### Smart pointers
+
+
+- `shared_ptr` functions the same way as `unique_ptr` – holding a pointer, providing the same basic interface for construction and using the pointer, and ensuring that the pointer is deleted on destruction.
+- Unlike `unique_ptr`, it also allows copying of the shared_ptr object to another shared_ptr, and then ensures that the pointer is still guaranteed to always be deleted once (but not before) all `shared_ptr` objects that were holding it are destroyed (or have released it).
+- You can only use these smart pointers to refer to objects allocated with new and that can be deleted with delete
+- e.g. Boost/std shared pointers
+
+
+
+```cpp
+unique_ptr<troidee::PointCloudReconstruct> dense_mapper(new troidee::PointCloudReconstruct);
+
+if(dense_mapper.get() == nullptr){
+	// not correctly assigned
+}
+
+// always use smartvariable for pointer
+void f(shared_ptr<int>, int);
+int g();
+
+void ok()
+{
+    shared_ptr<int> p( new int(2) );
+    f( p, g() );
+}
+
+void bad()
+{
+    f( shared_ptr<int>( new int(2) ), g() );
+}
+```
+
+**Assigning an Adress to a boost pointer**
+
+```cpp
+boost::shared_ptr<Car> sptr;
+Car object;
+sptr = boost::shared_ptr<Car>(&object);
+```
+
+**delete pointed content**
+```cpp
+// shared_ptr::reset example
+#include <iostream>
+#include <memory>
+
+int main () {
+  std::shared_ptr<int> sp;  // sp is now a null pointer and evaluates to boolean false
+
+  sp.reset (new int);       // takes ownership of pointer
+  *sp=10;
+  std::cout << *sp << '\n';
+
+  sp.reset (new int);       // deletes managed object, acquires new pointer
+  *sp=20;
+  std::cout << *sp << '\n';
+
+  sp.reset();               // deletes managed object
+
+  return 0;
+}
+```
+
+**Value assignment**
+- no direct address assignement
+
+```cpp
+shared_ptr<int>   sp;
+sp = new int(5);  		// ERROR!
+sp.reset(new int(10));	// the right way
+```
+
+**Check if pointer is set**
+- use as boolean
+```cpp
+if (!blah)
+{
+    //This checks if the object was reset() or never initialized
+}
+```
+
+#### Unique vs. Shared pointeres
+**Unique pointer**
+- there can be only 1 unique_ptr pointing at any one resource
+
+```cpp
+unique_ptr<T> myPtr(new T);       // Okay
+unique_ptr<T> myOtherPtr = myPtr; // Error: Can't copy unique_ptr
+```
+
+**Shared pointer**
+```cpp
+shared_ptr<T> myPtr(new T);       // Okay
+shared_ptr<T> myOtherPtr = myPtr; // Sure!  Now have two pointers to the resource.
+```
+
+
+
 ##Compound data types##
 
 ###Struct
