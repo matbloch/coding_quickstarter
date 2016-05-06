@@ -570,6 +570,14 @@ void bad()
 }
 ```
 
+**Allocate memory in loop**
+```cpp
+for(int i = 0; i < 10; ++i)
+{
+    smart_ptr<some_class> object(new some_class());
+    //use object
+} // object gets destroyed here automatically 
+```
 **Assigning an Adress to a boost pointer**
 
 ```cpp
@@ -847,7 +855,7 @@ _ _ _
 * `myVector.size()` get size of the vector
 * `myVectors.push_back( elem )` add element at end
 * `myVectors.insert ( elem , 200 )` add element at specific position
-
+* `myVectors.back` returns reference to last item
 
 ##### Examples
 
@@ -904,6 +912,12 @@ Key - Value
 ###Map
 
 
+- **Initialization**
+
+    ```cpp
+    std::map<int, std::string> myMap;
+    myMap[2] = "hello";
+    ```
 
 * Search
 
@@ -914,7 +928,17 @@ Key - Value
       // found
     }
     ```
+* Iteration
 
+    ```cpp
+	for ( const auto &p : table ){
+       std::cout << p.first << '\t' << p.second << std::endl;
+    }
+    // or
+    for ( auto it = table.begin(); it != table.end(); ++it  ){
+       std::cout << it->first << '\t' << it->second << std::endl;
+    }
+    ```
 
 ###Set
 

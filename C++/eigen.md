@@ -237,7 +237,13 @@ matNxN = t.linear();
 matNxN = t.rotation();
 ```
 
+### Transformation to Matrix
 
+```cpp
+Eigen::Isometry3d campos;
+campos.setIdentity();
+campos.matrix()(1,2) = 2;
+```
 
 ### Application
 when applying the transform to points, the latters are automatically promoted to homogeneous vectors before doing the matrix product
@@ -265,7 +271,6 @@ tempTrans.rotate(Eigen::AngleAxisf(M_PI/2,Eigen::Vector3f(1,0,0)));
 // translate along vector
 tempTrans.translate(Eigen::Vector3f(1,0,0));
 tempTrans.scale(1.32);
-
 ```
 ## I/O
 

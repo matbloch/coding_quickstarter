@@ -1,16 +1,17 @@
-import cv2
+#OpenCV C++ API
 
-# init display window
+## Basics
 
-cv2.namedWindow("Playback visualization", 0)  # make it resizable
+**Show image**
 
-# resize
-width=200
-height=300
-cv2.resizeWindow("Playback visualization", width, height)
+```cpp
+cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE);
+cv::imshow( "Display window", img );
+cv::waitKey(1);
+```
 
-# init window thread
-cv2.startWindowThread()
+**Create an image**
 
-# show an image
-cv2.imshow("Playback visualization", img_array)
+```cpp
+Mat grHistogram(301, 260, CV_8UC3, Scalar(0, 0, 0));
+```
