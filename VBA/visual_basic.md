@@ -14,34 +14,36 @@
 ```vbnet
  MsgBox "Passowrd is " & password & Chr(10) & "Value of num is " & num & Chr(10) & "Value of Birthday is " & BirthDay
 ```
+**Comparison Operators**
+- `=`	Equal To
+- `<>`	!= Not Equal To
+- `<`	Less Than
+- `>`	Greater Than
+- `<=`	Less Than or Equal To
+- `>=`	Greater Than or Equal To
 
-## Examples
 
-**Calculate sum**
+**Multiple Commands in same Line**
+
 ```vbnet
-Sub test4()
-    Dim book As Workbook
-    Dim a
-
-    Set book = Workbooks.Open("C:\Book1.xlsx")
-
-    a = sumrange(book.Worksheets(1).Range("A1:A4"))
-
-    MsgBox a
-End Sub
-
-Function sumrange(rng As Range)
-    summ = 0
-    For Each cell In rng
-    summ = summ + cell.Value
-    Next
-    sumrange = summ
-End Function
+Dim clientToTest As String:  clientToTest = "blabla"
 ```
 
-
-
 ## Control Structures
+
+
+###if
+```vbnet
+Sub WennSonntagSonstMsg()
+   If Weekday(Date) = 1 Then
+      MsgBox "Heute ist Sonntag"
+   ElseIf Weekday(Date) = 7 Then
+      MsgBox "Heute ist Samstag"
+   Else
+      MsgBox "Heute ist " & Format(Weekday(Date), "dddd")
+   End If
+End Sub
+```
 
 ###for each
 
@@ -87,6 +89,56 @@ For Each listVal In SourceWB.Sheets(1).Range("B2:B" & srcLastRow)
 	.List(.ListCount - 1, 1) = listVal.Offset(0, -1).Value
 ```
 
+## Debugging
+- Console öffnen: View > Immediate Window oder Ansicht > Direktfenster
+
+```vbnet
+Debug.Print myVariableName
+```
+
+## Objects
+
+### Worksheet
+
+####Range
+
+
+```vbnet
+Worksheets("Sheet1").Range("A1").Select
+Worksheets(1).Range("A1").Select
+Worksheets(2).Range("A1", "B7").Select
+Worksheets("Sheet2").Range("A1:B7").Select
+```
+
+- Windows(secondWorkbook).Activate
+
+
+
+### Cells
+
+- Cells(i,j).Value
+- Cells(i,j).Text (displayed value)
+
+**Iterate over cells**
+
+```vbnet
+Dim i As Integer, j As Integer
+For i = 2 To RowCount
+  For j = 1 To 2
+  	MsgBox Cells(i, j).Value
+  Next j
+Next i
+```
+
+**Set value**
+
+```vbnet
+Dim MyString As String
+MyString = "Some text"
+Cells(i, j).Value = MyString
+```
+
+
 ## Variables
 
 `Dim <<variable_name>> As <<variable_type>>`
@@ -109,7 +161,70 @@ For Each listVal In SourceWB.Sheets(1).Range("B2:B" & srcLastRow)
 - Boolean 	True or False
 - Object 	Any embedded object
 - Variant(numeric) 	Any value as large as Double
-- Variant(text) 	Same as variable-length string 
+- Variant(text) 	Same as variable-length string
+
+**Type Conversion**
+- `CInt` to integer
+- `CString` to string
+
+#### Strings
+
+- str.Substring(str.Length - 5)
+
+### Containers
+
+**Collection**
+```vbnet
+' This function returns a collection object which can hold multiple values.
+Public Function GetCollection() As Collection
+    
+    Dim var As Collection
+    Set var = New Collection
+    
+    ' Add two items to the collection
+    var.Add "John"
+    var.Add "Star"
+    
+    Set GetCollection = var
+End Function
+
+Private Sub cmbGetCollection_Click()
+    Dim Employee As Collection
+    Set Employee = GetCollection()
+            
+    ' Use the collection's first index to retrieve the first item.
+    ' This is also valid: Debug.Print Employee(1)
+    Debug.Print Employee.Item(1)
+    Debug.Print Employee.Item(2)
+End Sub
+```
+
+
+**Dictionary**
+```vbnet
+' This function returns a dictionary object which can hold multiple values.
+Public Function GetDict() As Dictionary
+    Dim var As Dictionary
+    Set var = New Dictionary
+    ' The "key" is the item name and the "value" is the description.
+    var.Add "First Name", "John"
+    var.Add "Last Name", "Star"
+    Set GetDict = var
+End Function
+
+Private Sub cmdGetDictionary_Click()
+    Dim Employee As Dictionary
+    Set Employee = GetDict()
+    ' Use an item's key name to get its value.
+    Debug.Print Employee.Item("First Name")
+    Debug.Print Employee.Item("Last Name")
+    ' Use an item's index number to get its key.
+    Debug.Print Employee.Keys(0)
+    ' Use an item's index number to get its value.
+    Debug.Print Employee.Items(0)
+End Sub
+
+```
 
 ## Modules
 - Where VBA Code is written.
@@ -118,6 +233,32 @@ For Each listVal In SourceWB.Sheets(1).Range("B2:B" & srcLastRow)
 ### Function
 
 - Start with `Function` end with `End Function`
+
+**Multiple arguments**
+
+```vbnet
+Function ProcedureName(ArgumentName as DataType) As DataType
+	' save value back
+	ProcedureName = 123
+End Function
+```
+
+**Optional Arguments**
+
+```vbnet
+Function notify(ByVal company As String, Optional ByVal office As String = "QJZ")
+    If office = "QJZ" Then
+        Debug.WriteLine("office not supplied -- using Headquarters")
+        office = "Headquarters"
+    End If
+    ' Insert code to notify headquarters or specified office.
+End Function
+```
+
+**Pass by Value/Reference**
+Function Calculate(ByVal rate As Double, ByRef debt As Double)
+	debt = debt + (debt * rate / 100)
+End Function
 
 ### Sub Procedures
 - Start with `Sub` end with `End Sub`
@@ -128,6 +269,43 @@ Private Sub say_helloworld_Click()
     MsgBox "Hi"
 End Sub
 ```
+
+**Argument by value**
+
+```vbnet
+Sub PostAccounts(ByVal intAcctNum as Integer)
+   .
+   . ' Place statements here.
+   .
+End Sub
+```
+
+
+**By reference**
+
+```vbnet
+Sub CallingProcedure()
+   Dim intX As Integer
+   intX = 12 * 3
+   Foo(intX)
+End Sub
+
+Sub Foo(Bar As String)
+   MsgBox Bar   'The value of Bar is the string "36".
+End Sub
+```
+
+**Multiple arguments**
+```vbnet
+Public Sub setInterest(account As String, dmonth As Integer)
+    ...somecode...
+End Sub
+
+
+setInterest "myAccount", 3
+Call setInterest("myAccount", 3)
+```
+
 
 ## I/O
 
@@ -156,3 +334,43 @@ Function findArea()
   findArea = Length * Width
 End Function
 ```
+
+
+
+## Examples
+
+**Calculate sum**
+```vbnet
+Sub test4()
+    Dim book As Workbook
+    Dim a
+
+    Set book = Workbooks.Open("C:\Book1.xlsx")
+
+    a = sumrange(book.Worksheets(1).Range("A1:A4"))
+
+    MsgBox a
+End Sub
+
+Function sumrange(rng As Range)
+    summ = 0
+    For Each cell In rng
+    summ = summ + cell.Value
+    Next
+    sumrange = summ
+End Function
+```
+
+**Number of Rows/Columns**
+```vbnet
+Dim lastRow As Long
+lastRow = Sheet1.Cells(Rows.Count, 1).End(xlUp).Row
+MsgBox lastRow
+// columns
+Dim lastColumn As Long
+lastColumn = Sheet1.Cells(1, Columns.Count).End(xlToLeft).Column
+MsgBox lastColumn
+```
+
+
+
