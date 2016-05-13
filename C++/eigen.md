@@ -195,7 +195,10 @@ Eigen::Quaterniond q(2, 0, 1, -3);
 ### Translation
 
 
-### Isometry
+### General Transformation - `Transform` Container
+
+**Isometry**
+
 `typedef Transform<float,3,Isometry> Isometry3f;`
 ```cpp
 
@@ -204,7 +207,7 @@ relativePose.setIdentity();
 ```
 
 
-### Affine
+**Affine**
 
 `typedef Transform<float,3,Affine> Affine3f;`
 
@@ -236,13 +239,17 @@ matNxN = t.linear();
 ```cpp
 matNxN = t.rotation();
 ```
-
-### Transformation to Matrix
-
+**Matrix Conversion/Component Access**
 ```cpp
 Eigen::Isometry3d campos;
 campos.setIdentity();
+
+// edit elementwise
 campos.matrix()(1,2) = 2;
+
+// change translation only
+Eigen::Vector3d v(1,2,3);
+campos.translation().matrix() = v;
 ```
 
 ### Application
