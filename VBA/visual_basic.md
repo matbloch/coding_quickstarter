@@ -1,6 +1,13 @@
 # Visual Basic for Applications
 
 
+## Introduction
+
+**Modules**
+
+
+
+
 ## Basic Syntax
 
 **Comments**
@@ -223,8 +230,15 @@ Private Sub cmdGetDictionary_Click()
     ' Use an item's index number to get its value.
     Debug.Print Employee.Items(0)
 End Sub
-
 ```
+**Loop over Dictionary**
+
+```vbnet
+For Each key In dic.Keys
+	Debug.Print "Key: " & key & " Value: " & dic(key)
+Next
+```
+
 
 ## Modules
 - Where VBA Code is written.
@@ -334,6 +348,34 @@ Function findArea()
   findArea = Length * Width
 End Function
 ```
+
+## Classes
+- **Note:** Class modules are saved in files with the extension .cls.
+- Change Name: "Eigenschaftsfenster" `F4`
+
+
+**Declaration**
+```vbnet
+Option Explicit
+
+' Declare properties
+Public Name As String
+Private mdtmCreated As Date
+
+' Define properties
+Property Get Created() As Date
+   Created = mdtmCreated
+End Property
+
+' Define Subprocedures (with no return values)
+Public Sub ReverseName()
+   Dim intCt As Integer
+   Dim strNew As String
+   For intCt = 1 To Len(Name)
+      strNew = Mid$(Name, intCt, 1) & strNew
+   Next
+   Name = strNew
+End Sub
 
 
 
