@@ -180,7 +180,7 @@ Cells(i, j).Value = MyString
 
 ### Containers
 
-**Collection**
+####Collection
 ```vbnet
 ' This function returns a collection object which can hold multiple values.
 Public Function GetCollection() As Collection
@@ -205,9 +205,21 @@ Private Sub cmbGetCollection_Click()
     Debug.Print Employee.Item(2)
 End Sub
 ```
+**Loop over collection**
+```vbnet
 
 
-**Dictionary**
+Dim Item As Object
+
+For Each Item In Collection
+
+'do something to the item
+
+Next Item
+
+```
+
+####Dictionary
 ```vbnet
 ' This function returns a dictionary object which can hold multiple values.
 Public Function GetDict() As Dictionary
@@ -231,7 +243,7 @@ Private Sub cmdGetDictionary_Click()
     Debug.Print Employee.Items(0)
 End Sub
 ```
-**Loop over Dictionary**
+####Loop over Dictionary
 
 ```vbnet
 For Each key In dic.Keys
@@ -239,6 +251,15 @@ For Each key In dic.Keys
 Next
 ```
 
+####Arrays
+```vbnet
+Dim numbers() As Integer, size As Integer, i As Integer
+size = 5
+ReDim numbers(size)
+For i = 1 To size
+    numbers(i) = Cells(i, 1).Value
+Next i
+```
 
 ## Modules
 - Where VBA Code is written.
