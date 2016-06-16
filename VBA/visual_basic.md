@@ -1,6 +1,13 @@
 # Visual Basic for Applications
 
 
+## Introduction
+
+**Modules**
+
+
+
+
 ## Basic Syntax
 
 **Comments**
@@ -173,7 +180,7 @@ Cells(i, j).Value = MyString
 
 ### Containers
 
-**Collection**
+####Collection
 ```vbnet
 ' This function returns a collection object which can hold multiple values.
 Public Function GetCollection() As Collection
@@ -198,9 +205,21 @@ Private Sub cmbGetCollection_Click()
     Debug.Print Employee.Item(2)
 End Sub
 ```
+**Loop over collection**
+```vbnet
 
 
-**Dictionary**
+Dim Item As Object
+
+For Each Item In Collection
+
+'do something to the item
+
+Next Item
+
+```
+
+####Dictionary
 ```vbnet
 ' This function returns a dictionary object which can hold multiple values.
 Public Function GetDict() As Dictionary
@@ -223,7 +242,23 @@ Private Sub cmdGetDictionary_Click()
     ' Use an item's index number to get its value.
     Debug.Print Employee.Items(0)
 End Sub
+```
+####Loop over Dictionary
 
+```vbnet
+For Each key In dic.Keys
+	Debug.Print "Key: " & key & " Value: " & dic(key)
+Next
+```
+
+####Arrays
+```vbnet
+Dim numbers() As Integer, size As Integer, i As Integer
+size = 5
+ReDim numbers(size)
+For i = 1 To size
+    numbers(i) = Cells(i, 1).Value
+Next i
 ```
 
 ## Modules
@@ -334,6 +369,34 @@ Function findArea()
   findArea = Length * Width
 End Function
 ```
+
+## Classes
+- **Note:** Class modules are saved in files with the extension .cls.
+- Change Name: "Eigenschaftsfenster" `F4`
+
+
+**Declaration**
+```vbnet
+Option Explicit
+
+' Declare properties
+Public Name As String
+Private mdtmCreated As Date
+
+' Define properties
+Property Get Created() As Date
+   Created = mdtmCreated
+End Property
+
+' Define Subprocedures (with no return values)
+Public Sub ReverseName()
+   Dim intCt As Integer
+   Dim strNew As String
+   For intCt = 1 To Len(Name)
+      strNew = Mid$(Name, intCt, 1) & strNew
+   Next
+   Name = strNew
+End Sub
 
 
 
