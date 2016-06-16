@@ -635,6 +635,13 @@ if (!blah)
 unique_ptr<T> myPtr(new T);       // Okay
 unique_ptr<T> myOtherPtr = myPtr; // Error: Can't copy unique_ptr
 ```
+Pass pointer to function: pass by reference
+```cpp
+bool func( const SmartPointer& base, int other_arg);
+// call
+func(*some_unique_ptr, 42);
+```
+
 
 **Shared pointer**
 ```cpp
@@ -648,56 +655,57 @@ shared_ptr<T> myOtherPtr = myPtr; // Sure!  Now have two pointers to the resourc
 
 ###Struct
 
-**Definition**
+- **Definition**
+    ```cpp
+    // define
+    struct product {
+      int weight;
+      double price = 0.0;	// 
+    } ;
 
-```cpp
-// define
-struct product {
-  int weight;
-  double price;
-} ;
+    // define and init
+    struct product {
+      int weight;
+      double price;
+    } apple, banana, melon;
+    ```
 
-// define and init
-struct product {
-  int weight;
-  double price;
-} apple, banana, melon;
-```
+- **Initialization: C++11**
+    ```cpp
+    struct product
+    {
+        char    name[32] = {};
+        float   temperature = 42.141521;	// default values
+        int     duration = -6;
+    };
 
-**Initialization**
-```cpp
-product apple;
-```
+    product apple;
+    ```
 
-**Access**
-```cpp
-apple.weight;
-```
+- **Access**
+    ```cpp
+    apple.weight;
+    ```
+- **Pointers to structures: Definition**
+    ```cpp
+    // definition
+    struct movie {
+      string title;
+    };
 
-####Pointers to structures
+    // creation
+    movie amovie;
+    movie * pmovie;
 
-**Definition**
-
-```cpp
-// definition
-struct movie {
-  string title;
-};
-
-// creation
-movie amovie;
-movie * pmovie;
-
-// linking
-pmovie = &amovie;
-```
-
-**Access**
-```cpp
-pmovie->title;
-// equivalent
-(*pmovie).title;
-```
+    // linking
+    pmovie = &amovie;
+    ```
+- **Pointer Access**
+    ```cpp
+    pmovie->title;
+    // equivalent
+    (*pmovie).title;
+    ```
 
 _ _ _
 
@@ -928,8 +936,14 @@ Key - Value
       // found
     }
     ```
-* Iteration
+* Check if key is set
+    ```cpp
+	if(mymap.count(key)){
+    	// do something
+    }
+    ```
 
+* Iteration
     ```cpp
 	for ( const auto &p : table ){
        std::cout << p.first << '\t' << p.second << std::endl;

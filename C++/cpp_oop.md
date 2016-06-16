@@ -43,23 +43,14 @@ double Line::getLength( void )
 
 
 ```cpp
-
 int main(int argc, char *argv[])
-
 {
-
     Enemy *enemy = new Enemy();		// create pointer to object
-
     enemy->setHealth( 100 );	// member setHealth of object pointed to by enemy
-
     cout << "Der Gegner hat " << enemy->getHealth() << " Lebenspunkte.\n";
-
     delete enemy;
-
     return 0;
-
 }
-
 ```
 
 ## initialization
@@ -125,9 +116,13 @@ MyClass::MyClass( const MyClass& other ) :
 ```
 
 
-## Member Classes
+## Class Members
 
 ### Ininitialization
+**Call order**:
+- Initialization list
+- Constructor Body
+
 #### Method 1: Class constructor
 #### Method 2: Initialization list
 - If a member class does not have a default constructor: It MUST be initialized wth an initialization list
@@ -149,6 +144,8 @@ class B
         A a;
 };
 ```
+#### Method 3: Assignment
+
 ### Pointers
 
 

@@ -217,6 +217,13 @@ Transform<float,N,Affine> t = concatenation_of_any_transformations;
 Transform<float,3,Affine> t = Translation3f(p) * AngleAxisf(a,axis) * Scaling(s);
 
 ```
+### Build From Rot., Transl. and Scale
+```cpp
+Eigen::Matrix3d rot;
+Eigen::Vector3d t;
+Eigen::Isometry3d pose;
+pose.fromPositionOrientationScale(t, rot, Eigen::Vector3d::Ones());
+```
 ### Component Access
 
 **Coefficients**
