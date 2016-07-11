@@ -1,3 +1,63 @@
+
+# Matlab
+
+
+## General
+
+## Functions
+- Each function must be defined in a seperate file with the function matching filename
+
+
+### Definition
+```matlab
+
+```
+
+### Function Calling
+
+
+
+## Datatypes
+
+## Control Structures
+
+## Compound data types
+
+### Arrays
+**Array Slicing**
+
+```matlab
+v(1)						% first element
+v([1,3])					% 1 + 3 element
+v(2:end)				% 2 till end
+v(3,7)					% 3-7 element
+v([2:4 5:8])			% 2-4, 5-8
+
+A(y,x)						% select field with (x,y) pos
+A(2:4, 1:2)				%
+A(3, :)						% extract third row
+
+p(:,:,1) = [0.2, 0.7;0.1, 0.9]		% select all y & x, in 1st 3dim
+p(:,:,2) = [0.2, 0.7;0.1, 0.9]		% select all y & x, in 2nd 3dim
+
+A(:, end);					% extract last column
+A([2,3,4], [1,2,4])
+```
+
+
+**intersection**
+```matlab
+A = [7 1 7 7 4]; B = [7 0 4 4 0];
+C = intersect(A,B) % Find the values common to both A and B.
+
+```
+**find elements in array**
+```matlab
+if any(A<123),
+      %...
+end
+```
+
 %% ============================================================
 %%  	EQUATION SOLVING
 %% ============================================================
@@ -31,30 +91,6 @@ v = linspace(a, b, n);		% from a to b in n steps
 
 %% =============  STRUCTURES - SLICING  ============= %%
 
-v(1)						% first element
-v([1,3])					% 1 + 3 element
-v(2:end)				% 2 till end
-v(3,7)					% 3-7 element
-v([2:4 5:8])			% 2-4, 5-8
-
-A(y,x)						% select field with (x,y) pos
-A(2:4, 1:2)				%
-A(3, :)						% extract third row
-
-p(:,:,1) = [0.2, 0.7;0.1, 0.9]		% select all y & x, in 1st 3dim
-p(:,:,2) = [0.2, 0.7;0.1, 0.9]		% select all y & x, in 2nd 3dim
-
-A(:, end);					% extract last column
-A([2,3,4], [1,2,4])
-
-
-% intersection
-A = [7 1 7 7 4]; B = [7 0 4 4 0];
-C = intersect(A,B) % Find the values common to both A and B.
-% find elements in array
-if any(A<123),
-      %...
-end
 
 %% functions
 
