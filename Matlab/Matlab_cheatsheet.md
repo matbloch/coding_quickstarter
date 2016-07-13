@@ -19,11 +19,65 @@
 
 ## Datatypes
 
+**Strings**
+
+```matlab
+my_string = 'test';
+```
+
 ## Control Structures
+
+**for**
+```matlab
+for i = 1:N
+	% do something
+end
+```
+
+**While**
+```matlab
+while(criteria)
+	% do something
+end
+```
+
+**if/elseif/else**
+```matlab
+if(crit1)
+	% do something
+elseif(crit2)
+	% do something
+else
+	% do something
+end
+```
+
+**switch**
+```matlab
+switch switch_expression
+   case case_expression
+      statements
+   case case_expression
+      statements
+    ...
+   otherwise
+      statements
+end
+```
 
 ## Compound data types
 
 ### Arrays
+- [m,n] = size(A)
+
+**Initialization**
+
+```matlab
+A = [1 2; 3 4];
+A = eye(n,m);			% n x m identity matrix
+A = zeros(n, m);		% n x m zeros matrix
+```
+
 **Array Slicing**
 
 ```matlab
@@ -58,6 +112,56 @@ if any(A<123),
 end
 ```
 
+### Vectors
+
+```matlab
+v = 0:3;							% [0, 1, 2, 3]
+v = linspace(a, b, n);		% from a to b in n steps
+```
+
+## I/O
+
+
+**Textinput**
+```matlab
+height = input('Enter your height in meters: ');
+```
+
+**measure**
+```matlab
+imshow('moon.tif')
+[x, y] = getpts()
+[x, y] = getline()
+rect = getrect
+```
+
+**message**
+```matlab
+msgbox('Done collecting points');
+```
+
+**button box**
+```matlab
+maxAllowablePoints = 5; % Whatever you want.
+promptMessage = sprintf('Left click up to %d points.\nRight click when done.', maxAllowablePoints);
+titleBarCaption = 'Continue?';
+button = questdlg(promptMessage, titleBarCaption, 'Continue', 'Cancel', 'Continue');
+if strcmpi(button, 'Cancel')
+	return;
+end
+```
+
+## Plotting
+
+```matlab
+plot(x,y, 'color', 'red');	%% x/y vector plot
+xlabel('X-Achse');
+ylabel('Y-Achse');
+
+scatter(x,y);		% creates a scatter plot with circles at the locations specified by the vectors x and y. This type of graph is also known as a bubble plot.
+```
+
+
 %% ============================================================
 %%  	EQUATION SOLVING
 %% ============================================================
@@ -80,14 +184,11 @@ A(m by n) = [a11, a12, a13; a21, a22, a23; a31, a32, ..., a_mn]    % m = nr rows
 
 % === Matrices
 
-A = [1 2; 3 4];
-A = eye(n,m);			% n x m identity matrix
-A = zeros(n, m);		% n x m zeros matrix
+
 
 % === Vectors
 
-v = 0:3;							% [0, 1, 2, 3]
-v = linspace(a, b, n);		% from a to b in n steps
+
 
 %% =============  STRUCTURES - SLICING  ============= %%
 
@@ -104,54 +205,7 @@ size(A, dim)  % nr rows: dim = 1, nr cols: dim = 2
 bsxfun(@minus, x,y)
 
 
-%% ---------  sum
 
-A = [ 1 1 1; 0 1 0]; 
->> sum(A)
-
-ans =
-
-     1     2     1
-
->> A
-
-A =
-
-     1     1     1
-     0     1     0
-
->> sum(A,2)
-
-ans =
-
-     3
-     1
-
-	 
-%% ============================================================
-%%  	USER INTERFACE
-%% ============================================================
-	
-% inputs
-height = input('Enter your height in meters: ');
-
-imshow('moon.tif')
-[x, y] = getpts()
-[x, y] = getline()
-rect = getrect
-
-% message
-msgbox('Done collecting points');
-
-% button box
-maxAllowablePoints = 5; % Whatever you want.
-promptMessage = sprintf('Left click up to %d points.\nRight click when done.', maxAllowablePoints);
-titleBarCaption = 'Continue?';
-button = questdlg(promptMessage, titleBarCaption, 'Continue', 'Cancel', 'Continue');
-if strcmpi(button, 'Cancel')
-	return;
-end
-	
 %% ============================================================
 %%  	STRUCTURES - OPERATIONS
 %% ============================================================	
@@ -168,41 +222,6 @@ s = struct(fieldname1,value1,...,fieldnameN,valueN)
 
 s.fieldname1 = 123;		% set/access field
 
-%% =============  CONTROL STRUCTURES  ============= %%
-
-for i = 1:N
-
-	% do something
-	
-end
-
-% === While
-
-while(criteria)
-
-end
-
-% === if/elseif/else
-
-if(crit1)
-
-elseif(crit2)
-
-else
-
-end
-
-% === switch
-
-switch switch_expression
-   case case_expression
-      statements
-   case case_expression
-      statements
-    ...
-   otherwise
-      statements
-end
 
 %% =============  SOLVING SYSTEMS  ============= %%
 
@@ -258,16 +277,3 @@ sum(v);			% sum up vector elements
 
 
 index = find(v == 2.324);		% get the index of the value
-
-%% =============  PLOTTING  ============= %%
-
-
-plot(x,y, 'color', 'red');							%% x/y vector plot
-xlabel('X-Achse');
-ylabel('Y-Achse');
-
-scatter(x,y);		% creates a scatter plot with circles at the locations specified by the vectors x and y. This type of graph is also known as a bubble plot.
-
-
-
-%% =============  FUNCTIONS  ============= %%
