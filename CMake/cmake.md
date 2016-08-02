@@ -24,7 +24,10 @@ include
 CMakeLists.txt
 ```
 
-## CMake Packages
+## CMake Packages/Libraries
+
+- dynamic (.dll)
+- static (.lib) libraries: included in project binary
 
 ###Package Setup
 Consider a project "Foo" that installs the following files:
@@ -46,13 +49,38 @@ set(foo_INCLUDE_DIRS ${PREFIX}/include/foo-1.2)
 set(foo_LIBRARY ${PREFIX}/lib/foo-1.2/libfoo.a)
 ```
 
-###Using external Packages
+###Including external Packages
 
-**`find_package(Foo)`**
+Setup up follwing for IDE in CMake:
+1. C++ inlcude directory (with header files)
+2. Linker dependencies (.lib which include the functions defined in the header files)
 
-- Given the name "Foo", it looks for a file called "FooConfig.cmake" or "foo-config.cmake" in the directories listed in `CMAKE_MODULE_PATH` (standard e.g.: /usr/share/cmake-2.8/modules, cmake comes with standard .cmake search files)
-- `set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)` to add project based /cmake folder
+
+**0. Define project dependency**
+`find_package(Foo)`
+- Looks for installed packages or in CMAKE_MODULE_PATH for a <package>-config.cmake file which defines `<package>_INCLUDE_DIRS` (header files) and `<package>_LIBRARY` (.lib path) (often: and also includes the header files)
 - `<package>_FOUND` indicates whether package was found
+
+**1. Setting up include path**
+- If necessary: `include_directories(<package>_INCLUDE_DIRS)` (often already done in <package>-config.cmake)
+
+**2. Define Linker path for executable**
+```bash
+## Main executables
+ADD_EXECUTABLE(main_program main.cpp)
+TARGET_LINK_LIBRARIES(main_program
+  user_identification	# custom module library
+  ${<package>_LIBRARY}	# 3rd party library
+)
+```
+
+
+
+
+**Manual Package Search: `Find<package>.cmake`**
+- `find_package(Foo)`: Given the name "Foo", it looks for a file called "FooConfig.cmake" or "foo-config.cmake" in the directories listed in `CMAKE_MODULE_PATH` (standard e.g.: /usr/share/cmake-2.8/modules, cmake comes with standard .cmake search files)
+- `set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)` to add project based /cmake folder
+- If package does not provide `<package>-config.cmake`: Add environment variable to lib directory and set the include/linker path through `Find<package>.cmake` using the environment variable: `$ENV{<package>_DIR}`
 
 ```cpp
 CMakeLists.txt
@@ -92,6 +120,7 @@ ${PROJECT_SOURCE_DIR}
 ```
 
 **Specify Header Files**
+Adds directory to include search path of project
 ```cmake
 include_directories( ${MY_SOURCE_DIR}/src )
 ```
