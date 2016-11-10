@@ -470,6 +470,99 @@ int summe(int a, int b) {
 }
 ```
 
+##### Enum flags
+
+- powers of 2 for bitwise encoding
+**Definition**
+
+```cpp
+enum {
+STYLE1 =   1,
+STYLE2 =   2,
+STYLE3 =   4,
+STYLE4 =   8,
+STYLE5 =  16,
+STYLE6 =  32,
+STYLE7 =  64,
+STYLE8 = 128
+};
+```
+```cpp
+// or
+enum {
+STYLE1 = 0x1,
+STYLE2 = 0x2,
+STYLE3 = 0x4,
+STYLE4 = 0x8,
+STYLE5 = 0x10,
+STYLE6 = 0x20,
+STYLE7 = 0x40,
+STYLE8 = 0x80
+};
+```
+```cpp
+// predefined values
+enum Value : char {
+None      = 0,
+MoveUp    = 1 << 0, // 00001 == 1
+MoveDown  = 1 << 1, // 00010 == 2
+MoveLeft  = 1 << 2, // 00100 == 4
+MoveRight = 1 << 3, // 01000 == 8
+Still     = 1 << 4, // 10000 == 16
+Jump      = 1 << 5
+};
+```
+
+
+**Function Definition**
+
+```cpp
+// check byte
+void SetStyles(DWORD dwStyles) {
+    if ((STYLE1 & dwStyles) == STYLE1) {
+        //Apply style 1
+    }
+    else if ((STYLE2 & dwStyles) == STYLE2) {
+        //Apply style 2
+    }
+    else if ((STYLE3 & dwStyles) == STYLE3) {
+        //Apply style 3
+    }
+    //etc...
+}
+
+// remove byte
+void RemoveStyle5 (DWORD& dwStyles) {
+    if ((STYLE5 & dwStyles) == STYLE5) {
+        dwStyles = dwStyles & ~STYLE5;
+    }
+}
+// switch byte
+void SwitchStyle5 (DWORD& dwStyles) {
+    dwStyles = dwStyles ^ STYLE5;
+}
+// loop over input flags
+void LoopThroughFlags(DWORD dwStyles) {
+	// loop through options
+	int byte = 1;
+    // max nr enums: 8
+	for(int i=0; i<8;i++)
+	{
+		if ((byte & dwStyles) == byte) {
+			//Apply style 3
+			std::cout << "index " << i+1 << " | " << "byte:" << (byte & dwStyles) << "\n";
+		}
+		byte *= 2;
+	}
+}
+```
+
+
+**Function Calls**
+```cpp
+DWORD params = STYLE1 | STYLE2;
+myfunct(params);
+```
 
 - - -
 
