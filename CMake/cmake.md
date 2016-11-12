@@ -5,8 +5,6 @@
 - `<packageName>.cmake` for CMake package configuration
 
 
-
-
 ## Project Structure
 
 **Multilevel Project**
@@ -26,8 +24,8 @@ CMakeLists.txt
 
 ## CMake Packages/Libraries
 
-- dynamic (.dll)
-- static (.lib) libraries: included in project binary
+- dynamic (.dll): project binary links to .dll: executed at runtime (faster, lightweight)
+- static (.lib): compiled source copied into project binary
 
 ###Package Setup
 Consider a project "Foo" that installs the following files:
@@ -162,6 +160,17 @@ target_link_libraries (Tutorial MathFunctions)
 
 
 
+## Macros
+
+**Optional Arguments**
+```cmake
+macro(_BAR)
+	# loop through arguments
+  foreach(arg IN LISTS ARGN)
+    [...]
+  endforeach()
+endmacro()
+```
 
 ## Examples
 
