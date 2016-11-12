@@ -6,6 +6,16 @@
 ## 01. Installation
 
 
+- Download Docker Toolbox for Windows
+
+
+
+### Tweaks
+
+**Run Docker in Cmder/ConEmu**
+
+![VM Settings](img/conemu.png)
+
 ### Hosting
 - dockerhub.com
 
