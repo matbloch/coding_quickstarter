@@ -192,6 +192,21 @@ class YourClass
 };
 ```
 
+### Interface Methods
+- Force implementation in member class
+
+```cpp
+class Box {
+   public:
+      // pure virtual function
+      virtual double getVolume() = 0;
+   private:
+      double length;      // Length of a box
+      double breadth;     // Breadth of a box
+      double height;      // Height of a box
+};
+```
+
 ## Polymorphism - Base Class Container
 - Collect multiple derived classes in common vector of base class point type
 
