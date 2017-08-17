@@ -307,7 +307,7 @@ for (int el : arr) {
 }
 ```
 
-## I/O
+## 005. I/O
 
 
 **Ressource loading:**
@@ -357,10 +357,18 @@ class TestClass {
 	  }
 }
 ```
+## 006. Project Dependencies
 
-## OpenCV3
 
-### CV Mat
+
+
+
+
+## 010. Misc Libraries
+
+### OpenCV3
+
+#### CV Mat
 
 
 ```java
@@ -378,4 +386,4 @@ System.out.println("OpenCV Mat data:\n" + m.dump());
 ```
 
 
-## Multithreading
+## 011. Multithreading
