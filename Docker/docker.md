@@ -251,7 +251,146 @@ CMD /bin/bash -l -c '/root/openface/demos/web/start-servers.sh'
 ADD /VM_share /my_projects
 ```
 
+## 05. Tocker Compose
+- Tool to define and run mutli-container docker applications (e.g. webapp + sql server)
+- Integrated in DockerToolbox for Windows
 
-## 05. Other Tutorials
+**Compose File: `docker-compose.yml`**
+
+```bash
+version: '2'
+services:
+
+  www:
+    # image build folder (path). Run: docker-compose build
+    build: www/.
+    # Expose ports. HOST:CONTAINER
+    ports:
+      - 80:80
+    # Link to containers in another service. SERVICE:ALIAS
+    links:
+      - db
+    depends_on:
+      - db
+
+  db:
+    # image build folder
+    build: db/.
+    volumes:
+      - /var/lib/mysql
+    # add environment password
+    environment:
+       # Password: see mysql image
+       MYSQL_ROOT_PASSWORD: supersecure
+```
+
+### Commands
+To execute docker-compose commands, `cd` to compose file in Shell/Windows Console.
+
+- `docker-compose --help`: Show commands
+
+**List Services**
+- `docker-compose ps`: List active services
+
+**Start Services**
+- `docker-compose up -d --no-recreate`: Start services in foreground (displays all messages), container only created once
+
+**Stop Services**
+- `docker-compose stop`: Stop all docker containers
+- `docker-compose stop data`: Stop specific "data" container
+- `ctrl` + `c`: Stop all docker containers if in foreground
+
+**Remove Application Containers**
+- `docker-compose rm -f`
+- `docker-compose stop && docker-compose rm -f`: Stop and remove containers
+
+**Restart Containers**
+```
+docker-compose stop && docker-compose rm -f
+docker-compose up -d 
+```
+
+### Quickstart
+
+1. Create `docker-compose.yaml`
+1.1 Pull corresponding docker images `docker pull my_img`
+2. Start console in directory `docker-compose.yaml` is located
+3. List current services: `$ docker-compose ps`
+4. `$ docker-compose up`
+
+### Examples
+
+**Wordpress & SQL container**
+```bash
+version: '2'
+services:
+
+  wordpress_container:
+  	image: wordpress
+    # Expose ports. HOST:CONTAINER
+    ports:
+      - 8080:80
+    # Link to containers in another service. SERVICE:ALIAS
+	environment:
+       WORDPRESS_DB_PASSWORD: abc123
+
+  mysql_container:
+	image: mysql:latest
+    # add environment password
+    environment:
+       MYSQL_ROOT_PASSWORD: supersecure
+```
+
+## 06. Building Images
+For Windows/Tocker Toolbox
+
+### Configuring Windows Shell (to find docker machine)
+
+**Run every time:**
+
+1. Open Terminal/CMD
+2. Start Docker machine by `docker-machine start default` or start Docker Terminal
+3. `docker-machine ls` will show you your machine running
+4. `docker-machine env --shell cmd default` and you'll see something like:
+```bash
+SET DOCKER_TLS_VERIFY=1
+SET DOCKER_HOST=tcp://192.168.99.100:2376
+SET DOCKER_CERT_PATH=C:\Users\Arseny\.docker\machine\machines\default
+SET DOCKER_MACHINE_NAME=default
+REM Run this command to configure your shell:
+REM     FOR /f "tokens=*" %i IN ('docker-machine env --shell cmd default') DO %i
+```
+
+**Add environment variables on startup (Conemu):**
+
+- head to `C:\Software\Cmder\vendor`
+- duplicate `init.bat`, rename to `init_docker.bat`
+- Add the following line at the end:
+```bash
+FOR /f "tokens=*" %%i IN ('docker-machine env --shell cmd default') DO %%i
+```
+- Create new task in Conemu
+- Add the following startup command (start conemu with custom init batch):
+```bash
+cmd /k "%ConEmuDir%\..\init_docker.bat"  -new_console:d:%USERPROFILE%
+```
+
+5. Run `FOR /f "tokens=*" %i IN ('docker-machine env --shell cmd default') DO %i`
+
+### Build Image from `Dockerfile`
+1. `cd` to `Dockerfile` directory
+2. `docker build -t my_image_name .`
+
+
+### Build Images with `docker-compose`
+
+1. Configure shell for docker
+2. head to `docker-compose.yml` file
+3. `docker-compose build`: Builds all images (if `build` parameter specified)
+
+## 07. Other Tutorials
 
 - [Containerize Python Web Application](https://www.digitalocean.com/community/tutorials/docker-explained-how-to-containerize-python-web-applications)
+
+
+
