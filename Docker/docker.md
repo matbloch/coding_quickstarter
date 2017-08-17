@@ -212,15 +212,24 @@ _ _ _
 - ...
 
 ## 03. Commands
-
 - `[CTRL]` + `[D]` exit container bash
-- `docker images` list all downloaded images
+
+**Containers**
 - `docker run image-name` load image `image-name` into new container (downloads it from dockerhub if not present)
-- List active containers: `docker pl`
-- To remove a container: docker rm <Container ID>
-- To remove all containers: docker rm $(docker ps -a -q)
-- To remove images: docker rmi <Container ID>
-- To remove all images: docker rmi $(docker ps -a -q)
+- `docker ps` List active containers
+- `docker rm <Container ID>` remove a container
+- `docker rm $(docker ps -a -q)` remove all containers
+- `docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)` Stop and remove all containers
+
+
+**Images**
+- `docker images` list downloaded images
+- `docker images -a` list ALL images
+- `docker rmi <Container ID>` remove image
+- `docker rmi -f $(docker images -q)` remove all images
+
+**Combinations**
+
 
 
 ## 04. Automated Build: Docker Files
@@ -251,95 +260,7 @@ CMD /bin/bash -l -c '/root/openface/demos/web/start-servers.sh'
 ADD /VM_share /my_projects
 ```
 
-## 05. Tocker Compose
-- Tool to define and run mutli-container docker applications (e.g. webapp + sql server)
-- Integrated in DockerToolbox for Windows
 
-**Compose File: `docker-compose.yml`**
-
-```bash
-version: '2'
-services:
-
-  www:
-    # image build folder (path). Run: docker-compose build
-    build: www/.
-    # Expose ports. HOST:CONTAINER
-    ports:
-      - 80:80
-    # Link to containers in another service. SERVICE:ALIAS
-    links:
-      - db
-    depends_on:
-      - db
-
-  db:
-    # image build folder
-    build: db/.
-    volumes:
-      - /var/lib/mysql
-    # add environment password
-    environment:
-       # Password: see mysql image
-       MYSQL_ROOT_PASSWORD: supersecure
-```
-
-### Commands
-To execute docker-compose commands, `cd` to compose file in Shell/Windows Console.
-
-- `docker-compose --help`: Show commands
-
-**List Services**
-- `docker-compose ps`: List active services
-
-**Start Services**
-- `docker-compose up -d --no-recreate`: Start services in foreground (displays all messages), container only created once
-
-**Stop Services**
-- `docker-compose stop`: Stop all docker containers
-- `docker-compose stop data`: Stop specific "data" container
-- `ctrl` + `c`: Stop all docker containers if in foreground
-
-**Remove Application Containers**
-- `docker-compose rm -f`
-- `docker-compose stop && docker-compose rm -f`: Stop and remove containers
-
-**Restart Containers**
-```
-docker-compose stop && docker-compose rm -f
-docker-compose up -d 
-```
-
-### Quickstart
-
-1. Create `docker-compose.yaml`
-1.1 Pull corresponding docker images `docker pull my_img`
-2. Start console in directory `docker-compose.yaml` is located
-3. List current services: `$ docker-compose ps`
-4. `$ docker-compose up`
-
-### Examples
-
-**Wordpress & SQL container**
-```bash
-version: '2'
-services:
-
-  wordpress_container:
-  	image: wordpress
-    # Expose ports. HOST:CONTAINER
-    ports:
-      - 8080:80
-    # Link to containers in another service. SERVICE:ALIAS
-	environment:
-       WORDPRESS_DB_PASSWORD: abc123
-
-  mysql_container:
-	image: mysql:latest
-    # add environment password
-    environment:
-       MYSQL_ROOT_PASSWORD: supersecure
-```
 
 ## 06. Building Images
 For Windows/Tocker Toolbox
@@ -381,12 +302,6 @@ cmd /k "%ConEmuDir%\..\init_docker.bat"  -new_console:d:%USERPROFILE%
 1. `cd` to `Dockerfile` directory
 2. `docker build -t my_image_name .`
 
-
-### Build Images with `docker-compose`
-
-1. Configure shell for docker
-2. head to `docker-compose.yml` file
-3. `docker-compose build`: Builds all images (if `build` parameter specified)
 
 ## 07. Other Tutorials
 
