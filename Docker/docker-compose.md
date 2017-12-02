@@ -98,7 +98,7 @@ Type `docker-compose ps` to list the full names of the services.
 **Share other folders:**
 Example: App files at `c:/dev/project/app`
 - In the VM settings share folder `c:/dev` at `/Users`
-- In `.yml`: `volumes` `/Users/project/app:/app`
+- In `.yml`: `volumes` `/Users/project/app:/app` (volume name is name of shared folder in VM)
 
 ### 3.1 Host-Based Persistence
 Store MySQL data on host machine
