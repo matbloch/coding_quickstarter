@@ -3,7 +3,20 @@
 **Limitations**
 - Covers only view of the app
 
-## Component
+
+
+
+## Setup Development Environment
+- React is built with JSX, a mix of Javascript and HTML
+- Need preprocessor (Babel) to compile JSX into JS
+
+**Babel**
+
+
+
+## Getting Started
+
+### Component
 - Built around **components** not templates
 - `createClass` creates specification object that contains all methods of component
 - Render function is UI description at any given time. Content will be updated automatically.
@@ -37,17 +50,18 @@ var App = React.createClass({
 
 
 
-## Storing Data
+### Storing Data
 
 **You should...**
 - keep as few stateful components as possible
 - minimize amount of state data
 - pass data down the hierarchy as props
 
-### State
+#### State
 - state is **mutable**
 - `this.state.YOURSTATEVAR` provides access
 - `this.setState({YOURSTATEVAR: VALUE})` to set new state
+- `getInitialState` for set initial state values
 
 **Note**
 - `setState` is asynchronous - causes rerendering
@@ -91,7 +105,7 @@ var App = React.createClass({
 ```
 
 
-### Props
+#### Props
 - props are **immutable** - Not changeable from component
 - `this.props.YOURPROP` provides access
 
@@ -129,7 +143,9 @@ var ButtonForm = React.createClass({
         );
     }
 });
+```
 
+```js
 var App = React.createClass({
     getInitialState: function(){
         return {
@@ -153,11 +169,63 @@ var App = React.createClass({
 });
 ```
 
-## Manual DOM Manipulation
+### Manual DOM Manipulation
+
+- `React.findDOMNode(component)` to select component
+- `ref` html attribute to name elements inside component
+- `this.ref.YOURREFNAME` to access component by reference
+
+```js
+var ButtonForm = React.createClass({
+        focusOnField: function(){
+            React.findDOMNode(this.refs.textField).focus();
+        },
+        render: function(){
+            return (
+                <div>
+                    <input 
+                        type="text"
+                        ref="textField" />
+                    <input 
+                        type="submit"
+                        value="Focus on the input!" 
+                        onClick={this.focusOnField} />
+                </div>
+            );
+        }
+    });
+```
+
+### Dynamic Component Creation
+- `key` attribute needed
 
 
+```js
+var App = React.createClass({
+    getInitialState: function(){
+        return {
+            todos: ["get food","drive home","eat food", "sleep"] 
+        }
+    },
 
-## Rendering
+    render: function(){
+        var todos = this.state.todos.map(function(todo,index){
+            return <li key={index}>{todo}</li>
+        });
+        return (
+            <div>
+                <h1> Welcome to the ToDo list!</h1>
+                <ul>
+                    {todos}
+                </ul>
+            </div>
+        );
+    }
+});
+```
+
+
+### Rendering
 
 ```js
 React.render(<App />,  document.getElementById("content"));
