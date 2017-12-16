@@ -6,13 +6,13 @@
 ## 01. Installation
 
 
-- Download Docker Toolbox for Windows
+- Download Docker Toolbox for Windows (if Windows < Windows 10 ultimate). Else: Install Docker for Windows
 
 
 
 ### Tweaks
 
-**Run Docker in Cmder/ConEmu**
+**Run Dockermachine in Cmder/ConEmu**
 
 ![VM Settings](img/conemu.png)
 
@@ -303,7 +303,14 @@ cmd /k "%ConEmuDir%\..\init_docker.bat"  -new_console:d:%USERPROFILE%
 2. `docker build -t my_image_name .`
 
 
-## 07. Other Tutorials
+## 07. Push Images to Remote (dockerhub)
+
+
+**config**
+
+- `docker login`
+
+## 10. Other Tutorials
 
 - [Containerize Python Web Application](https://www.digitalocean.com/community/tutorials/docker-explained-how-to-containerize-python-web-applications)
 

@@ -154,6 +154,27 @@ volumes:
 ```
 
 
+## 4. Push Images to Remote Host (Dockerhub)
+
+
+
+- Create repository on dockerhub
+- Configure build folder and image destination in `docker-compose.yml` (see example)
+- `docker login`
+- `docker-compose build`
+- `docker-compose push`
+
+
+```bash
+version: '3'
+services:
+  service1:
+    build: .
+    image: localhost:5000/yourimage  # goes to local registry
+  service2:
+    build: .
+    image: youruser/yourimage  # goes to youruser DockerHub registry
+```
 
 ## Examples
 
