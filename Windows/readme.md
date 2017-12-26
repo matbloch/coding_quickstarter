@@ -35,11 +35,12 @@
 --------------------
 ### Dual Boot: Win + Linux
 - Bootloader: Grub. Load Linux or Windows bootloader
+- Scenario: Windows and Ubuntu on separate drives
 
-#### Windows Installtion
+#### Windows Installation (Disk0)
 - First install Windows as usual
 
-#### Ubuntu installation
+#### Ubuntu installation (Disk1)
 
 - Install Linux: Select "Other installation type"
 
