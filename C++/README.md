@@ -6,6 +6,7 @@
 - [Styleguide](cpp_styleguide.md)
 
 **3rd Party**
+- [Installation of 3rd party libraries](3rd_party_installation.md)
 - [Eigen](eigen.md)
 - [OpenGL3](opengl3.md)
 
