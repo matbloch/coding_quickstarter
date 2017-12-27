@@ -2,7 +2,7 @@
 
 ## naming
 - filenames: lowercase and can include underscores (_) or dashes (-). prefer "_"
-- C++ file: `.cc`, header file: `.h`
+- C++ file: `.cc`/`cpp`, header file: `.h`
 - Classes/Types: start with a capital letter and have a capital letter for each new word, with no underscores
 - Variables: lowercase, with underscores between words
 - Class Data Members: might have trailing underscore
@@ -14,7 +14,6 @@
 - **Parameters**: 
 	- first inputs, then outputs
 	- All references (&ref) as `const`
-
 
 ## Variables
 - use `const` whenever it makes sense: const variables, data members, methods and arguments

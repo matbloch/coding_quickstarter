@@ -62,6 +62,11 @@ class X { };
 #endif
 ```
 
+**Alternative: Pragma**
+- Supported by most preprocessors.
+- Add at top of header file: `#pragma once`
+
+
 #### Circular dependencies
 Use pointers or reference to objects rather than full object.
 
