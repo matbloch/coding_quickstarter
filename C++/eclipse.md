@@ -5,4 +5,4 @@
 ## Documentation
 - `Window > Preferences`
 - Search for "doxygen"
-- Use as default documentaiton tool
+- Use as default documentation tool

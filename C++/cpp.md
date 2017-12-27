@@ -3,9 +3,7 @@
 
 ## Table of contents
 
-
 [TOC]
-
 
 
 ## Project setup

@@ -41,19 +41,10 @@
 - [Setup Tutorial](http://therobotacademy.com/meetup/docker-linux-containers-raspberry-pi)
 
 
-
-# Deploying a webserver with DynDNS
-
-
-
-Check webserver: curl 192.168.1.180:80
-
-docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
-
+# Deploying a webserver with Docker & DynDNS
 
 Start webserver:  docker run -d -p 80:80 hypriot/rpi-busybox-httpd
-
+Check webserver: curl 192.168.1.180:80
 
 ## check connection
 
@@ -63,3 +54,12 @@ http://dyndns.ch:80
 
 check if port is open:
 https://www.yougetsignal.com/tools/open-ports/
+
+
+## Docker Commands
+
+**Remove all containers**
+```bash
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+```
