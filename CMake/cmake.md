@@ -1,7 +1,11 @@
 # CMake
 
-- Build system to generate various `make` commands
-- Written in `CMakeLists.txt` file
+To compile your C++ code you have two options:
+- A. Compile from commandline using `make`
+- B. Compiling with your IDE
+
+CMake is a build system to generate various `make` commands - you don't have to write you're own `makefiles`. It is composed:
+- Of configuration files written in `CMakeLists.txt` files
 - `<packageName>.cmake` for CMake package configuration
 
 
@@ -21,6 +25,53 @@ proejct2
 include
 CMakeLists.txt
 ```
+
+## Compilers
+
+#### Windows: Visual C++
+- Download and install VS community edition
+- Create new project > Visual C++ and select "Install Visual C++ 2015 Tools for Windows Desktop"
+
+#### Windows: MinGW
+"Minimalist GNU for Windows"
+
+**Installing MinGW**
+- Go to https://nuwen.net/mingw.html and download MinGW
+- Unpack in software directory
+
+**Add MinGW to Environment Variables**
+- Head to: Systemsteuerung\System und Sicherheit\System > "Erweiterte Systemeinstellungen" > Environment Variables
+- Add Path to MinGW/bin to **Path** Variable
+- Test in Console `g++ --version`
+
+## Building the Compiler Instructions with CMake
+
+The make files are generated with the following command:
+
+```bash
+mkdir build && cd build
+cmake PATH_TO_SOURCE
+```
+
+Replace `PATH_TO_SOURCE` with the path to your source code (containing the `CMakeLists.txt`).
+
+**Specifying the Compiler**
+
+CMake let's you specify the compiler you want to use to build your code.
+Visit the website for a list of generators.
+
+**Example:** MinGW
+```bash
+cmake YOUR_PROJECT_SOURCE_DIR -G "MinGW Makefiles"
+```
+
+**Example:** Visual Studio
+- Generates also the Visual Studio Project Files
+- After executing Cmake, you can open the configured VS project from the build directory (`your_project.sln`).
+```bash
+cmake YOUR_PROJECT_SOURCE_DIR -G "Visual Studio 15 2017 Win64"
+```
+
 
 ## CMake Packages/Libraries
 
@@ -141,17 +192,22 @@ Then in C++:
 #endif
 ```
 
-# Add Source files
+**Add Source files**
+```cpp
 add_executable(Tutorial tutorial.cxx)
+```
 
-# Add Library
-
+**Add Library**
+```cpp
 include_directories ("${PROJECT_SOURCE_DIR}/MathFunctions")
 add_subdirectory (MathFunctions)
+```
 
-# add the executable
+**Add the executable**
+```cpp
 add_executable (Tutorial tutorial.cxx)
 target_link_libraries (Tutorial MathFunctions)
+```
 
 
 
