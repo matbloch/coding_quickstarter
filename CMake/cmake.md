@@ -27,7 +27,7 @@ CMakeLists.txt
 - dynamic (.dll): project binary links to .dll: executed at runtime (faster, lightweight)
 - static (.lib): compiled source copied into project binary
 
-###Package Setup
+### Package Setup
 Consider a project "Foo" that installs the following files:
 
 `<prefix>/include/foo-1.2/foo.h`
@@ -47,7 +47,7 @@ set(foo_INCLUDE_DIRS ${PREFIX}/include/foo-1.2)
 set(foo_LIBRARY ${PREFIX}/lib/foo-1.2/libfoo.a)
 ```
 
-###Including external Packages
+### Including external Packages
 
 Setup up follwing for IDE in CMake:
 1. C++ inlcude directory (with header files)
@@ -90,14 +90,10 @@ CMakeLists.txt
 
 
 ## Main Commands
-
+```cmake
 cmake_minimum_required (VERSION 2.6)
 project (Tutorial)
-
-```cmake
-project (Tutorial)
 ```
-
 
 ```cmake
 cmake_minimum_required (VERSION 2.6)
