@@ -32,7 +32,7 @@ CMakeLists.txt
 - Download and install VS community edition
 - Create new project > Visual C++ and select "Install Visual C++ 2015 Tools for Windows Desktop"
 
-#### Windows: MinGW
+#### Windows: MinGW32
 "Minimalist GNU for Windows"
 
 **Installing MinGW**
@@ -43,6 +43,10 @@ CMakeLists.txt
 - Head to: Systemsteuerung\System und Sicherheit\System > "Erweiterte Systemeinstellungen" > Environment Variables
 - Add Path to MinGW/bin to **Path** Variable
 - Test in Console `g++ --version`
+
+#### Windows: MinGW64
+- Install [MinGW64](http://mingw-w64.yaxm.org/doku.php/download/mingw-builds)
+- Add it to the system `PATH` (e.g. `C:\Program Files (x86)\mingw-w64\i686-4.9.2-posix-dwarf-rt_v4-rev2\mingw32\bin`)
 
 ## Building the Compiler Instructions with CMake
 
@@ -60,12 +64,12 @@ Replace `PATH_TO_SOURCE` with the path to your source code (containing the `CMak
 CMake let's you specify the compiler you want to use to build your code.
 Visit the website for a list of generators.
 
-**Example:** MinGW
+**Example:** MinGW (32/64)
 ```bash
 cmake YOUR_PROJECT_SOURCE_DIR -G "MinGW Makefiles"
 ```
 
-**Example:** Visual Studio
+**Example:** Visual C++/Visual Studio
 - Generates also the Visual Studio Project Files
 - After executing Cmake, you can open the configured VS project from the build directory (`your_project.sln`).
 ```bash
