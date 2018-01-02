@@ -13,7 +13,7 @@
 mkdir build
 cd build
 cmake .. -G "MinGW Makefiles"
-mingw32-make
+mingw32-make -j4
 ```
 
 # OpenCV 2.4
@@ -77,12 +77,12 @@ set PATH=%PATH%;C:\lib\OpenCV2413\install\x64\vc14
 
 **Set Environment Variable** (so CMake is able to find library)
 ```bash
-setx -m OPENCV_DIR "C:\lib\OpenCV31\build\x64\vc14"
+setx -m OPENCV_DIR "C:\lib\OpenCV31\build\install"
 ```
 **Add binary path to PATH variable** (so that DLLs can be included at runtime - using OpenCV as Dynamic-link library)
 - Here: Visual Studio 14 x64 binaries
 ```bash
-set PATH=%PATH%;C:\lib\opencv31\build\x64\vc14\bin;
+set PATH=%PATH%;C:\lib\opencv31\build\install\x64\vc14\bin;
 ```
 
 ### Building from Source (MinGW)
@@ -96,12 +96,12 @@ set PATH=%PATH%;C:\lib\opencv31\build\x64\vc14\bin;
 
 **Set Environment Variable** (so CMake is able to find library)
 ```bash
-setx -m OPENCV_DIR "C:\lib\OpenCV340\build\x64\vc14"
+setx -m OPENCV_DIR "C:\lib\OpenCV340\build\install"
 ```
 **Add binary path to PATH variable** (so that DLLs can be included at runtime - using OpenCV as Dynamic-link library)
 - Here: Visual Studio 14 x64 binaries
 ```bash
-set PATH=%PATH%;C:\lib\OpenCV340\build\x64\vc14\bin;
+set PATH=%PATH%;C:\lib\OpenCV340\build\install\x64\vc14\bin;
 ```
 
 ### Building from Source (Microsoft Visual Studio)
