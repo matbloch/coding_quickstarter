@@ -45,8 +45,14 @@ CMakeLists.txt
 - Test in Console `g++ --version`
 
 #### Windows: MinGW64
-- Install [MinGW64](http://mingw-w64.yaxm.org/doku.php/download/mingw-builds)
-- Add it to the system `PATH` (e.g. `C:\Program Files (x86)\mingw-w64\i686-4.9.2-posix-dwarf-rt_v4-rev2\mingw32\bin`)
+MinGW with 64 bit support
+- Install [MinGW64 native](http://mingw-w64.yaxm.org/doku.php/download/mingw-builds)
+- Or through another [Compiler suite](http://tdm-gcc.tdragon.net/download)
+- Select the following settings:
+  - Architecture: "x86_64"
+  - Threads: posix
+  - Exception: sjlj (short jump – long jump)
+- Add it to the system `PATH` (e.g. `C:\Program Files (x86)\mingw-w64\i686-4.9.2-posix-dwarf-rt_v4-rev2\mingw64\bin`)
 
 ## Building the Compiler Instructions with CMake
 

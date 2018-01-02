@@ -1,13 +1,36 @@
 
 
 
+# GoogleTest
+
+
+
+### Building From Source (MinGW)
+- Download and unpack source
+- Build with MinGW32
+
+```bash
+mkdir build
+cd build
+cmake .. -G "MinGW Makefiles"
+mingw32-make
+```
+
 # OpenCV 2.4
 
 ---------
 
 ## Windows
 
-### B. Building from Source (Microsoft Visual Studio)
+
+### Building from Source (MinGW)
+- Download and extract OpenCV source
+- Open CMake GUI and select source (C:/lib/OpenCV2413/sources) and build (C:/lib/OpenCV2413/build) Path
+- Click on `Configure` and Select "MinGW Makefiles"
+- Click on `Generate`
+- Head to build directory and type `` to build
+
+### Building from Source (Microsoft Visual Studio)
 
 - Download and extract source from: https://sourceforge.net/projects/opencvlibrary/files/opencv-win/
 - OpenCV 2.4.13 is ++not++ precompiled for VS14 2015! We need to compile it first.
@@ -47,29 +70,41 @@ set PATH=%PATH%;C:\lib\OpenCV2413\install\x64\vc14
 
 ## Windows
 
-- go to http://opencv.org and download precompiled binaries (Visual Studio V12/14 is supported, otherwise you have to build the libraries for VS yourself)
+### Precompiled Binaries (Microsoft Visual Studio)
+
+- Download and extract precompiled binaries: https://sourceforge.net/projects/opencvlibrary/files/opencv-win/
+- OpenCV 3.1 already includes precompiled binaries for VS14
 
 **Set Environment Variable** (so CMake is able to find library)
 ```bash
-setx -m OPENCV_DIR "C:\lib\OpenCV31\build"
+setx -m OPENCV_DIR "C:\lib\OpenCV31\build\x64\vc14"
 ```
-**Add binary path to PATH variable** (so that DLLs can be included at runtime)
+**Add binary path to PATH variable** (so that DLLs can be included at runtime - using OpenCV as Dynamic-link library)
 - Here: Visual Studio 14 x64 binaries
 ```bash
 set PATH=%PATH%;C:\lib\opencv31\build\x64\vc14\bin;
 ```
 
-### A. Precompiled Binaries
+### Building from Source (MinGW)
 
-- Download and extract precompiled binaries: https://sourceforge.net/projects/opencvlibrary/files/opencv-win/
-- OpenCV 3.1 already includes precompiled binaries for VS14
+- Download and extract OpenCV source
+- Open CMake GUI and select source (C:/lib/OpenCV340/sources) and build (C:/lib/OpenCV340/build) Path
+- Click on `Configure` and Select "MinGW Makefiles"
+- Uncheck "ENABLE_PRECOMPILED_HEADERS"
+- Click on `Generate`
+- Head to build directory and type `mingw32-make -j4` to build
 
-**Set Environment Variable**
+**Set Environment Variable** (so CMake is able to find library)
 ```bash
-setx -m OPENCV_DIR "C:\lib\OpenCV31\build"
+setx -m OPENCV_DIR "C:\lib\OpenCV340\build\x64\vc14"
+```
+**Add binary path to PATH variable** (so that DLLs can be included at runtime - using OpenCV as Dynamic-link library)
+- Here: Visual Studio 14 x64 binaries
+```bash
+set PATH=%PATH%;C:\lib\OpenCV340\build\x64\vc14\bin;
 ```
 
-### B. Building from Source (Microsoft Visual Studio)
+### Building from Source (Microsoft Visual Studio)
 **Requirements**
 - Microsoft Visual Studio 12 or higher
 
