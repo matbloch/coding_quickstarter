@@ -1,4 +1,9 @@
 
+## Most Used Base Images
+
+- **Alpine**: docker run -i -t alpine /bin/sh
+
+
 ## Wordpress & PHP-MyAdmin
 
 ```bash

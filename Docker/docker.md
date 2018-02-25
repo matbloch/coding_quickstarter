@@ -303,7 +303,7 @@ cmd /k "%ConEmuDir%\..\init_docker.bat"  -new_console:d:%USERPROFILE%
 2. `docker build -t my_image_name .`
 
 
-## 07. Push Images to Remote (dockerhub)
+## 07. Push Images to Remote (Dockerhub)
 
 
 **config**
