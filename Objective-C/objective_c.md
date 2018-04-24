@@ -114,64 +114,21 @@ myBook.title = @"Test Title";
 
 ```
 
-
 ## Pointers
 
 ```cpp
 int  *ptr = NULL;
 int  var = 20;
 ptr = &var;
-
 if(ptr)     /* succeeds if p is not null */
 if(!ptr)    /* succeeds if p is null */
+if(ptr != nil)
 ```
+
+- Object pointers by default set to `nil`
+
 
 ## Control Structures
-
-
-## Classes and Objects
-- Class is defined in two sections: `@interface ... @end`, `@implementation ... @end`
-- Almost everything is in form of object
-
-**Definition**
-- All classes derived from base class `NSObject`
-```cpp
-@interface Box:NSObject
-{
-    double length;   // Length of a box
-    double breadth;  // Breadth of a box
-    double height;   // Height of a box
-}
-@end
-```
-
-**Properties**
-- definition: `@property(ACCESS_SPECIFIERS) TYPE VARNAME;`
-- Introduced so instance variables can be accessed outside the class
-- If properties are defined, getters and setters are automatically created:
-	- `-(void) setVARNAME (TYPE) VARNAME;` setter
-	- `-(TYPE) VARNAME;` getter
-- Access specifiers:
-	- `atomic`/`nonatomic`
-	- `readwrite`/`readonly`
-	- `strong`/`unsafe_unretained`/`weak`
-
-
-
-### Examples
-
-**Example:** Full class definition
-```cpp
-@interface Box:NSObject
-{
-    double length;   // Length of a box
-    double height;   // Height of a box
-}
-@property(nonatomic, readwrite) double height; // Property, creates getters/setters
-- (double) volume;	// method
-@end
-
-```
 
 
 
