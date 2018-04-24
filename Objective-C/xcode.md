@@ -2,13 +2,22 @@
 
 
 
+## Storyboards
+- The storyboard is the `view` of the application
+
+![Storyboard](img/xcode_storyboard.jpg)
+
+
+
+
+## Misc
+
 
 ### Running App on the Phone
 
 - Connect Phone
 - Unlock and `trust`
 - Select Phone as build target in XCode
-
 
 ### Troubleshooting
 
@@ -22,6 +31,10 @@
 - Download and unpack `opencv2.framework`
 - Drag and drop it into the XCode project
 - No header includes or linking necessary
+
+
+
+
 
 
 
