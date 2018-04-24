@@ -54,6 +54,7 @@
 	- `atomic`/`nonatomic`
 	- `readwrite`/`readonly`
 	- `strong`/`unsafe_unretained`/`weak`
+- For `readwrite` properties, instance variables are automatically generated. With an underscore `_` prepanded.
 
 **Accessing Properties:** Option 1 - Accessors
 ```cpp
@@ -97,7 +98,6 @@ somePerson.firstName = @"Johnny";
 [self.undoManager doSomethingElse]; // Use generated getter
 ```
 
-
 **Renaming Synthesized Instance Variables**
 - using keyword `@synthesize`
 - not mandatory any more
@@ -113,28 +113,50 @@ somePerson.firstName = @"Johnny";
 
 
 
-## Member Access
+## Methods Calls
 
-#### Methods
 - Communication through brackets `[]`
 - **Example** `[somePerson sayHello];`
 	- call `sayHello`
 	- on instance `somePerson`
 
+#### External Calls
+
 **Return Values**
 ```cpp
+-(int)magicNumber;
 int interestingNumber = [someObject magicNumber];
 ```
 
-**Standard Arguments**
+**Single Argument**
 ```cpp
-
+-(int)magicNumber(int input_number);
+int interestingNumber = [someObject magicNumber:123];
 ```
 
-**Object Arguments**
-```cpp
+**Multiple Argument**
+- additional arguments are part of the method name
 
+```cpp
+- (void)driveCar:(Car *)car withPerson:(Person *)person;
+[carController driveCar:car withPerson:person];
 ```
+
+Example with class arguments:
+```cpp
+- (void)driveCar:(Car *)car;
+- (void)driveCar:(Car *)car withPerson:(Person *)person;
+// instantiate objects
+CarController *carController = [[CarController alloc] init];
+Car *car = [[Car alloc] init];
+Person *person = [[Person alloc] init];
+// call method with single argument
+[carController driveCar:car];
+// call method with multiple arguments
+[carController driveCar:car withPerson:person];
+```
+
+#### Member Calls
 
 **Member Method Calls**
 ```cpp
@@ -154,6 +176,15 @@ int interestingNumber = [someObject magicNumber];
 }
 ```
 
+**Create Object Inside Method**
+```cpp
+- (NSString *)magicString {
+    NSString *stringToReturn = "test"
+    return stringToReturn;
+}
+// remember: object still exists, even if pointer gets out of scope
+NSString * magicString = [someObject magicString];
+```
 
 
 ## Memory Management and Initialization
@@ -178,11 +209,20 @@ NSObject *someObject = [NSObject alloc];
 [someObject init];
 ```
 
+#### Initializers
+- Best practice: Have 1 designated initializer which is used in 
+
 **Initializer with arguments**
 
 ```cpp
-NSObject *someObject = [NSObject alloc];
-[someObject init];
+- (id)initWithX:(int)inPosX andY:(int)inPosY
+{
+	if ((self = [super init])) {
+    	self.inPosX = inPosX;
+        self.inPosY = inPosY;
+    }
+    return self;
+}
 ```
 
 **Custom Initializer**
@@ -197,16 +237,6 @@ NSNumber *magicNumber = [[NSNumber alloc] initWithInt:42];
 
 
 
-
-**Create Object Inside Method**
-```cpp
-- (NSString *)magicString {
-    NSString *stringToReturn = "test"
-    return stringToReturn;
-}
-// remember: object still exists, even if pointer gets out of scope
-NSString * magicString = [someObject magicString];
-```
 
 
 
