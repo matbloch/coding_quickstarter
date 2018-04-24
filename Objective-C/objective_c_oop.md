@@ -8,9 +8,7 @@
 
 ## Interface/Implementation
 
-
 **Interface**
-
 - Defines the blueprint of a class
 - All classes derived from base class `NSObject`
 
@@ -34,6 +32,28 @@
 }
 @end
 ```
+
+## Instance vs. Class (static) Methods
+- Instance: `-` in definition
+- Class: `+` in definition
+
+```cpp
+@interface MyClass : NSObject
++ (void)aClassMethod;
+- (void)anInstanceMethod;
+@end
+```
+
+**Call Signature**
+
+```cpp
+// call on class
+[MyClass aClassMethod];
+// call on instance
+MyClass *my_instance = [[MyClass alloc] init];
+[my_instance anInstanceMethod];
+```
+
 
 ## Instance Variables (iVar)
 - are private/protected
@@ -282,6 +302,31 @@ if ([someDate compare:anotherDate] == NSOrderedAscending) {
 ```
 
 
+## Categories
+- used to extend classes for specific use cases
+- methods of category will be available for all instances of original and sub classes
+
+
+**Interface Definition**
+```cpp
+@interface ClassName (CategoryName)
+@end
+```
+
+**Implementation**
+
+```cpp
+
+@interface NSString(MyAdditions)
++(NSString *)getCopyRightString;
+@end
+
+@implementation NSString(MyAdditions)
++(NSString *)getCopyRightString{
+    return @"Copyright TutorialsPoint.com 2013";
+}
+@end
+```
 
 
 
