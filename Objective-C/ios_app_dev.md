@@ -92,7 +92,12 @@ Project structure:
     - `info.plist`  project settings (requirements, storyboard selection, app identifier)
     - `main.m` launches the application with `AppDelegate`
 
-## 2. Add Content to Storyboard
+## 2. Specify Storyboards
+
+- open `info.plist` and select the storyboard files in "Main storyboard file..." and "Launch screen interface file..."
+- Select the project, go the "General" tab and select the main storyboard file in the section "Deployment Info" under "Main interface"
+
+## 3. Add Content to Storyboard
 
 - Open `Main.storyboard`
 - Select *Object Library* and drag&drop **"View Controller"** into scene
@@ -100,20 +105,126 @@ Project structure:
 
 ![add_view_controller.png](./img_app_tutorial/add_view_controller.png)
 
-## 3. Add View Controller Source
+## 4. Add View Controller Source
 
+**ViewController.h**
+```cpp
+#import <UIKit/UIKit.h>
+@interface ViewController : UIViewController
+@end
+```
 
+**ViewController.m**
+```cpp
+#import "ViewController.h"
 
-## 4. Connecting UI Elements to Code
+@implementation ViewController
+- (void)viewDidLoad {
+  [super viewDidLoad];
+}
 
-**Connecting UI to View Controller in Source Code**
+@end
 
-- Connecting View Controller to Scene in Storyboard
+```
+
+## 5. Connecting UI Elements to Code
+
+**Connecting View Controller**
+
+- Switch to Storyboard and select the View Controller in the scene content
+- Select identity inspector and select the controller class `ViewController` that was created in the code
 ![identity_inspector.png](./img_app_tutorial/identity_inspector.png)
 
+**Select Initial View**
+- Select view controller and check "Is Initial View Controller"
+![initial_view_controller.png](./img_app_tutorial/initial_view_controller.png)
 
-**Connecting UI Elements to Source Code**
 
+
+
+**Connecting UI Elements**
+
+
+# UI Elements
+
+## Switch
+
+- Add switch to Storyboard
+- **Link switch state**: Right-Click drag&drop into `@interface` section of `ViewController.m` (current scene view controller)
+- **Link action**: Right-Click drag&drop into `@implementation` section
+	- From the context menu, select the preferred action ()
+
+```cpp
+@interface ViewController () <ARSCNViewDelegate>
+// state
+@property (weak, nonatomic) IBOutlet UISwitch *awesomeSwitch;
+@end
+
+// action
+@implementation ViewController
+- (IBAction)switchPressed:(id)sender {
+}
+@end
+
+```
+
+
+## ARKit SceneKit View
+
+- In the Storboard, add "ARKit SceneKit View" to a view
+- **Link AR View**: Drag&drop view onto `@interface` section
+- **Configure tracking**: In standard view controller method `(void)viewDidLoad`
+- **Start tracking**: In standard view controller method `(void)viewWillAppear`
+- **Pause tracking**: In standard view controller method `(void)viewWillDisappear`
+
+
+```cpp
+@interface ViewController () <ARSCNViewDelegate>
+// the AR view
+@property (strong, nonatomic) IBOutlet ARSCNView *sceneView;
+@end
+```
+
+
+**View loaded: Configure tracking**
+
+```cpp
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Set the view's delegate
+    self.sceneView.delegate = self;
+    // Show statistics such as fps and timing information
+    self.sceneView.showsStatistics = YES;
+    // Create a new scene
+    SCNScene *scene = [SCNScene sceneNamed:@"art.scnassets/ship.scn"];
+    // debug options
+    self.sceneView.debugOptions =
+    ARSCNDebugOptionShowWorldOrigin |
+    ARSCNDebugOptionShowFeaturePoints;
+    // Set the scene to the view
+    self.sceneView.scene = scene;
+}
+```
+
+**View appear: Run tracking session**
+```cpp
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    // Create a session configuration
+    ARWorldTrackingConfiguration *configuration = [ARWorldTrackingConfiguration new];
+    // Run the view's session
+    [self.sceneView.session runWithConfiguration:configuration];
+}
+```
+
+**View disappear: Pause tracking session**
+```cpp
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    // Pause the view's session
+    [self.sceneView.session pause];
+}
+```
 
 # ARKit Application
 
