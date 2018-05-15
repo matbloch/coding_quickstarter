@@ -41,16 +41,17 @@
 - Miniature version of the document outline
 ![xcode_scene_dock.png](./img/xcode_scene_dock.png)
 
-**Example View Controller**
-```cpp
-@interface ViewController : UIViewController
 
-@end
-```
 
 ## View Controllers
 - manages user interface and interaction between interface and data
 - base class: `UIViewController`
+
+**Example View Controller**
+```cpp
+@interface ViewController : UIViewController
+@end
+```
 
 #### View Controller Types
 
@@ -59,6 +60,43 @@
 **Container View Controller**
 - Example: Tab Bar
 - Contains multiple sub-views
+
+
+## Views
+- Views created in the storyboard are automatically initiated (no need to init them in view controller code)
+- Custom view classes can be selected to implement the UI callbacks
+- All outlets that connect storyboard elements to code are marked with `IBOutlet`
+
+**Creating callbacks for storyboard views**
+
+0. Create a custom view class in code
+``` cpp
+@interface InterfaceView : UIView
+@end
+```
+1. Click on view
+![select_view.png](./img_app_tutorial/select_view.png)
+2. Select view class that implements the callbacks from attributes tab
+![view_class_select.png](./img_app_tutorial/view_class_select.png)
+3. Connect your outlets to the UIView subclass in the code (right-click drag and drop)
+
+**Reconnecting Code Callbacks to Storyboard**
+- Code Outlets are marked with dots. Connected ones are filled.
+- Available outlets are also visible in the view property tab of the storyboard
+- Right-click drag & drop from code dot to storyboard element
+![code_connection_state.png](./img_app_tutorial/code_connection_state.png)
+
+**Debugging UIView order**
+![debug_ui_z_index.png](./img_app_tutorial/debug_ui_z_index.png)
+
+**Connecting Storyboard View delegates**
+- Create custom view class and delegate property
+```cpp
+@property (nonatomic, weak) IBOutlet id <InterfaceViewDelegate> delegate;
+```
+- drag&drop property onto view controller in storyboard
+- The delegate will appear in the property tab of the view controller (in the storyboard)
+![delegate_outlet_connected.png](./img_app_tutorial/delegate_outlet_connected.png)
 
 
 
@@ -97,11 +135,10 @@ Project structure:
 - open `info.plist` and select the storyboard files in "Main storyboard file..." and "Launch screen interface file..."
 - Select the project, go the "General" tab and select the main storyboard file in the section "Deployment Info" under "Main interface"
 
-## 3. Add Content to Storyboard
+## 3. Add View Controller to Storyboard
 
 - Open `Main.storyboard`
 - Select *Object Library* and drag&drop **"View Controller"** into scene
-- Add additional UI elements, such as buttons, text fields etc.
 
 ![add_view_controller.png](./img_app_tutorial/add_view_controller.png)
 
@@ -122,27 +159,70 @@ Project structure:
 - (void)viewDidLoad {
   [super viewDidLoad];
 }
-
 @end
-
 ```
 
-## 5. Connecting UI Elements to Code
 
-**Connecting View Controller**
+**Connecting View Controller to Storyboard**
 
-- Switch to Storyboard and select the View Controller in the scene content
+- Switch to Storyboard and select the *View Controller* in the scene content
 - Select identity inspector and select the controller class `ViewController` that was created in the code
 ![identity_inspector.png](./img_app_tutorial/identity_inspector.png)
 
-**Select Initial View**
-- Select view controller and check "Is Initial View Controller"
+**Select Initial View Controller**
+- Select view controller in storyboard and check **Is Initial View Controller**
 ![initial_view_controller.png](./img_app_tutorial/initial_view_controller.png)
 
+## 5.1 Adding Storyboard View
+- Drag&Drop View element from objects library onto view controller in storyboard
 
+**Adding code callbacks**
 
+- Create new `UIView` child class
 
-**Connecting UI Elements**
+```cpp
+@interface MyView : UIView
+@end
+@implementation MyView
+@end
+```
+- Switch to storyboard, select the view and switch to "Identity Inspector" Tab
+- Select the new class `MyView` as the *Custom Class*
+
+## 5.2 Adding Programmatic View
+
+- Create new `UIView` child class
+- Create view instance in view controller
+
+```cpp
+@interface ViewController
+    @property (strong, nonatomic) MyView *myView;
+@end
+@implementation ViewController
+- (void)viewWillAppear:(BOOL)animated {
+	self.myView = [[MyView alloc] init];
+}
+@end
+```
+
+## 6. Adding UI Elements
+
+**Adding Elements from Storyboard**
+- Drag&Drop elements from object library into a view
+- Switch to implementation of the target view
+- Drag&Drop UI elements from storyboard into code
+	- Connections will appear as "dots" in the code
+	- Also visible in properties tab of UI element in storyboard
+
+**Connecting Storyboard UI Elements**
+- Right-click drag&drop UI element from Storyboard into `@interface` section of `ViewController.m`
+- Ensure that the outlets are configure correctly:
+	- Select UI element in storyboard and select the connection inspector
+
+![outlet_config.png](./img_app_tutorial/outlet_config.png)
+
+**Programmatic UI Elements**
+- All UI elements can also be added through code
 
 
 # UI Elements
@@ -165,7 +245,27 @@ Project structure:
 - (IBAction)switchPressed:(id)sender {
 }
 @end
+```
 
+**Verify view controller outles:**
+- Go to Storyboard, select switch
+
+![switch_outlets.png](./img_app_tutorial/switch_outlets.png)
+
+
+## Button
+
+**Add button programatically**
+```cpp
+UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+[button addTarget:self
+           action:@selector(aMethod:)
+ forControlEvents:UIControlEventTouchUpInside];
+[button setTitle:@"Show View" forState:UIControlStateNormal];
+button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+[view addSubview:button];
+// bring button to front
+[view bringSubviewToFront:button];
 ```
 
 
@@ -226,6 +326,43 @@ Project structure:
 }
 ```
 
+# Deployment
+
+**Deployment iOS Version**
+- Go to project settings > Build Settings > Deployment
+- Set iOS Deployment Target to the device iOS version
+
+
+# UIView
+
+```cpp
+@interface ViewController () <TrackingControllerDelegate>
+@property (strong, nonatomic) UIImageView *imageView;
+@end
+```
+
+**initialization & frame size**
+```cpp
+_imageView = [[UIImageView alloc] init];
+// define frame
+_imageView.frame = _sceneView.frame;
+```
+
+**Container Scaling**
+```cpp
+_imageView.contentMode = UIViewContentModeScaleToFill;
+_imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+```
+
+
+**Image Orientation**
+
+
+### Handling Device Rotation
+
+- [Tutorial](https://happyteamlabs.com/blog/ios-using-uideviceorientation-to-determine-orientation/)
+
+
 # ARKit Application
 
 #### Initialization
@@ -238,10 +375,9 @@ Project structure:
 
 // then somewhere in your implementation block...
 // official example shows you ought to declare the session in viewWillLoad and initialize in viewWillAppear but it probably doesn't matter.
-
 self.session = [ARSession new];
 
-// World tracking is used for 6DOF, there are other tracking configurations as well, see 
+// World tracking is used for 6DOF, there are other tracking configurations as well, see
 // https://developer.apple.com/documentation/arkit/arconfiguration
 ARWorldTrackingConfiguration *configuration = [ARWorldTrackingConfiguration new];
 
@@ -251,6 +387,31 @@ configuration.planeDetection = ARPlaneDetectionHorizontal;
 // start the session
 [self.session runWithConfiguration:configuration];
 ```
+
+
+# Gesture Recognition
+
+
+**Propagating Clicks through transparent Views**
+
+- Create a custom subclass  of `UIView` and assign it to the transparent click-through view
+- implement the method `pointInside` which passes the clicks to underlying views if it does not hit a subview (e.g. button)
+```cpp
+-(BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    for (UIView *view in self.subviews) {
+        if (!view.hidden && view.userInteractionEnabled && [view pointInside:[self convertPoint:point toView:view] withEvent:event])
+            return YES;
+    }
+    return NO;
+}
+```
+
+
+# Profiling
+
+
+
+
 
 
 

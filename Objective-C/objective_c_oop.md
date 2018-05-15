@@ -11,10 +11,10 @@
 **Interface**
 - Defines the blueprint of a class
 - All classes derived from base class `NSObject`
+- variables only inside `{}` - Functions and properties only outside
 
 ```cpp
-@interface Box:NSObject
-{
+@interface Box: NSObject {
     double length;   // instance variable
 }
 @property NSString *objectLabel;	// property
@@ -44,6 +44,7 @@
 @end
 ```
 
+
 **Call Signature**
 
 ```cpp
@@ -58,6 +59,23 @@ MyClass *my_instance = [[MyClass alloc] init];
 ## Instance Variables (iVar)
 - are private/protected
 - defined in body of `interface`
+- Without a property, ivars can be kept hidden. In fact, unless an ivar is declared in a public header it is difficult to even determine that such an ivar exists.
+
+**definition**
+```cpp
+@interface myClass : NSObject {
+	// instance variables go here ...
+    int my_var;
+}
+// properties go here ...
+@end
+```
+
+**Accesss**
+From inside class:
+```cpp
+self.my_var = 123;
+```
 
 
 ## Properties
@@ -66,6 +84,10 @@ MyClass *my_instance = [[MyClass alloc] init];
 	```cpp
     @property (readonly) NSString *firstName;
     ```
+- Access specifiers:
+	- **`atomic`**/`nonatomic`: atomic is thread safe
+	- **`readwrite`**/`readonly` readonly: no setters generated
+	- **`strong`**=`retain`/`weak`: strong: keep in heap
 - Introduced so instance variables can be accessed outside the class
 - If properties are defined, getters and setters are automatically created:
 	- `-(void) setVARNAME (TYPE) VARNAME;` setter
@@ -75,6 +97,13 @@ MyClass *my_instance = [[MyClass alloc] init];
 	- `readwrite`/`readonly`
 	- `strong`/`unsafe_unretained`/`weak`
 - For `readwrite` properties, instance variables are automatically generated. With an underscore `_` prepanded.
+
+
+**Access specifier Examples**
+- `retain`: used for pointer to an object
+	- `@property (nonatomic, retain) ARWorldTrackingConfiguration *arConfig;`
+- `assign`(default): when non-pointer attribute
+- `copy`: when object is mutable
 
 **Accessing Properties:** Option 1 - Accessors
 ```cpp
@@ -229,53 +258,56 @@ NSObject *someObject = [NSObject alloc];
 [someObject init];
 ```
 
-#### Initializers
-- Best practice: Have 1 designated initializer which is used in 
-
-**Initializer with arguments**
+#### Overloading the Default Initializer
 
 ```cpp
-- (id)initWithX:(int)inPosX andY:(int)inPosY
-{
-	if ((self = [super init])) {
-    	self.inPosX = inPosX;
-        self.inPosY = inPosY;
-    }
+- (instancetype)init {
+    if (!(self = [super init])) // init superclass
+        return nil;
     return self;
 }
 ```
 
-**Custom Initializer**
+#### Custom Initializer
+- **Best practice**: Have 1 designated initializer which is used in all other initializers
 
+**Example:** Desginated Initializer
+```cpp
+// DESIGNATED INITIALIZER
+- (id)initWithTitleAndAuthor:(NSString *)aTitle author:(NSString *)theAuthor {
+	// call more specific initializer
+    if (!(self = [super init])) // init superclass
+    	return nil;
+    self.author = theAuthor;
+    self.title = aTitle;
+    return self;
+}
+// CUSTOM INITIALIZER
+- (id)initWithTitle:(NSString *)aTitle {
+	// call more specific initializer
+    return [self initWithTitleAndAuthor:aTitle author:@"anonymous"];
+}
+// GENERIC
+- (id)init {
+	// call initializer with arguments
+    return [self initWithTitle:@”Task”];
+}
+```
 
+**Call**
 ```cpp
 - (id)initWithFloat:(float)value;
 NSNumber *magicNumber = [[NSNumber alloc] initWithInt:42];
 ```
 
-.. implementation
 
 
+#### Variable Initialization
 
+- initialized to default values:
+	- int: 0
+	- string: nil
 
-
-
-## Constructor
-- `NSObject` has base initializer method `init`
-
-```cpp
-Fraction *frac = [[Fraction alloc] init];
-```
-
-**Overloading the Default Initializer**
-
-```cpp
-- (id)init {
-    if (!(self = [super init])) // init superclass
-        return nil;
-    myInt = 3;
-}
-```
 
 
 ## Inheritance
@@ -303,9 +335,16 @@ if ([someDate compare:anotherDate] == NSOrderedAscending) {
 
 
 ## Categories
+- Add methods to existing classes
 - used to extend classes for specific use cases
 - methods of category will be available for all instances of original and sub classes
+- File naming: e.g. `NSString+MyAdditions.h`
+- **Usage:** Just import category extension and base class will inherit properties
 
+#### Notice
+- Categories are **added** to existing class definition - avoid **name clashes**
+
+#### Usage
 
 **Interface Definition**
 ```cpp
@@ -316,21 +355,145 @@ if ([someDate compare:anotherDate] == NSOrderedAscending) {
 **Implementation**
 
 ```cpp
-
 @interface NSString(MyAdditions)
-+(NSString *)getCopyRightString;
++(NSString *)getMagicString;
 @end
 
 @implementation NSString(MyAdditions)
-+(NSString *)getCopyRightString{
-    return @"Copyright TutorialsPoint.com 2013";
++(NSString *)getMagicString{
+    return @"Some serious magic here!";
 }
+@end
+```
+
+**Using the category**
+
+```cpp
+#include "NSString+MyAdditions.h"
+NSString *magic = [NSString getMagicString];
+```
+
+
+## Anonymous Categories
+- Extend internal implementation of a class
+- Used to implement **hidden** properties - callable but not visible in public header
+
+```cpp
+@interface ClassName ()
+@end
+
+@interface XYZPerson ()
+@property NSObject *extraProperty;
 @end
 ```
 
 
 
-## Examples
+
+# Passing Data Between Controllers
+
+## 1-to-1: Calling a Method of the Super Controller
+- Pass reference of super controller to child
+- Call super controller method from child and pass data
+
+*MainViewController.h*
+```cpp
+- (void)newDataArrivedWithString:(NSString *)aString;
+- (void)showChildController
+{
+    ChildController *childController = [[ChildController alloc] init];
+    childController.mainViewController = self;
+    [self presentModalViewController:childController animated:YES];
+    [childController release];
+}
+```
+
+*ChildController.h*
+```cpp
+// forward declaration
+@class MainViewController;
+@interface ChildController : UIViewController
+@property (nonatomic, retain) MainViewController *mainViewController;
+- (void)passDataToMainViewController {
+    NSString * someDataToPass = @"foo!";
+    [self.mainViewController newDataArrivedWithString:someDataToPass];
+}
+@end
+
+```
+
+## 1-to-Many: Key-Value-Observing
+
+- KVO works with **setters** and **getters** (e.g. with dot notation)
+- **NOT** with *iVar* access
+
+
+#### Example
+
+```cpp
+@interface SomeObject : NSObject
+// property to watch
+@property (nonatomic, strong) NSString *theMessage;
+-(void) changeMessage;
+@end
+// method that changes the property
+@implementation SomeObject
+-(void) changeMessage {
+	self.theMessage = @"Hi there!";
+}
+@end
+```
+
+**Adding an Observer**
+In super controller:
+```cpp
+SomeObject new_object = [[SomeObject alloc] init];
+[self addObserver:new_object forKeyPath:@"theMessage" options:NSKeyValueObservingOptionNew context:nil];
+```
+**Adding a Property Change Callback**
+```cpp
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:
+   (id)object
+   change:(NSDictionary *)change
+   context:(void *)context {
+    // retrieve the first view controller's message
+    NSString *message = [(NSString *)object valueForKey:@"theMessage"];
+    NSLog(@"The message was %@", message);
+}
+```
+
+**If parent class already implements the observer callback**
+- Some class might already implement `observeValueForKeyPath` (`NSObject` does not)
+
+```cpp
+[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+```
+
+
+
+## 1-to-1: Protocols (Delegates)
+
+**required/optional methods**
+- required by default
+
+```cpp
+@protocol XYZPieChartViewDataSource
+- (NSUInteger)numberOfSegments;
+@optional
+- (NSString *)titleForSegmentAtIndex:(NSUInteger)segmentIndex;
+@required
+- (UIColor *)colorForSegmentAtIndex:(NSUInteger)segmentIndex;
+@end
+```
+
+**Adopting Protocols**
+
+```cpp
+@interface MyClass : NSObject <Protocol1, Protocol2, Protocol3>
+@end
+```
+
+# Examples
 
 **Example:** Full class definition
 
