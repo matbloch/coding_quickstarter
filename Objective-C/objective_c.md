@@ -277,16 +277,26 @@ if ([bookListing objectForKey:@"104-109834"]) {
 ```
 
 **Element Count**
+```cpp
+for (id key in myDict) {
+	[myDict objectForKey:key]
+}
+
+// or
+[dict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+    NSLog(@"%@->%@",key,obj);
+    // Set stop to YES when you wanted to break the iteration.
+}];
+```
+
+**Iteration**
 
 ```cpp
 int count = [bookListing count];
 ```
 
+
 **Examples**
-
-
-
-
 
 ```cpp
 NSMutableDictionary *bookListing = [NSMutableDictionary dictionary];
@@ -430,12 +440,9 @@ dispatch_async(dispatch_get_main_queue(),^{
 **Other Types**
 - Wrap it in an instance of `NSData`, `NSNumber` or `NSString`
 
-```cpp
-[NSData ]
-```
 
-
-**Example**
+**Example:** Array of objects
+- also works with `NSMutableArray`
 ```cpp
 // To get the object:
 NSUserDefaults* settings = [NSUserDefaults standardUserDefaults];
@@ -443,15 +450,43 @@ NSUserDefaults* settings = [NSUserDefaults standardUserDefaults];
 [settings setValue:@[@"A", @"B", @"C", @"D", @"E", @"F"] forKey:@"MostRecentlyUsed"];
 [settings synchronize];
 // To read a setting:
-NSArray* mru = [settings valueForKey:@"MostRecentlyUsed"];
+NSArray* mru = [settings arrayForKey:@"MostRecentlyUsed"];
 ```
 
+##### Storing Structs
+
+**Struct Definition**
+```cpp
+typedef struct
+{
+    int type;
+    NSString *name;
+} myStructure;
+```
+
+**NSData**
+```cpp
+// the struct
+myStructure structure;
+
+// make a NSData object
+NSData *myData = [NSData dataWithBytes:&structure length:sizeof(structure)];
+
+// make a new PacketJoin
+myStructure newStructure;
+[myData getBytes:&newStructure length:sizeof(newStructure)];
+```
+
+
 ##### Storing Custom Classes
+
+**Todo**
 - Add protocol `NSCoding` to your class
 - Implement:
 	- `- (id)initWithCoder:(NSCoder *)decoder`
 	- `- (void)encodeWithCoder:(NSCoder *)encoder`
 
+**Encoder Methods**
 ```cpp
 @interface Note : NSObject <NSCoding>
 @property (nonatomic, copy) NSString *title;
@@ -474,13 +509,32 @@ NSArray* mru = [settings valueForKey:@"MostRecentlyUsed"];
 @end
 ```
 
-
-**Store an Array of objects**
-- Objective-C objects must implement the `NScoding protocol`
+**Storing the Object as `NSData`**
 ```cpp
-// store
-NSData *data = [NSKeyedArchiver archivedDataWithRootObject:entries];
-// load
-NSArray *entries = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+// receive user data
+NSUserDefaults *currentDefaults = [NSUserDefaults standardUserDefaults];
+// archive the custom object
+NSData *data = [NSKeyedArchiver archivedDataWithRootObject:your_note];
+// save it
+[currentDefaults setObject:data forKey:@"MyNote"];
+[currentDefaults synchronize];
+// load and unarchive it
+NSData *data = [currentDefaults objectForKey:@"MyNote"];
+Note* my_save_note = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 ```
 
+
+
+## Memory Management in Objective-C
+
+**In C++**
+- local variables (de-)allocated automatically
+- Object/ptr usually has single owner (you say: deallocate this now)
+
+**In Garbage Colleted Language, e.g. Python**
+- Object deleted if not used anymore
+
+
+**In Objective-C**
+- All ojbects allocated on the heap (i.e. new)
+- Object can have multiple owners by default (you say: I'm not using this anymore)

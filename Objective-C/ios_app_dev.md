@@ -326,6 +326,15 @@ button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
 }
 ```
 
+## Element Constraints
+**Add new constrainsts**
+- Instead of fixed location on screen
+![storyboard_constraints.png](./img_app_tutorial/storyboard_constraints.png)
+
+**Adding Missing Constraints automatically**
+![storyboard_add_missing_constraints.png](./img_app_tutorial/storyboard_add_missing_constraints.png)
+
+
 # Deployment
 
 **Deployment iOS Version**

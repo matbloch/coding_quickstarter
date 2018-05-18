@@ -15,17 +15,28 @@
 - Material:
 
 ## Matrix Operations
-
+**SCNMatrix4**
 - `SCNMatrix4Mult(Mat1, Mat2)`
 - `SCNMatrix4FromMat4(Mat)`
 	- `Mat`: Mat4x4
 
 
+**matrix_float_4x4**
+
+- `matrix_multiply(m1, m2)`
 ```cpp
 // Create a transform with a translation of 0.2 meters in front of the camera
 matrix_float4x4 translation = matrix_identity_float4x4;
 translation.columns[3].z = -0.2;
 matrix_float4x4 transform = matrix_multiply(currentFrame.camera.transform, translation);
+```
+
+## Scene Nodes
+
+```cpp
+matrix_float4x4 transform;
+node.simdTransform = transform;
+node.transform = SCNMatrix4FromMat4(transform);
 ```
 
 ## Materials - `SCNMaterial`
