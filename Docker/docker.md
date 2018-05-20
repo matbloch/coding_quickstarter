@@ -314,5 +314,21 @@ cmd /k "%ConEmuDir%\..\init_docker.bat"  -new_console:d:%USERPROFILE%
 
 - [Containerize Python Web Application](https://www.digitalocean.com/community/tutorials/docker-explained-how-to-containerize-python-web-applications)
 
+## Troubleshooting
+
+```bash
+An error occurred trying to connect: Get http://%2F%2F.%2Fpipe%2Fdocker_engine/v1.24/containers/json: open //./pipe/docker_engine: The system cannot find the file specified.
+```
+ set DOCKER_CERT_PATH=%USERPROFILE%\.docker\machine\machines\default
+ set DOCKER_HOST=tcp://192.168.99.100:2376
+ set DOCKER_MACHINE_NAME=default
+ set DOCKER_TLS_VERIFY=1
+ 
+ or start Kitematic:
+ - click delete VM and retry
+
+
+
+
 
 
