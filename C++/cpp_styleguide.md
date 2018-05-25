@@ -1,20 +1,134 @@
 # Coding Styleguide for C++
 
-## naming
-- filenames: lowercase and can include underscores (_) or dashes (-). prefer "_"
-- C++ file: `.cc`/`cpp`, header file: `.h`
-- Classes/Types: start with a capital letter and have a capital letter for each new word, with no underscores
-- Variables: lowercase, with underscores between words
-- Class Data Members: might have trailing underscore
-- `const` variables: "k" followed by mixed case (words start with uppercase)
-- Functions: Regular functions have mixed case; "cheap" functions may use lower case with underscores.Acronyms: only first letter capilatlized
+- as many variables `const` as possible
+- pass arguments: `const &`
+- use `std::move()` to copy data into output containers
+- prevent default method arguments when not often changed. Use class property instead
+- Always use `nullptr` for initializing null pointers.
+- use range based for loop, when iterating vectors
+```cpp
+for (const auto &data_block : dataBlocks) {
+}
+```
+- use `const T&` istead of `T const&`
+- for "direct" header files use `#include "MyClass.h"` instead of `<...>`
+- Use upper case for type declarations, e.g. `using ReturnType = ...`
 
-## Functions
+## Naming
+- Use `snake_case` for variables
+- Use `snake_case` for simple accessors (setter and getters)
+- Use `camelCase` for methods
+- Use `CamelCase` for classes
+- Use `snake_case_` for member variables.
+- Use `snake_case` for functions in anonymous space
+- Class enums: Use `CamelCase` for enum names, `UPPER_SNAKE_CASE` for enum values
 
-- **Parameters**: 
-	- first inputs, then outputs
-	- All references (&ref) as `const`
+## Control Flow
+- Prefer early exit of nested if statements
 
-## Variables
-- use `const` whenever it makes sense: const variables, data members, methods and arguments
-- 0 and nullptr/NULL: Use 0 for integers, 0.0 for reals, nullptr (or NULL) for pointers, and '\0' for chars.
+## Misc
+
+### constness
+
+- [Article const correctness](https://yosefk.com/c++fqa/const.html)
+
+**const reference vs reference to const**
+
+- `const T&` and `T const&` are the same, matter of style
+- use `Fred const &arg` for consistency with right-left rule about parsing
+
+**const static vs static const**
+- `const`, `static` is ordered
+- but `static` should be put at the beginning (C convention)
+- e.g. `static const int`
+
+**const ptr vs ptr to const**
+```cpp
+Mode const * mode = nullptr;
+// or:
+const Mode * mode = nullptr;
+// is not the same as
+Mode * const mode = nullptr;
+```
+
+**ptr vs reference members**
+- use reference if assigned once at construction
+- otherwise use ptrs
+
+**Mutable/Mutex**
+- use `mutable` instead of const for member, if const member functions need to modify the variable but for the user (public methods), the object still is the same
+
+### Random
+
+**order of declarations**
+- [clockwise/spiral rule](http://c-faq.com/decl/spiral.anderson.html)
+```cpp
+int const * - pointer to const int
+int * const - const pointer to int
+```
+
+**private static vs private const**
+- use `private static`, if the method does not belong to an instance of the object
+
+
+**inline functions**
+- `inline` obsolete if function body defined in header file. Copiler marks as inline
+
+**Include style**
+- `#include "path-spec"` look for file in same directory
+- `#include <path-spec>` search in path
+
+**`cmath` vs `math.h`**
+- use `<cmath>`, defines function in `std::` namespace
+
+**preventing operations**
+- prevente copying: delete the copy-assignment and copy-constructor operators
+
+**`std::move`**
+- use `std::move` whenever you copy containers
+- indicate that an object t may be "moved from", i.e. allowing the efficient transfer of resources from t to another object.
+- This allows for certain optimizations if the client is passing rvalue arguments.
+
+**enums**
+```cpp
+enum class Color { red, green, blue }; // enum class
+enum Animal { dog, cat, bird, human }; // plain enum
+```
+- **enum classes** - enumerator names are local to the enum and their values do not implicitly convert to other types (like another enum or int)
+- **Plain enums** - where enumerator names are in the same scope as the enum and their values implicitly convert to integers and other types
+
+
+**shared pointers**
+
+- Shared pointers usually have a somewhat large penalty when being copied and deallocated.
+
+-----------
+
+## Efficient Coding
+
+- [Article to read](https://www.geeksforgeeks.org/writing-cc-code-efficiently-in-competitive-programming/)
+
+### Efficient Returns
+
+**No modification of return**
+- bind return to const reference
+- no copy needed
+```cpp
+const std::vector<A>& b = MyFunc();
+```
+
+### Efficient Argument Passing
+
+
+```cpp
+void f (const std::string& s)	// lvalue -> copy
+{
+  std::string s1 (s); // copy
+  ...
+}
+void f (std::string&& s)	// rvalue -> move
+{
+  std::string s1 (std::move (s)); // move
+  ...
+}
+```
