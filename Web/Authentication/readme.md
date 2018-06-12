@@ -1,4 +1,4 @@
-# Access Control and Authentification
+# Access Control and Authentication
 
 
 ## Methods
