@@ -1,12 +1,25 @@
 # Access Control and Authentication
 
+## Overview
 
-## Methods
+**Stateless**
+- Token based authentication
+	- Basic Authentification
+	- Digest Authentification
+    - JSON Web Tokens
+        - 
+
+**Stateful**
+- Cookies
+
+
 
 **Which method to choose**
 - Web application only: either cookies or tokens
 - Web and mobile: token-based
 - Communicating APIs: Request signing
+
+## Methods
 
 #### *Basic* Access Authentication
 
@@ -24,6 +37,7 @@
 
 **Disadvantages**
 - Login credentials sent with every request - potentially exposing them
+- DB queries (authorization) needed for every request
 - Uses easily reversible Base64 encoding for username/password instead of encrpytion
 - Unsafe if not used with TLS (Transport Layer Security) or preprocessor SSL (Secure Socket Layer)
 - No way to logout user
@@ -32,7 +46,7 @@
 #### *Digest* Access Authentication
 - Applies hash function to username and password before sending the over network
 
-#### JWT: JSON Web Token
+#### JWT: JSON Web Tokens
 
 **Contains of 3 parts:**
 - Header, with type of token and hashing algorithm
@@ -77,6 +91,7 @@
 - Use **signed** cookies
 
 **Disadvantages**
+- stateful: authentication records need to be stored both client and server side
 - Extra efford to protect against CSRF attacks
 - Incompatiblye with REST (stateless protocol)
 

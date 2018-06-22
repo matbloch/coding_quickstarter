@@ -8,7 +8,7 @@
 
 ## Setup Development Environment
 - React is built with JSX, a mix of Javascript and HTML
-- Need preprocessor (Babel) to compile JSX into JS
+- Needs preprocessor (Babel) to compile JSX into JS
 
 **Babel**
 
@@ -16,7 +16,7 @@
 
 ## Getting Started
 
-### Component
+### Components
 - Built around **components** not templates
 - `createClass` creates specification object that contains all methods of component
 - Render function is UI description at any given time. Content will be updated automatically.
