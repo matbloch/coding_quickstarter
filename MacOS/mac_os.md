@@ -6,6 +6,7 @@
 - cmd + space: quicksearch
 - alt + space: ...
 - Shift-Command-4: Screenshot of custom area
+- Command + w: close window
 
 
 ## Package Installations

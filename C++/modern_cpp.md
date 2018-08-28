@@ -51,6 +51,10 @@ const int myVariable = [&] {
 }();
 ```
 
+**Move Semantics**
+```cpp
+Foo (vector<int> vec) : _member{std::move(vec)} {}
+```
 -------------
 ### Operator Overloading
 
@@ -319,7 +323,28 @@ class Bar : public Foo <BETA> {
 **Store in variable**
 `auto factorial = [](int i, int j) {return i * j;};`
 
-### Lambdas as Function Parameters
+**Const variable assignment**
+```cpp
+const int my_var = [&normal]() {
+	if (normal.x() > 3) {
+    	return 2;
+    }
+    return 3;
+}();
+```
+
+**Member variables in capture list**
+```cpp
+const int my_var = [this]() {
+	if (this.x() > 3) {
+    	return 2;
+    }
+    return 3;
+}();
+```
+
+
+**Lambdas as Function Parameters**
 ```cpp
 template <typename T>
 void call(T);
