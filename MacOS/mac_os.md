@@ -2,6 +2,29 @@
 # MacOS C++ Development Environment
 
 
+
+## Checklist
+
+
+- inverted scrolling
+- right click: open terminal here
+- terminal styling
+- window manager
+
+
+**Key assignment**
+- Windows + left/right: switch desktops
+- invert command and windows keys
+- ctrl + up/down: move line of code
+- brackets
+- Show hidden items: CMD + SHIFT + .
+- move folder tree up
+- shift + up/down: mark lines of code
+- alt + f4: close window
+- return in finder: open folder, not rename it
+
+
+
 ## Hotkeys
 - cmd + space: quicksearch
 - alt + space: ...
@@ -63,7 +86,9 @@ Will be installed to:
 - Install **Ukulele**
 - Download swiss keyboard layout: [Download](https://www.krenger.ch/blog/mac-os-x-standard-de_ch-keymap/)
 - Copy Layout to: `/Users/Matthias/Library/Keyboard Layouts`
-- Go to preferences and add newly created layout
+- Go to "preferences > Language & Region > Keyboard settings" and add "Logitech Swiss German" from the "Others" tab
+- Also check "show in menubar"
+- restart if icon to switch layout does not show up
 
 **Speed up scroll speed**
 - Go to Preferences > Keyboard > Keyboard
@@ -169,4 +194,9 @@ make -j8
 
 **Specify build directory**
 - Default *cmake-build-YOURCONFIG*
+- or: File > settings, search for CMAKE and configure your build types
+
+**Preprocessor Directives**
+- add to build tipes in preferences
+
 
