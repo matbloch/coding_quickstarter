@@ -9,6 +9,9 @@
 - Command + w: close window
 
 
+- alt + tab: switch through windows
+
+
 ## Package Installations
 
 

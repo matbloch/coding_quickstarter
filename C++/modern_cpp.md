@@ -4,7 +4,7 @@
 
 **Range-based for loop**
 ```cpp
-for (auto &i : vector) {}
+for (const auto &i : vector) {}
 ```
 **emplace_back**
 - Use `emplace_back` if you pass a constructor (allows to move)
@@ -52,9 +52,27 @@ const int myVariable = [&] {
 ```
 
 **Move Semantics**
+- only binds to r values, otherwise makes copy (?)
 ```cpp
 Foo (vector<int> vec) : _member{std::move(vec)} {}
 ```
+
+**Perfect forwarding**
+- constructor for temporary class object is not necessary - pass arguments directly
+```cpp
+asdf
+```
+
+**Anonymous functions**
+- use `static` or anonymous namespace
+
+```cpp
+static void my_func(){}
+namespace {
+	void my_func(){}
+}
+```
+
 -------------
 ### Operator Overloading
 
@@ -76,6 +94,9 @@ struct Record
 }
 
 ```
+
+
+
 
 -------------
 ### `std` library
@@ -366,6 +387,10 @@ void call(T fn) {
 
 - See [This post](http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters)
 
+
+# Function Returns
+- always return by value if possible (complier optimizations make this very fast)
+- only as in-out param, if additional sucess parameter is returned
 
 # CMake
 
