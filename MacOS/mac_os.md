@@ -5,11 +5,20 @@
 
 ## Checklist
 
-
 - inverted scrolling
 - right click: open terminal here
+- right click: create file
+- fixed toolbar
 - terminal styling
 - window manager
+- add sound icon to menu bar
+- console
+	- vim bidings
+	- ctrl l/r word skipping
+- taskbar:
+	- show preview on hover
+	- different bars for different desktops
+
 
 
 **Key assignment**
