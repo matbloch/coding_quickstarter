@@ -1,14 +1,103 @@
 # Swift
 
-### Misc
-
-**Debugging**
-- `print()`
-
+# Misc
 
 **Comments**
 - `/* hi ther */`
 - `// hi there`
+
+**Imports**
+- custom classes are available globally - no need to import
+```swift
+import UIKit
+```
+
+### Typecasting
+
+
+**Check**
+```swift
+if myvar is MyClassType {}
+```
+
+
+**Type Casting/Checking**
+- `?` optional, `!` must
+
+```swift
+// can fail
+let song = item as? Song {}
+// crashes if not possible
+let song = item as! Song {}
+```
+
+**unwrapping**
+```swift
+if let song = item as? Song {}
+```
+
+
+# Project Structuring
+
+- Extensions: `String+UTF8Data.swift`
+
+# Debugging/Error Handling
+
+- `print()`
+
+**Preprocessor Macros**
+- Set in: project settings > Build settings > "Lebels" > Preprocessor Macros
+- Select the bild configuration: target -> Edit Scheme -> Run -> Info
+
+Usage:
+```swift
+#if DEBUG
+#else
+#endif
+```
+
+### Exceptions
+**Definition**
+- as enums, from `Error` protocol
+
+```swift
+enum NameError: Error {
+  case noName
+}
+
+throw HeightError.minHeight
+``
+
+**Throwing**
+- add `throws` to functions
+- throw expections inside `guard`
+
+```swift
+func vend(itemNamed name: String) throws {
+    guard let item = inventory[name] else {
+        throw VendingMachineError.invalidSelection
+    }
+}
+```
+
+**Catching**
+```swift
+do {
+  let myCourse = try Course(name: "")
+} catch NameError.noName {
+  print("Error: please make sure enter name!")
+  // Logic
+}
+``
+
+**Blocking Exceptions**
+
+- `try?` returns `nil` on exception
+- `try!` throws
+
+```swift
+let newCourse = try? Course(name: "Bob the Dev")
+```
 
 
 # Data Structures
@@ -24,6 +113,9 @@ let myConstant = 42	// type inferred
 let explicitDouble: Double = 70	// type defined
 ```
 
+
+#### Null Savety
+
 **Optional Variables**
 - if not set: `nil` value
 
@@ -35,6 +127,18 @@ var optionalString2: String? = nil
 var optionalString3: String?
 ```
 
+**Access of optional values**
+- once checked if nil, access value with `!`
+
+```swift
+if optional != nil {
+	print("the value: \(optional!)")
+}
+if let constantName = someOptional {
+    statements
+}
+```
+
 **Automatic Unwrapping of Optionals**
 - Actual value is accessed with `!`, e.g.: `myOptional!`
 - `!` instead of `?`
@@ -42,6 +146,20 @@ var optionalString3: String?
 ```swift
 var optionalString3: String!
 ```
+
+**Guards**
+- unwrapped variable still usable after clause
+- `guard` statement must contain function control (`return`/`switch`/`break`)
+
+```swift
+guard let name = nameField.text else {
+    show("No name to submit")
+    return
+}
+print("my name is \(name)")
+```
+
+
 
 #### Enums
 ```swift
@@ -78,11 +196,47 @@ switch studMarks {
 
 #### Structs
 - best use: as custom data types
+- **Cannot be altered by instance methodds**
 
+**Member-wise Initialization**
 ```swift
-
+struct Size {
+    var width = 0.0, height = 0.0
+}
+let twoByTwo = Size(width: 2.0, height: 2.0)
 ```
 
+**Instance mtehods**
+- `mutating` keyword to modify instance variables
+
+```swift
+struct Stack {
+    var items = [Int]() // Empty items array
+    mutating func push(_ item: Int) {
+        items.append(item)
+    }
+}
+```
+
+**Type/static methods**
+```swift
+struct absno {
+   static func returnNo(number: Int) -> Int {
+      return number
+   }
+}
+```
+
+
+#### Generic Types/Templates
+
+```swift
+struct Pair<T1, T2> {
+	var first: T1
+    var second: T2
+}
+var let floatPair = Pair<Float, Float>(first: 1.2, second: 1.5)
+```
 
 #### Strings
 
@@ -108,10 +262,13 @@ And then I said "I have \(apples + oranges) pieces of fruit."
 #### Arrays
 
 **Initialization**
+- `Array<TYPE>`
+- `[TYPE]`
 ```swift
 var myList = ["a", "b"]
 // with typedef
 var someInts:[Int] = [10, 20, 30]
+var someInts:Array<Int> = [1, 2]
 // with initializer
 var someInts = [Int](count: 3, repeatedValue: 0)
 ```
@@ -125,6 +282,7 @@ someInts[0]
 ```swift
 someInts.append(9)
 someInts += 12
+someInts.insert(100, at: 5)
 ```
 
 **Concatenation**
@@ -136,6 +294,9 @@ someInts1 + myInts2
 ```swift
 for item in someInts {}
 for (index, item) in someInts.enumerated() {}
+someInts.forEach { value in
+	...
+}
 ```
 
 **Properties**
@@ -144,8 +305,18 @@ someInts.count
 someInts.isEmpty
 ```
 
+**Search**
+```swift
+if let index = arr.index(of: val) {
+
+}
+```
+
 #### Sets
 - unique values, unordered
+- Types must conform to `Hashable` protocol
+	- Types must implement `readonly` proprety `hashValue` of type `Int`
+	- Must implement equality operator
 
 ```swift
 var integerSet = Set<Int>()
@@ -197,9 +368,22 @@ print(error501.errorCode)   // prints 501.
 #### Dictionaries
 **Initialization**
 ```swift
-var someDict = [KeyType: ValueType]()
-var someDict = [Int: String]()
 var someDict:[Int:String] = [1:"One", 2:"Two", 3:"Three"]
+// empty
+var someDict:[Int:String] = [:]
+var someDict = [KeyType: ValueType]()
+var someDict = Dictionary<Int, String>()
+var someDict = [Int: String]()
+```
+
+**Inhomogeneous Dicts**
+- `AnyHashable` and `Any` types
+
+```swift
+var mixedMap: [AnyHashable: Any]
+if let unwrapped = wrapped.base as? String {
+
+}
 ```
 
 **From Array**
@@ -241,12 +425,11 @@ var closeCities = cityDistanceDict.filter { $0.value < 1000 }
 ```
 
 
-# OOP
-
-
-----------
-
 # Control Flow
+
+
+- `guard`
+- null check `.?`
 
 
 **Range Operators**
@@ -270,11 +453,37 @@ if varA < 20 {
 
 ### Loops
 
-
 **Array/Dict Iteration**
 - `for value in myArray {}`
 - `for (key, value) in myDict {}`
 
+### Guards
+- `guard let ... else {}`
+
+
+**Null Safety**
+
+**Type Checking**
+```swift
+guard let ar_plane_anchor = anchor as? ARPlaneAnchor else {
+	return
+}
+//negative type check
+guard !(anchor is ARPlaneAnchor) else { return }
+```
+
+**Check if in `Dictionairy`**
+```swift
+guard let cars = devices["Car"] else {
+    return
+}
+```
+
+
+**Bundled Checks**
+```swift
+
+```
 
 
 # Functions
@@ -336,8 +545,45 @@ var addition: (Int, Int) -> Int = sum
 print("Result: \(addition(40, 89))")
 ```
 
+### Completion Handlers
+- function definition `completion`
+- processing returns: `{() in }`
+
+**Single Return**
+```swift
+// definition
+func hardProcessingWithString(input: String, completion: (result: String) -> Void) {
+	completion("we finished!")
+}
+// call
+hardProcessingWithString("commands") {
+	(result: String) in
+	print("got back: \(result)")
+}
+```
+
+**Multiple returns**
+
+```swift
+processItems(_ input: Int, completion: (Int, String)) -> Void) {
+	for i in 0..<10 {
+    	// return an item
+    	completion(i, "String" + i)
+    }
+}
+
+// call
+processItems(123) { [unowed self] (var1, var2) in
+	// called each time a value is returned
+	print("Items: \(var1), \(var2)")
+}
+
+```
+
+
 # Closures
 - Self-containing blocks of functionality that can be passed around and used in code
+- Init const variable
 
 ```swift
 { (parameters) -> return type in
@@ -361,7 +607,20 @@ let divide = {
 let result = divide(200, 20)
 ```
 
+```swift
+let someProperty: SomeType = {
+    // create a default value for someProperty inside this closure
+    // someValue must be of the same type as SomeType
+    return someValue
+}()
+```
 
+# Integrating C
 
+- OpaquePointer: represent C pointers
+
+```cpp
+
+```
 
 
