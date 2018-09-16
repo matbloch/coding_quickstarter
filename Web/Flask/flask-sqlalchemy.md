@@ -63,7 +63,7 @@ class ModelName(db.Model):
 
 #### 1-to-Many Relationships
 
-![1-to-many](C:\dev\coding_quickstarter\Web\Flask\img\1-to-many.png)
+![1-to-many](img\1-to-many.png)
 
 - `db.relationship`, defined in the **one** structure
 	- `lazy` Bool - Default: load data in one go using a standard select statement
@@ -111,12 +111,9 @@ class MobilePhone(Base):
 
 
 
-
-
-
 #### Many-to-Many Relationships
 
-![many-to-many](C:\dev\coding_quickstarter\Web\Flask\img\many-to-many.png)
+![many-to-many](img\many-to-many.png)
 
 - needs association table
 
