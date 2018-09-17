@@ -257,3 +257,26 @@ print('')
 
 ## ORM Cascade
 
+- configurable behavior for `relationship` construct
+
+
+```python
+class Order(Base):
+    items = relationship("Item", cascade="all, delete-orphan")
+    customer = relationship("User", cascade="save-update")
+```
+
+
+**Cascades:**
+- `save-update`: all objects associated with `relationship` will be added to session on `session.add`
+- `delete` if parent is marked for deletion, child should also be deleted
+	- ORM vs "FOREIGN KEY" cascade: either use
+	- many-to-many: `secondary` many-to-many table entries are updated automatically
+- `relationship()` or `FOREIGN KEY` constraint to 
+- `delete-orphan` deleted if de-associated from parent
+
+**Defaults:**
+- `all`: `save-update, merge, refresh-expire, expunge, delete`
+- default value: `save-update, merge`
+- common: `all, delete-orphan`
+
