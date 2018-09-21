@@ -69,13 +69,13 @@ class ModelName(db.Model):
 	- `lazy` Bool - Default: load data in one go using a standard select statement
 	- `backref`String - create property of this model in linked models
 	- `uselist` Bool - set to `True` if its a 1-to-1 relationship
-- `db.ForeignKey` separately defined key that refers to other model
+- `db.ForeignKey` separately defined key (on the **many** side) that refers to other model
 
 
 ```python
 class User(db.Model):
     id =  db.Column(db.Integer, primary_key=True)
-    addresses = db.relationship('Post', backref='user', lazy=True)
+    posts = db.relationship('Post', backref='user', lazy=True)
 class Post(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey(user.id)), nullable=False)
 ```
@@ -97,7 +97,7 @@ posts = u.posts.all()
 class Person(Base):
     __tablename__ = 'people'
     id = Column(Integer, primary_key=True)
-    mobile_phone = relationship("MobilePhone", backref=backref("person", uselist=False))
+    mobile_phone = relationship("MobilePhone", uselist=False, backref=backref("person"))
 class MobilePhone(Base):
     __tablename__ = 'mobile_phones'
     id = Column(Integer, primary_key=True)
