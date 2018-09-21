@@ -1,4 +1,4 @@
-# React.JS Examples
+# React.JS/Redux Examples
 
 
 
@@ -82,3 +82,14 @@ class App extends Component {
   }
 }
 ```
+
+**Access Store in Component**
+1. use `connect` with `mapStateToProps` and `mapDispatchToProps`
+2. In method:
+	- Import `state` from your app `index.js` (where store was initialized)
+	- Use `store.dispatch`
+
+**Call child component method**
+- create Ref to component in parent constructor
+- call child method over Ref	
+	

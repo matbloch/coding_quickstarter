@@ -108,6 +108,26 @@ export default connect(mapStateToProps)(ArticlesIndex)
 https://redux.js.org/faq/immutable-data
 
 #### `mapDispatchToProps`
+- allows access to dispatch action directly from props
+- here: directly use `this.onTodoClick` as `onClick` action
+- `this.props.dispatch` is then not available anymore
+
+```javascript
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onTodoClick: (id) => {
+      dispatch(toggleTodo(id))
+    }
+  }
+}
+```
+
+**Accessing Component Properties inside action**
+```javascript
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onClick: () => dispatch(setVisibilityFilter(ownProps.filter))
+})
+```
 
 
 #### Best Practices
@@ -353,5 +373,4 @@ render(
   document.getElementById('root')
 )
 ```
-
 
