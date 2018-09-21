@@ -4,6 +4,10 @@
 
 
 
+## Model Schemas
+
+
+
 **Integration**
 
 - Flask-Alchemy must be initialized before Flask-Marshmallow
@@ -52,4 +56,21 @@ class BookSchema(ma.ModelSchema):
 ```
 
 
+
+**Ignoring Fields**
+
+
+
+**Nested Fields**
+
+
+
+**Hyperlinks**
+
+```python
+class MySchema(ma.ModelSchema):
+    class Meta:
+        model = Author
+    books = ma.List(ma.HyperlinkRelated('book_detail'))
+```
 
