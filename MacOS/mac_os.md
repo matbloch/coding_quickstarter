@@ -18,7 +18,7 @@
 - taskbar:
 	- show preview on hover
 	- different bars for different desktops
-
+- links in taskbar
 
 
 **Key assignment**

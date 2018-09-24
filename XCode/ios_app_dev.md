@@ -1,6 +1,10 @@
 # iOS Application Development
 
 **Tutorials**
+- [CodePath iOS Guides](https://guides.codepath.com/ios) - very good!
+
+
+**Examples**
 - [Objective-C: Single View Application](./tutorial_objective-c.md)
 
 
@@ -54,6 +58,7 @@
 - View Controller
 - First Responder
 - Exit
+- Storyboard Entry Point (first view)
 
 ![xcode_scene_content.png](./img/xcode_scene_content.png)
 
@@ -63,7 +68,7 @@
 
 
 
-## View Controllers
+# View Controllers
 - manages user interface and interaction between interface and data
 - base class: `UIViewController`
 
@@ -80,6 +85,14 @@
 **Container View Controller**
 - Example: Tab Bar
 - Contains multiple sub-views
+
+**Navigation View Controller**
+- Bar Button Item
+
+
+## NavigationViewController
+
+
 
 
 ## Views
@@ -118,6 +131,22 @@
 - The delegate will appear in the property tab of the view controller (in the storyboard)
 ![delegate_outlet_connected.png](./img_app_tutorial/delegate_outlet_connected.png)
 
+
+
+## Navigation in iOS
+
+Mechanisms:
+- Push navigation
+- Modal navigation
+- Tab Navigation
+
+
+### Push
+
+
+### Modal
+
+### Tab
 
 
 
