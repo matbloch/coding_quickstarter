@@ -74,6 +74,39 @@ DispatchQueue.concurrentPerform(iterations: 5) { (i) in
 }
 ```
 
-**Task in background - update in main**
+**Interval Executions**
 ```swift
+var timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+    self.someBackgroundTask(timer: timer)
+}
+func someBackgroundTask(timer:Timer) {
+    DispatchQueue.global(qos: DispatchQoS.background.qosClass).async {
+        print("do some background task")
+
+        DispatchQueue.main.async {
+            print("update some UI")
+        }
+    }
+}
 ```
+
+
+### Custom Queues
+
+```swift
+// serial
+let customSerialQueue = DispatchQueue(label: "com.yogevsitton.MyApp.myCustomSerialQueue")
+customSerialQueue.async {
+    // Code
+}
+// concurrent
+let customConcurrentQueue = DispatchQueue(label: "com.yogevsitton.MyApp.myCustomConcurrentQueue", attributes: .concurrent)
+customConcurrentQueue.async {
+    // Code
+}
+```
+
+
+
+### Thread Synchronization
+

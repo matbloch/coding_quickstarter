@@ -1,6 +1,9 @@
 # C++ Cheatsheet
 
-### Misc
+**Ressources**
+- [New C++ language features](https://github.com/AnthonyCalandra/modern-cpp-features#return-type-deduction)
+
+# Misc
 
 **Range-based for loop**
 ```cpp
@@ -41,15 +44,7 @@ const SbVector2f check_dir = [&center_0, &center_1] {
     return dir;
 }();
 ```
-Capture current scope as reference:
-```cpp
-const int myVariable = [&] {
-    if (bCondition)
-        return bCond ? computeFunc(inputParam) : 0;
-    else
-       return inputParam * 2;
-}();
-```
+
 
 **Move Semantics**
 - only binds to r values, otherwise makes copy (?)
@@ -72,6 +67,20 @@ namespace {
 	void my_func(){}
 }
 ```
+
+**`explicite` Constructor**
+- prevents copy initialization. E.g:
+
+```cpp
+    class B {
+        explicite B(int){}
+    }
+    // B b1 = 1; // NOT ALLOWED
+```
+
+
+
+
 
 -------------
 ### Operator Overloading
@@ -120,6 +129,8 @@ auto a1 = i;    // value
 auto & a2 = i;  // reference
 ```
 
+## Rvalue References
+
 **rvalues vs lvalues**
 - `lvalues`:
 	- refers to an object that persists beyond a single expression
@@ -157,11 +168,11 @@ foo(foobar()); // argument is rvalue: calls foo(X&&)
 - In `f(MemoryBlock&&)`. This version can modify the parameter.
 
 
-`const auto&&` will only bind to rvalue references. In this case you basically just want to say: "format_info_result should bind to a (any) reference so I can make sure the return value does not get copied".
-Hence, usually people choose `const auto &` instead of `const auto &&` as it is more concise and 'const auto &&' does not really offer any advantage over 'const auto &&'.
+- `const auto&&` will only bind to rvalue references. In this case you basically just want to say: "my_variable should bind to a (any) reference so I can make sure the return value does not get copied".
+- Hence, usually people choose `const auto &` instead of `const auto &&` as it is more concise and 'const auto &&' does not really offer any advantage over 'const auto &&'.
 
 
-Wouldn't you always use auto&& whenever you want to bind something to a mutable reference? auto& only binds lvalue types, hence auto&& would be more concise for this case as it allows to bind both rvalue and lvalue types.
+- Wouldn't you always use `auto&&` whenever you want to bind something to a mutable reference? `auto&` only binds lvalue types, hence `auto&&` would be more concise for this case as it allows to bind both `rvalue` and `lvalue` types.
 
 ## Pointers
 
@@ -382,13 +393,20 @@ void call(T fn) {
 }
 ```
 
+**Capture current scope as reference**
+```cpp
+const int myVariable = [&] {
+    if (bCondition)
+        return bCond ? computeFunc(inputParam) : 0;
+    else
+       return inputParam * 2;
+}();
+```
 
-# Argument Passing
+# Argument Passing and Function Returns
 
 - See [This post](http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters)
 
-
-# Function Returns
 - always return by value if possible (complier optimizations make this very fast)
 - only as in-out param, if additional sucess parameter is returned
 
@@ -517,17 +535,6 @@ std::cout << measure<>::execution(a, method, 123) << std::endl;
 
 
 # Misc Knowledge
-
-- `explicite` Constructor
-	- prevents copy initialization. E.g:
-	```cpp
-    	class B {
-        	explicite B(int){}
-        }
-        // B b1 = 1; // NOT ALLOWED
-    ```
-
-
 
 
 

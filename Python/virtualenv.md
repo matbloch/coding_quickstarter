@@ -1,4 +1,4 @@
-# Virtual Python Environments
+# Virtual Environments: Python 2
 - `virtualenv` is a tool to create isolated Python environments.
 - The basic problem being addressed is one of dependencies and versions, and indirectly permissions.
 
@@ -28,3 +28,9 @@
 - Activate it `workon <venv-name>`
 - Deactivate it `deactivate`
 - Remove the environment `rmvirtualenv <venv-name>`
+
+
+# Virtual Environments: Python 3
+
+- `venv`
+- directly integrated into Python3

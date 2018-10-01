@@ -51,6 +51,7 @@ Project structure:
 
 **Select Initial View Controller**
 - Select view controller in storyboard and check **Is Initial View Controller**
+- **Or**: Drag & Drop app entry point arrow in storyboard onto the specified view controller
 ![initial_view_controller.png](./img_app_tutorial/initial_view_controller.png)
 
 ## 5.1 Adding Storyboard View

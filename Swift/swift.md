@@ -56,6 +56,12 @@ Usage:
 #endif
 ```
 
+### Assertions
+
+```swift
+assert(myVar != nil)
+```
+
 ### Exceptions
 **Definition**
 - as enums, from `Error` protocol
@@ -312,6 +318,21 @@ if let index = arr.index(of: val) {
 }
 ```
 
+**Mapping**
+```swift
+myarr.map {$0 + 10}
+```
+
+**Flattening**
+```swift
+let results = [[5,2,7], [4,8], [9,1,3]]
+let allResults = results.flatMap { $0 }
+// [5, 2, 7, 4, 8, 9, 1, 3]
+```
+
+#### Array Slices
+
+
 #### Sets
 - unique values, unordered
 - Types must conform to `Hashable` protocol
@@ -421,7 +442,7 @@ var closeCities = cityDistanceDict.filter { $0.value < 1000 }
 
 **Iteration**
 ```swift
-
+ for (key, value) in myDict {}
 ```
 
 
@@ -523,6 +544,20 @@ func ls(array: [Int]) -> (large: Int, small: Int) {
 print(ls(array: [1,2,3,4]).large)
 ```
 
+**Optional Tuple Return*
+
+```swift
+func maybeGetHighScore() -> (String, Int)? {
+    return nil
+}
+if let possibleScore = maybeGetHighScore() {
+    possibleScore.0
+    possibleScore.1
+} else {
+    print("Nothing Here")
+}
+```
+
 **I/O parameters**
 - `inout` keyword
 - pass variable by ref `&`
@@ -593,11 +628,14 @@ processItems(123) { [unowed self] (var1, var2) in
 
 **Examples**
 
+**As argument**
 ```swift
 reversedNames = names.sorted(by: { (s1: String, s2: String) -> Bool in
     return s1 > s2
 })
 ```
+
+**inline function**
 ```swift
 let divide = {
    (val1: Int, val2: Int) -> Int in 
@@ -607,6 +645,7 @@ let divide = {
 let result = divide(200, 20)
 ```
 
+**initialization**
 ```swift
 let someProperty: SomeType = {
     // create a default value for someProperty inside this closure
@@ -614,6 +653,52 @@ let someProperty: SomeType = {
     return someValue
 }()
 ```
+
+**lazy initialization**
+```swift
+func createButton(enterTitle: String) -> UIButton {
+ let button = UIButton(frame: buttonSize)
+ button.backgroundColor = .black
+ button.titleLabel?.text = enterTitle
+ return button
+}
+```
+
+# Persistence
+
+### `Codable`
+
+```swift
+struct Product: Codable {
+  var title:String
+  var price:Double
+  var quantity:Int
+  enum CodingKeys: String, CodingKey {
+    case title
+    case price
+    case quantity
+  }
+  init(title:String,price:Double, quantity:Int) {
+    self.title = title
+    self.price = price
+    self.quantity = quantity
+  }
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(title, forKey: .title)
+    try container.encode(price, forKey: .price)
+    try container.encode(quantity, forKey: .quantity)
+  }
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    title = try container.decode(String.self, forKey: .title)
+    price = try container.decode(Double.self, forKey: .price)
+    quantity = try container.decode(Int.self, forKey: .quantity)
+  }
+}
+```
+
+
 
 # Integrating C
 

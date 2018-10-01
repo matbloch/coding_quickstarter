@@ -39,8 +39,12 @@ node.transform = SCNmatrix4(transform)
 let orientation = UIInterfaceOrientation.portrait
 let viewportSize = self.sceneView.frame.size
 let fromCameraToViewTransform = frame.displayTransform(for: orientation, viewportSize: viewportSize)
-let my_point = CGPoint(x: 100, y: 20)
-let view_coordinates = my_point.applying(fromCameraToViewTransform)
+let my_point = CGPoint(x: 0.5, y: 0.7)	// relative coordinates
+let view_coordinates_relative = my_point.applying(fromCameraToViewTransform)
+// back to scaled view coordinates
+var view_coordinates = CGPoint()
+view_coordinates.x = view_coordinates_relative.x * UIScreen.main.bounds.size.width;
+view_coordinates.y = view_coordinates_relative.y * UIScreen.main.bounds.size.height;
 ```
 
 **View coordinates to Image coordinates**

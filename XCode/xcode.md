@@ -1,6 +1,17 @@
 # XCode
 
 
+## Experience Improvements & Hotkeys
+
+**Hotkeys**
+- [ctrl] + R: run
+- [ctrl] + B: build
+- [ctrl] + U: run unittests
+
+**Adjustments**
+- Open files in focussed view: "Preferences > Navigation", select `Uses focused editor` in "navigation" section
+
+
 
 ## Storyboards
 - The storyboard is the `view` of the application
@@ -8,10 +19,7 @@
 ![Storyboard](img/xcode_storyboard.jpg)
 
 
-
-
 ## Misc
-
 
 ### Running App on the Phone
 
@@ -32,13 +40,6 @@
 - Drag and drop it into the XCode project
 - No header includes or linking necessary
 
-
-
-
-
-
-
-==================================
 -------------
 
 ### Header Search Paths
