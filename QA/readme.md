@@ -3,5 +3,6 @@
 - Unit Testing
 - static/dynamic code analyzer
 - memory leaks: Valgrind
+- integration testing
 - continuous integration: Jenkins/Travis
 
