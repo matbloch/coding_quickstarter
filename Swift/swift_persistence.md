@@ -79,7 +79,7 @@ let name = NSUserDefaults.standard.string(forKey: "name") ?? "Unknown user"
 let data = NSKeyedArchiver.archivedData(withRootObject:bikes)
 
 // Save encoded NSData into UserDefaults
-UserDefaults.standardUserDefaults().setObject(data, forKey: "bikes")
+UserDefaults.standard.set(data, forKey: "bikes")
 
 if let data = UserDefaults.standard.object(forKey: "bikes") as? NSData {
     // Decode the NSData back into an object
@@ -87,6 +87,24 @@ if let data = UserDefaults.standard.object(forKey: "bikes") as? NSData {
 }
 ```
 
+#### Examples
+
+**Enum**
+```swift
+enum Food: UInt32 {
+    case pizza
+    case pasta
+}
+private enum CodingKeys: String, CodingKey {
+    case food
+}
+override func encode(with aCoder:NSCoder) {
+	aCoder.encode(food.rawValue, forKey: CodingKeys.food.rawValue)
+}
+public required init?(coder aDecoder: NSCoder) {
+	self.food = Food(aDecoder.decodeObject(forKey: CodingKeys.food.rawValue) as! UInt32)
+}
+```
 
 
 # `Codable` JSON encoding

@@ -11,6 +11,8 @@
 **Adjustments**
 - Open files in focussed view: "Preferences > Navigation", select `Uses focused editor` in "navigation" section
 
+**Views**
+- Console: "View > Debug Area > Active Console"
 
 
 ## Storyboards

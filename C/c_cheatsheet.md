@@ -153,7 +153,7 @@ void *memcpy(void *str1, const void *str2, size_t n)
 
 ** Arrays as Arguments**
 
-```
+```cpp
 // pointer
 void myFunction(int *param) {
 }
@@ -168,6 +168,121 @@ double getAverage(int arr[], int size) {
 ```
 
 
+
+## Misc notes
+
+
+
+### 2D Arrays
+
+**Pass Array of Strings**
+```cpp
+static void func(char *p[])
+{
+    p[0] = "Hello";
+    p[1] = "World";
+}
+static void func(char **p)
+{
+    p[0] = "Hello";
+    p[1] = "World";
+}
+int main(int argc, char *argv[])
+{
+    char *strings[2];
+    func(strings);
+    printf("%s %s\n", strings[0], strings[1]);
+    return 0;
+}
+```
+
+
+**Allocating 2D Arrays**
+Option 1: allocate rows, then columns
+```cpp
+char **array1 = malloc(nrows * sizeof(char *)); // Allocate row pointers
+for(i = 0; i < nrows; i++) {
+  array1[i] = malloc(ncolumns * sizeof(char));  // Allocate each row separately
+}
+```
+
+
+
+**`char` to std::string**
+
+```cpp
+char** c;
+vector<string> v(c, c + nr_elements);
+```
+
+**Allocate**
+```cpp
+int ** allocateTwoDimenArrayOnHeapUsingNew(int row, int col) {
+	int ** ptr = new int*[row];
+	for(int i = 0; i < row; i++) {
+		ptr[i] = new int[col];
+	}
+	return ptr;
+}
+
+int ** allocateTwoDimenArrayOnHeapUsingMalloc(int row, int col) {
+	int ** ptr = (int **) malloc(sizeof(int *)*row);
+	for(int i = 0; i < row; i++) {
+		ptr[i] = (int *) malloc(sizeof(int)*col);
+	}
+	return ptr;
+}
+```
+
+
+**Deallocate**
+
+```cpp
+
+void destroyTwoDimenArrayOnHeapUsingDelete(int ** ptr, int row, int col){
+	for(int i = 0; i < row; i++) {
+		delete [] ptr[i];
+	}
+	delete [] ptr;
+}
+
+void destroyTwoDimenArrayOnHeapUsingFree(int ** ptr, int row, int col) {
+	for(int i = 0; i < row; i++){
+		free(ptr[i]);
+	}
+	free(ptr);
+}
+```
+
+**Example:** `std::vector<std::string>` to `char`
+
+```cpp
+std::vector<std::string> my_images;
+const size_t nr_images = my_images.size();
+std::vector<std::vector<char>> vstrings;
+std::vector<char*> cstrings;
+vstrings.reserve(nr_images);
+cstrings.reserve(nr_images);
+
+// convert to c string vector
+for (size_t i = 0; i < nr_images; ++i) {
+	// copy to vector of characters
+    vstrings.emplace_back(my_images[i].begin(), my_images[i].end());
+    // add string terminator
+    vstrings.back().push_back('\0');
+    // copy pointer to data
+    cstrings.push_back(vstrings.back().data());
+}
+
+char **my_c_array = (char **) malloc(nr_images * sizeof(char *));
+for (size_t i = 0; i < nr_images; i++) {
+    const size_t size = vstrings[i].size() * sizeof(char);
+    // allocate data in array
+    my_c_array[i] = (char *) malloc(size);
+    // copy data to array
+    memcpy(my_c_array[i], cstrings[i], size);
+}
+```
 
 
 
