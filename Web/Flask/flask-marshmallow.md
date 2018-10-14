@@ -111,6 +111,7 @@ class BlogSchema(Schema):
 ```python
 collaborators = fields.Nested(UserSchema, many=True)
 ```
+`{collaborators: [{...}, {...}]}`
 
 **Select Nested Attributes**
 
@@ -155,9 +156,10 @@ class UserSchema(Schema):
     employer = fields.Nested('self', exclude=('employer', ), default=None)
 ```
 
+### Custom Fields
 
-### Validation
 
+- hyperlinks
 
 
 

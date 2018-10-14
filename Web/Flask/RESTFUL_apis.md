@@ -1,7 +1,29 @@
 # Restful APIs with FLASK
 
 
+## Design
 
+### REST Resources
+
+- document (single item): /api/v1/cars/123
+- collection: /api/v1/cars
+
+
+
+
+- Although the internal models of your application may map neatly to resources, it isn't necessarily a one-to-one mapping. Avoid leaking implementation details out to your API.
+
+**Many-to-Many Relationships**
+
+- hypermedia as the engine of application state (HATEOAS)
+	- resource representations come along with hyperlinks making it easier for clients to identify possible actions
+
+**Creating/Updating Relationships**
+
+
+
+
+## Implementation
 
 ```python
 from flask import Flask, request
@@ -27,22 +49,12 @@ if __name__ == '__main__':
 ```
 
 
-**Defining The Endpoint**
-
-
-
-
-
 **Return Format**
 
 - `return` `content` `status-code`, `headers`
 
 `return {'task': 'Hello world'}, 201, {'Etag': 'some-opaque-string'}`
 
-## Implementation
-
-
-- with/without url routing
 
 
 ## Flask RESTFul

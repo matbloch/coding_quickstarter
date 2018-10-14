@@ -8,7 +8,8 @@
 ### HTTP Methods
 - `GET` get
 - `POST` create
-- `PUT` update or create, if it does not exist
+- `PUT` update/replace, sending whole entity
+- `PATCH` partial update
 - `DELETE` remove
 
 
@@ -63,6 +64,16 @@ if (error) { throw ... }
 // otherwise
 const normalizedData = normalize(data, schema)
 ```
+
+#### Many-to-Many Relationships
+- encode relationships as links
+
+**References vs Embedding**
+
+- references: encode relationships as links
+- embeddings: auto-load related resources
+	- can easily result in an "N+1 select issue"
+
 
 #### Error Handling
 

@@ -170,6 +170,26 @@ for u in users:
 	db.session.delete(u)
 ```
 
+**Adding Relationships**
+
+1-to-many:
+```python
+a = Address(email='foo@bar.com')
+p = Person(name='foo')
+p.addresses.append(a)
+```
+```python
+a = Address(email='foo@bar.com')
+p = Person(name='foo', addresses=[a])
+```
+
+many-to-many:
+
+```python
+my_day.players.add(my_player) #Adds
+my_day.players.remove(my_player) #Remove
+```
+
 
 
 ## Query API
