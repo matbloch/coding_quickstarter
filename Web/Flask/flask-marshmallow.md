@@ -163,11 +163,103 @@ class UserSchema(Schema):
 
 ## Using the Schemas
 
+
+### Deserializing
+
+**Deserializing to Dict**
+- create create a dictionary of field names/values from json/python dict
+
+```python
+user_data = {
+    'created_at': '2014-08-11T05:26:03.869245',
+    'email': u'ken@yahoo.com',
+    'name': u'Ken'
+}
+schema = UserSchema()
+result = schema.load(user_data)
+# {'name': 'Ken',
+#  'email': 'ken@yahoo.com',
+#  'created_at': datetime.datetime(2014, 8, 11, 5, 26, 3, 869245)},
+```
+
+**Deserializing to Object**
+- using `@post_load` decorator
+- registers a method that is invoked after deserialization
+
+```python
+from marshmallow import Schema, fields, post_load
+
+class UserSchema(Schema):
+    name = fields.Str()
+    email = fields.Email()
+    created_at = fields.DateTime()
+
+    @post_load
+    def make_user(self, data):
+        return User(**data)
+```
+
+```python
+user_data = {
+    'name': 'Ronnie',
+    'email': 'ronnie@stones.com'
+}
+schema = UserSchema()
+result = schema.load(user_data)
+result # => <User(name='Ronnie')>
+```
+
+#### Validation
+
+**Deserialization from JSON**
+
+```python
+from flask import request
+from marshmallow import ValidationError
+
+@app.route('/items/', methods=['GET'])
+def process_request():
+    json_data = request.get_json(force=True)
+    if not json_data:
+        404
+    # Validate and deserialize input
+    try:
+    	result = ItemSchema().load(json_data)
+    except ValidationError as err:
+        err.messages  # => {'email': ['"foo" is not a valid email address.']}
+        valid_data = err.valid_data  # => {'name': 'John'}
+```
+
+**Validation for `PUT` and `POST`**
+
+- change fields to accept `None`
+
+
+```python
+class UserSchema(ModelSchema):
+    class Meta:
+        model = User
+        ...
+    name = fields.Str(missing=None, required=True)
+    email = fields.Email(missing=None, required=True)
+```
+
+**Ignoring Missing Fields**
+
+```python
+// all fields optional
+result = UserSchema().load({'age': 42}, partial=True)
+// some fields optional
+result = UserSchema().load({'age': 42}, partial=('name',))
+```
+
+
 ### Serializing
 
-**Serializing Objects: `dumping`**
-- creates json/python dict from object
+**Serializing Objects**
 - `dump` serializes object to python dict
+- creates json/python dict from object
+
 ```python
 user = User(name="Monty", email="monty@python.org")
 schema = UserSchema()
@@ -175,6 +267,7 @@ result = schema.dump(user)
 ```
 
 **Filtering Outputs**
+- `only`
 ```python
 summary_schema = UserSchema(only=('name', 'email'))
 summary_schema.dump(user)
@@ -189,17 +282,3 @@ users = [user1, user2]
 UserSchema().dump(users, many=True)
 ```
 
-### Deserializing
-
-**Deserializing Objects: `loading`**
-- create object from json/python dict
-
-```python
-user_data = {
-    'created_at': '2014-08-11T05:26:03.869245',
-    'email': u'ken@yahoo.com',
-    'name': u'Ken'
-}
-schema = UserSchema()
-result = schema.load(user_data)
-```

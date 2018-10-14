@@ -1,131 +1,103 @@
+# Flask
 
 
 
-## Forms (Flask-WTForms)
+## Routing
+- `<converter:variable_name>`
+	- `string`
+	- `int`
+	- `float`
+	- `path`
+	- `uuid`
 
 
-### Custom Fields
+```python
+@app.route('/user/<username>')
+def show_user_profile(username):
+    # show the user profile for that user
+    return 'User %s' % username
 
-Example:
-"""python
+@app.route('/post/<int:post_id>')
+def show_post(post_id):
+    # show the post with the given id, the id is an integer
+    return 'Post %d' % post_id
+```
 
-class FolderRendererWidget(object):
-    _js = """alert('{} says: Torresmo eh mto da hora.');"""
-    html_params = staticmethod(html_params)
-
-    def __init__(self, input_type='submit', text=''):
-        self.input_type = input_type
-        self.text = text
-
-    def __call__(self, field, **kwargs):
-        kwargs.setdefault('id', field.id)
-        # if hasattr(field, 'users'):
-        #     html = [u'<ul %s>' % html_params(id=field.id)]
-        #     # A sure hope users is iterable:
-        #     for u in field.users:
-        #         params = dict(kwargs, id=u['_id'], onclick=self._js.format(u['name']))
-        #         html.append(u'<li %s>%s</li>' % (html_params(**params), u['name']))
-        #     html.append('<li>TUKA EH + TORRESMO</li>')
-        #     html.append(u'</ul>')
-        # else:
-        #     html = '<h1>Too bad, so sad</h1>'
-
-		# option 1
-        html = [u'<div %s>' % html_params(id=field.id)]
-        html.append(u'stuff...')
-        html.append(u'</div>')
-        return u''.join(html)
-		
-		# option 2
-		attributes = widgets.html_params(**kwargs)
-		return widgets.HTMLString('<label %s>%s</label>' % (attributes, text or self.text))
-
-		# option 3
-		html = ['<%s %s>' % (self.html_tag, html_params(**kwargs))]
-		for subfield in field:
-			if self.prefix_label:
-				html.append('<li>%s %s</li>' % (subfield.label, subfield()))
-			else:
-				html.append('<li>%s %s</li>' % (subfield(), subfield.label))
-		html.append('</%s>' % self.html_tag)
-		return HTMLString(''.join(html))
+**URL building**
+`print(url_for('show_user_profile', username='John Doe'))`
 
 
-class CustomFolderSelect(Field):
-    """
-    Parent Class "Field" fields:
-    - errors (error messages)
-    - validators (validator)
-    - widget (renderer)
-    ........
-    Arguments:
+#### Blueprint
 
-    ........
-    Variables:
-    - name
-    - label
-    - description
-    - id
-    - validators
-    - filters
+**Blueprint definition `admin.py`**
+```python
+from flask import Blueprint
+admin_blueprint = Blueprint('admin', __name__)
 
-    """
+@admin.route('/items/', methods=['GET'])
+def get_items():
+	pass
+```
 
-    # renderer
-    widget = FolderRendererWidget()
+**Blueprint registration**
+```python
+from .admin import admin_blueprint
+app.register_blueprint(admin_blueprint, url_prefix="/admin")
 
-    # field data
-    folder_path = None
+```
 
-    #  custom constructors
-    def __init__(self, label=None, validators=None, **kwargs):
-        super(CustomFolderSelect, self).__init__(label, validators, **kwargs)
+#### HTTP Methods
+```python
+from flask import request
 
-    # preprocess form data (from updates)
-    def process_formdata(self, valuelist):
-        if valuelist:
-            self.data = valuelist[0]
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+    	pass
+```
+
+
+#### The Request Object
+
+**JSON**
+```python
+@app.route('/login', methods=['POST'])
+def login():
+    json_data = request.get_json(force=True)
+	if not json_data:
+    	return 400
+```
+
+**Forms**
+
+```python
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if valid_login(request.form['username'],
+                       request.form['password']):
+            return log_the_user_in(request.form['username'])
         else:
-            self.data = ''
-
-    # return value
-    def _value(self):
-        return text_type(self.data) if self.data is not None else ''
-
-# the form
-class NewDirectoryForm_new(FlaskForm):
-    """
-    Defines the form used to create a new Dataset
-    (abstract class)
-    """
-
-    folder = CustomFolderSelect(id="mycstmid")
-
-@directories.route('/new', methods=['GET', 'POST'])
-def new():
-
-    # form = NewDirectoryForm()
-    # if form.validate_on_submit():
-    #
-    #     # init new directory job
-    #
-    #     # redirect
-    #     return render_template(
-    #         'directories/new.html',
-    #         title='Scan new directory',
-    #         form=form
-    #     )
-
-    # form = NewDirectoryForm()
-    form = NewDirectoryForm_new()
-
-    # load registration template
-    return render_template(
-        'page/directories/new.html',
-        title='Scan new directory',
-        form=form
-    )
+            error = 'Invalid username/password'
+    # the code below is executed if the request method
+    # was GET or the credentials were invalid
+    return render_template('login.html', error=error)
+```
 
 
+**Files**
+```python
+from flask import request
 
-"""
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        f = request.files['the_file']
+        f.save('/var/www/uploads/uploaded_file.txt')
+```
+
+**URL parameters**
+- `?key=value`
+- `searchword = request.args.get('key', '')` get specific key
+

@@ -6,3 +6,6 @@
 - integration testing
 - continuous integration: Jenkins/Travis
 
+
+
+- Automatic code reviews: Codacy, bettercodehub
