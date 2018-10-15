@@ -153,6 +153,7 @@ followers = db.Table('followers',
 ## Object Manipulation
 
 **Insert**
+
 - `db.session.add({Object})`
 
 ```python
@@ -161,7 +162,26 @@ db.session.add(admin)
 db.session.commit()
 ```
 
+**Read**
+
+- `{Object}.query`
+
+```python
+users = User.query.all()
+```
+
+**Update**
+
+- `db.session.update({Object})`
+
+```python
+admin.username = "another_name"
+db.session.update(admin)
+db.session.commit()
+```
+
 **Deletion**
+
 - `db.session.delete({Object})`
 
 ```python
@@ -198,13 +218,20 @@ my_day.players.remove(my_player) #Remove
 
 
 
-
+**filtering**
 
 - `User.query.all()` query all
 - `User.query.filter_by(username='admin').first()` search by column
+- `User.query.filter(User.email.endswith('@example.com')).all()`
+
+**Ordering**
+
 - `User.query.order_by(User.username.desc()).all()`
 
+**Limiting**
 
+- `User.query.first()`
+- `User.query.limit(1).all()`
 
 
 
