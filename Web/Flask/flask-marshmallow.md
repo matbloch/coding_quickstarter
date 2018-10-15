@@ -163,6 +163,141 @@ class UserSchema(Schema):
 
 
 
+
+
+### Functions
+
+
+
+#### Serialization
+
+**Function**
+
+```python
+class UserSchema(Schema):
+    name = fields.String()
+    uppername = fields.Function(lambda obj: obj.name.upper())
+```
+
+**Method**
+
+```python
+class UserSchema(Schema):
+    created_at = fields.DateTime()
+    since_created = fields.Method("get_days_since_created")
+
+    def get_days_since_created(self, obj):
+        return dt.datetime.now().day - obj.created_at.day
+```
+
+
+
+#### Deserialization
+
+```python
+class UserSchema(Schema):
+    # `Method` takes a method name (str), Function takes a callable
+    balance = fields.Method('get_balance', deserialize='load_balance')
+    def get_balance(self, obj):
+        return obj.income - obj.debt
+    def load_balance(self, value):
+        return float(value)
+```
+
+
+
+### Context
+
+- forward additional data to schema
+
+```python
+class UserSchema(Schema):
+    name = fields.String()
+    # Function fields optionally receive context argument
+    is_author = fields.Function(lambda user, context: user == context['blog'].author)
+    likes_bikes = fields.Method('writes_about_bikes')
+
+    def writes_about_bikes(self, user):
+        return 'bicycle' in self.context['blog'].title.lower()
+
+schema = UserSchema()
+
+user = User('Freddie Mercury', 'fred@queen.com')
+blog = Blog('Bicycle Blog', author=user)
+
+schema.context = {'blog': blog}
+```
+
+
+
+
+
+
+
+### Relationships
+
+Two options to provide relationship resource:
+
+- As reference (e.g. link or id)
+- As embedding (full nested representation)
+
+
+
+#### References
+
+
+
+**Limiting Fields at Runtime**
+
+```python
+class SiteSchema(Schema):
+    blog = fields.Nested(BlogSchema2)
+
+schema = SiteSchema(only=['blog.author.email'])
+result, errors = schema.dump(site)
+```
+
+```json
+{
+    'blog': {
+        'author': {'email': u'monty@python.org'}
+    }
+}
+```
+
+
+
+**Pluck**
+
+```python
+class UserSchema(Schema):
+    name = fields.String()
+    email = fields.Email()
+    friends = fields.Pluck('self', 'name', many=True)
+# ... create ``user`` ...
+serialized_data = UserSchema().dump(user)
+pprint(serialized_data)
+# {
+#     "name": "Steve",
+#     "email": "steve@example.com",
+#     "friends": ["Mike", "Joe"]
+# }
+```
+
+
+
+
+
+#### Embeddings
+
+
+
+```python
+
+```
+
+
+
 ## Using the Schemas
 
 
