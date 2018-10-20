@@ -243,6 +243,31 @@ Two options to provide relationship resource:
 
 
 
+**Two-way Nesting**
+
+- Use class name string in first reference
+- use **exclude** to avoid recursion
+
+```python
+class AuthorSchema(Schema):
+    # Make sure to use the 'only' or 'exclude' params
+    # to avoid infinite recursion
+    books = fields.Nested('BookSchema', many=True, exclude=('author', ))
+    class Meta:
+        fields = ('id', 'name', 'books')
+
+class BookSchema(Schema):
+    author = fields.Nested(AuthorSchema, only=('id', 'name'))
+    class Meta:
+        fields = ('id', 'title', 'author')
+```
+
+
+
+
+
+
+
 #### References
 
 
@@ -390,6 +415,15 @@ result = UserSchema().load({'age': 42}, partial=True)
 result = UserSchema().load({'age': 42}, partial=('name',))
 ```
 
+**Custom Lambda Validation**
+
+```python
+age = fields.Number(validate=lambda n: 18 <= n <= 40)
+```
+
+
+
+
 
 ### Serializing
 
@@ -405,6 +439,7 @@ result = schema.dump(user)
 
 **Filtering Outputs**
 - `only`
+- `exclude`
 ```python
 summary_schema = UserSchema(only=('name', 'email'))
 summary_schema.dump(user)
@@ -417,5 +452,21 @@ user1 = User(name="Mick", email="mick@stones.com")
 user2 = User(name="Keith", email="keith@stones.com")
 users = [user1, user2]
 UserSchema().dump(users, many=True)
+```
+
+
+
+##  Integration with SQL-Alchemy
+
+- use `additional` to add besides the defined fields
+
+
+
+```python
+class UserSchema(Schema):
+    uppername = fields.Function(lambda obj: obj.name.upper())
+    class Meta:
+        # No need to include 'uppername'
+        additional = ("name", "email", "created_at")
 ```
 
