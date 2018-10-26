@@ -20,15 +20,12 @@ class Book(db.Model):
 
 
 
-# Declaring Schemas
+# Schemas
 
-**Options**
-- `required`
-- `allow_none`
-- `load_only`
-- `dump_only` "read-only" skip field during
+## Defining the Schemas
 
-**Model Definition**
+#### 1. Model Definition
+
 ```python
 import datetime as dt
 
@@ -39,7 +36,7 @@ class User(object):
         self.created_at = dt.datetime.now()
 ```
 
-**Output Schema**
+#### 2. Output Schema
 
 ```python
 from marshmallow import Schema, fields
@@ -49,9 +46,34 @@ class UserSchema(Schema):
     created_at = fields.DateTime()
 ```
 
+**Field Options**
+
+- `required`
+- `allow_none`
+- `load_only`
+- `dump_only` "read-only" skip field during
+
+#### 3. Runtime Options
+
+```python
+my_schema = MySchema({options})
+```
+- `only` (tuple) whitelist fields
+- `exclude` (tuple) blacklist fields
+- `many` (bool) `True` if schema is used to dump list of objects
+- `context` (dict) pass additional data
+- `load_only` (tuple) skip fields during serialization (json dump)
+- `dump_only` (tuple) skip fields during de-serialization (object loading)
+- `partial` (bool|tuple) ignore missing (required) fields
+- `unknown` (`EXCLUDE`, `INCLUDE`, `RAISE`) 
 
 
-### Required Fields
+
+
+
+-----
+
+### A. Required Fields
 
 ```python
 from marshmallow import ValidationError
@@ -69,7 +91,7 @@ class UserSchema(Schema):
     email = fields.Email()
 ```
 
-### Unknown Fields
+### B. Unknown Fields
 
 - `unknown`
 	- `INCLUDE` add unknown fields during `load`
@@ -88,7 +110,7 @@ or
 `UserSchema().load(data, unknown=INCLUDE)`
 
 
-### Read-only/Write-only
+### C. Read-only/Write-only
 
 ```python
 class UserSchema(Schema):
@@ -100,7 +122,7 @@ class UserSchema(Schema):
 ```
 
 
-### Nested Schemas
+### D. Nested Schemas
 ```python
 class BlogSchema(Schema):
     title = fields.String()
@@ -108,6 +130,7 @@ class BlogSchema(Schema):
 ```
 
 **Multiple objects**
+
 ```python
 collaborators = fields.Nested(UserSchema, many=True)
 ```
@@ -156,7 +179,7 @@ class UserSchema(Schema):
     employer = fields.Nested('self', exclude=('employer', ), default=None)
 ```
 
-### Custom Fields
+### E. Custom Fields
 
 
 - hyperlinks
@@ -165,7 +188,7 @@ class UserSchema(Schema):
 
 
 
-### Functions
+### F. Functions
 
 
 
@@ -206,7 +229,7 @@ class UserSchema(Schema):
 
 
 
-### Context
+### G. Context
 
 - forward additional data to schema
 
@@ -230,18 +253,12 @@ schema.context = {'blog': blog}
 
 
 
-
-
-
-
-### Relationships
+### H. Relationships
 
 Two options to provide relationship resource:
 
 - As reference (e.g. link or id)
 - As embedding (full nested representation)
-
-
 
 **Two-way Nesting**
 
@@ -262,15 +279,7 @@ class BookSchema(Schema):
         fields = ('id', 'title', 'author')
 ```
 
-
-
-
-
-
-
 #### References
-
-
 
 **Limiting Fields at Runtime**
 
@@ -290,8 +299,6 @@ result, errors = schema.dump(site)
 }
 ```
 
-
-
 **Pluck**
 
 ```python
@@ -309,16 +316,131 @@ pprint(serialized_data)
 # }
 ```
 
-
-
-
+------
 
 #### Embeddings
+
+```python
+
+```
+
+
+
+
+
+### I. Custom Field Validation
+
+
+
+**Lamda Validation**
+
+```python
+latitude = fields.Float(validate=lambda n: -180 <= n <=180)
+```
+
+
+
+
+
+**Using `validate`**
+
+```python
+    password = fields.Str(validate=[validate.Length(min=6, max=36)])
+```
+
+
+
+### J. Post dump/load operations
 
 
 
 ```python
+class TodoSchema(Schema):
+    id = fields.Int(dump_only=True)
+    done = fields.Boolean(attribute='is_done', missing=False)
+    user = fields.Nested(UserSchema, exclude=('joined_on', 'password'), dump_only=True)
+    content = fields.Str(required=True)
+    posted_on = fields.DateTime(dump_only=True)
 
+    # Again, add an envelope to responses
+    @post_dump(pass_many=True)
+    def wrap(self, data, many):
+        key = 'todos' if many else 'todo'
+        return {
+            key: data,
+        }
+
+    # We use make_object to create a new Todo from validated data
+    @post_load
+    def make_object(self, data):
+        if not data:
+            return None
+        return Todo(
+            content=data['content'],
+            is_done=data['is_done'],
+            posted_on=dt.datetime.utcnow(),
+        )
+```
+
+
+
+
+
+## Meta
+
+- Options object for schema
+
+
+
+
+
+## Extending Schemas
+
+- Example: envelope
+
+
+
+## Examples and Tricks
+
+
+
+
+
+**Different Marshmallow.field and Object attribute names**
+
+- `attribute="{internal_name}"` - name of the key to get value from when **se**
+
+```python
+class UserSchema(Schema):
+    name = fields.String()
+    email_addr = fields.String(attribute="email")
+```
+
+```python
+user = User('Keith', email_addr='dummy@python.com')
+result = UserSchema.dump(user)
+# {'name': 'Keith', 'email': 'dummy@python.com'}
+```
+
+
+
+
+
+
+
+**Additional Fields at Runtime**
+
+```python
+from marshmallow import Schema, fields
+class MySchema(Schema):
+    def __init__(self, additional_fields=None, **kwargs):
+        super().__init__(**kwargs)
+        self.declared_fields.update(additional_fields)
+
+additional_fields = {
+    'foo': fields.Int()
+}
+sch = MySchema(additional_fields=additional_fields)
 ```
 
 
@@ -421,6 +543,12 @@ result = UserSchema().load({'age': 42}, partial=('name',))
 age = fields.Number(validate=lambda n: 18 <= n <= 40)
 ```
 
+**Using Schema for Validation only**
+
+```python
+LenientSchema().validate({'name': None})  # No errors
+```
+
 
 
 
@@ -428,6 +556,7 @@ age = fields.Number(validate=lambda n: 18 <= n <= 40)
 ### Serializing
 
 **Serializing Objects**
+
 - `dump` serializes object to python dict
 - creates json/python dict from object
 
@@ -468,5 +597,18 @@ class UserSchema(Schema):
     class Meta:
         # No need to include 'uppername'
         additional = ("name", "email", "created_at")
+```
+
+
+
+
+
+```python
+
+class UserSchema(Schema):
+    class Meta:
+        fields = ("id", "email", "date_created")
+        exclude = ("password", "secret_attribute")
+
 ```
 

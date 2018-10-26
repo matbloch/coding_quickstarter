@@ -87,3 +87,26 @@ function mapDispatchToProps(dispatch) {
   request: {}
 }
 ```
+
+
+# CORS
+
+
+
+- Cross-Origin Resource Sharing (CORS) is a specification that prevents JavaScript from making requests across domain boundaries
+
+
+
+**Solution**
+
+- Modify server to accept request from a different origin
+
+
+
+`Access-Control-Allow-Origin: http://localhost:3000`
+
+
+
+or 
+
+`Access-Control-Allow-Origin: *`

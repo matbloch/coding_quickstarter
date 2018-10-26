@@ -33,16 +33,12 @@ class ModelName(db.Model):
 
 
 
-
-
-`db.Column`
+**`db.Column` Options**
 
  - `primary_key` Bool
  - `unique` Bool
  - `nullable` Bool
  - `autoincrement` Bool
-
-
 
 **Datatypes**
 
@@ -132,10 +128,6 @@ class Teacher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 ```
 
-
-
-
-
 **Association Table**
 
 ```python
@@ -144,6 +136,117 @@ followers = db.Table('followers',
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
 ```
+
+
+
+### Restricted Relationships
+
+- `primaryjoin`
+- Only link a specific subset
+
+```python
+
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    boston_addresses = relationship("Address",
+                    primaryjoin="and_(User.id==Address.user_id, "
+                        "Address.city=='Boston')")
+
+class Address(Base):
+    __tablename__ = 'address'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    city = Column(String)
+```
+
+
+
+
+
+
+
+
+
+## Hybrid Attributes
+
+- `@hybrid_property`
+
+```python
+class Interval(Base):
+    __tablename__ = 'interval'
+
+    id = Column(Integer, primary_key=True)
+    start = Column(Integer, nullable=False)
+    end = Column(Integer, nullable=False)
+    
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+    @hybrid_property
+    def length(self):
+        return self.end - self.start
+```
+
+
+
+**Hybrid Attributes for queriyng**
+
+- **Note**: user sqlalchemy `abs` for SQL function
+
+```python
+from sqlalchemy import func
+
+class Interval(object):
+    # ...
+    @hybrid_property
+    def radius(self):
+        return abs(self.length) / 2
+
+    @radius.expression
+    def radius(cls):
+        return func.abs(cls.length) / 2
+```
+
+- `Session().query(Interval).filter(Interval.radius > 5)`
+
+
+
+
+
+
+
+
+
+
+
+## Setters
+
+
+
+```python
+class Interval(object):
+    # ...
+
+    @hybrid_property
+    def length(self):
+        return self.end - self.start
+    @length.setter
+    def length(self, value):
+        self.end = self.start + value
+```
+
+- `interval = Interval(5, 10)`
+- `interval.length = 12`
+
+
+
+
+
+
+
+
 
 
 
@@ -185,9 +288,8 @@ db.session.commit()
 - `db.session.delete({Object})`
 
 ```python
-users = User.query.all()
-for u in users:
-	db.session.delete(u)
+users = User.query.all().delete()
+db.session.commit()
 ```
 
 **Adding Relationships**
@@ -212,7 +314,49 @@ my_day.players.remove(my_player) #Remove
 
 
 
-## Query API
+### Bulk Operations
+
+
+
+**Saving**
+
+```python
+session.bulk_save_objects(objects)
+session.commit()
+```
+
+
+
+
+
+## ORM Cascade
+
+- configurable behavior for `relationship` construct
+
+
+```python
+class Order(Base):
+    items = relationship("Item", cascade="all, delete-orphan")
+    customer = relationship("User", cascade="save-update")
+```
+
+
+**Cascades:**
+- `save-update`: all objects associated with `relationship` will be added to session on `session.add`
+- `delete` if parent is marked for deletion, child should also be deleted
+	- ORM vs "FOREIGN KEY" cascade: either use
+	- many-to-many: `secondary` many-to-many table entries are updated automatically
+- `relationship()` or `FOREIGN KEY` constraint to 
+- `delete-orphan` deleted if de-associated from parent
+
+**Defaults:**
+- `all`: `save-update, merge, refresh-expire, expunge, delete`
+- default value: `save-update, merge`
+- common: `all, delete-orphan`
+
+
+
+# Query API
 
 - `session.query(User)` or `User.query`
 
@@ -293,30 +437,70 @@ print('')
 
 
 
+### SQL Operators
 
 
-## ORM Cascade
 
-- configurable behavior for `relationship` construct
-
+**IN**
 
 ```python
-class Order(Base):
-    items = relationship("Item", cascade="all, delete-orphan")
-    customer = relationship("User", cascade="save-update")
+session.query(MyUserClass).filter(MyUserClass.id.in_((123,456))).all()
+```
+
+**SELECT** - Query attributes
+
+```python
+session.query(Thing.id).all()
+# [(1,), (2,), (3,), (4,)]
+îds = [id for (id, ) in session.query(Customer.id).all()]
+```
+
+```python
+result = SomeModel.query.with_entities(SomeModel.col1, SomeModel.col2)
 ```
 
 
-**Cascades:**
-- `save-update`: all objects associated with `relationship` will be added to session on `session.add`
-- `delete` if parent is marked for deletion, child should also be deleted
-	- ORM vs "FOREIGN KEY" cascade: either use
-	- many-to-many: `secondary` many-to-many table entries are updated automatically
-- `relationship()` or `FOREIGN KEY` constraint to 
-- `delete-orphan` deleted if de-associated from parent
 
-**Defaults:**
-- `all`: `save-update, merge, refresh-expire, expunge, delete`
-- default value: `save-update, merge`
-- common: `all, delete-orphan`
+
+
+# Examples
+
+
+
+**Adding Relationships by ID**
+
+```python
+class Person(Base):
+    __tablename__ = 'person'
+    id      = Column(Integer, primary_key=True)
+    name    = Column(String(50))
+
+
+class SexyParty(Base):
+    __tablename__ = 'sexy_party'
+    id      = Column(Integer, primary_key=True)
+    guests  = relationship('Person', secondary='guest_association',
+                        lazy='dynamic', backref='parties')
+
+guest_association = Table(
+    'guest_association', Base.metadata,
+    Column('user_id',       Integer(), ForeignKey('person.id'), primary_key=True),
+    Column('sexyparty_id',  Integer(), ForeignKey('sexy_party.id'), primary_key=True)
+)
+
+from sqlalchemy.ext.associationproxy import association_proxy
+
+class GuestAssociation(Base):
+    __table__ = guest_association
+    party = relationship("SexyParty", backref="association_recs")
+
+SexyParty.association_ids = association_proxy(
+                    "association_recs", "user_id",
+                    creator=lambda uid: GuestAssociation(user_id=uid))
+
+sp1 = SexyParty(id=1)
+sp1.association_ids.extend([3, 4])
+session.commit()
+
+```
 

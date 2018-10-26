@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
 
 
-## Flask RESTFul
+# Flask RESTFul
 
 #### Passing Parameters to Resource
 
@@ -115,4 +115,114 @@ class User(restful.Resource):
 
 ## RESTful Design
 
+Example Model:
+
+```python
+class MyModel:
+    
+```
+
+
+
+**Modelling Considerations**
+
+- 
+
+
+
+
+
+GET:
+
+
+
+POST:
+
+
+
+PUT:
+
+```json
+{
+    children: [2, 4, 5]
+}
+```
+
+
+
+- field_data = theSchema(partial=True, exclude='children').load(request.json)
+- child_ids = 
+
+
+
+DELETE:
+
+
+
+
+
+**Different Load/Dump Contents**
+
+
+
+```python
+class ParentSchema(Schema):
+    id = fields.Int(dump_only=True)
+    children = fields.Nested(ChildSchema, dump_only=True, many=True)
+    children_ids = fields.List(fields.Int, load_only=True, attribute='children')
+```
+
+Dumping nested, embedded objects
+
+```python
+ParentSchema().dump(parent)
+# {id=123, children=[{...}, {...}]}
+```
+
+Loading/Validating just the ids
+
+```python
+parent_json = "{'id': 123, 'children': [3, 5, 9]}"
+parent = ParentSchema().load(parent_json)
+# parent.children_ids
+# [3, 5, 9]
+```
+
+
+
+
+
+
+
+
+
+
+
+**Make all fields optional**
+
+
+
+```python
+class UserSchema(ModelSchema):
+    class Meta:
+        model = User
+        ...
+    name = fields.Str(missing=None, required=True)
+    email = fields.Email(missing=None, required=True)
+```
+
+```python
+class UserSchema(Schema):
+    name = fields.Str(required=True)
+```
+
+```python
+s.validate({})  # {'name': ['Missing data for required field.']}
+s.validate({'name': None})  #  No errors
+s.validate({'name': ''})  # No errors
+```
+
+```python
+if kwargs[d] is not missing and kwargs[d] is not None:
+```
 
