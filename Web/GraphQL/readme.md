@@ -12,7 +12,7 @@ Resources:
 
 
 
-![from-db-to-client](H:\projects_dev\coding_quickstarter\Web\GraphQL\img\from-db-to-client.jpeg)
+![from-db-to-client](img\from-db-to-client.jpeg)
 
 
 
@@ -58,12 +58,6 @@ type Query {
 
 
 
-
-
-
-
-
-
 ```python
 class Query(graphene.ObjectType):
     hello = graphene.String(name=graphene.String(default_value="stranger"))
@@ -74,9 +68,19 @@ class Query(graphene.ObjectType):
 
 
 
+**Root fields and Resolvers**
+
+- at top of GraphQL API is the  Root type or Query type
+
 
 
 #### Mutation Type
+
+
+
+
+
+
 
 
 
