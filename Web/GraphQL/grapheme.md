@@ -2,6 +2,12 @@
 
 
 
+**Reads**
+
+- [Grapheme example on Medium](https://medium.com/@fasterpancakes/graphql-server-up-and-running-with-50-lines-of-python-85e8ada9f637)
+
+
+
 ## Schemas
 
 **Definition**
@@ -35,6 +41,19 @@ class Query(graphene.ObjectType):
 schema = graphene.Schema(query=Query, mutation=MyMutations)
 ```
 
+
+
+**Types**
+
+- add additional `types`, if field returns e.g. an `Implementation`
+
+```python
+my_schema = Schema(
+    query=MyRootQuery,
+    types=[SomeExtraObjectType, ]
+)
+```
+
 **Querying**
 
 - use: `schema.execute(query_str)`
@@ -51,8 +70,6 @@ mutation myFirstMutation {
     }
 }
 ```
-
-
 
 
 
@@ -219,7 +236,7 @@ class SearchResult(graphene.Union):
 **Example**
 
 - outputs: `ok`, `person`
-- arguments: `name`
+- arguments: `name` (defined by `Arguments` class)
 - mutation function: `mutate` (will be called uppon mutation)
 
 ````python
@@ -279,21 +296,84 @@ class CreatePerson(graphene.Mutation):
 
 
 
-### Nodes
-
-- Inteface provided by `graphene.relay`
-  - field: `id: ID!`
-  - method: `get_node(cls, info, id)`
 
 
+## Connections
+
+- ++ version of list that allows slicing and pagination
+
+
+
+**All connection classes have**
+
+- `pageInfo`
+- `edges`
+
+
+
+### Connection Fields
+
+```python
+class Faction(graphene.ObjectType):
+    name = graphene.String()
+    ships = relay.ConnectionField(ShipConnection)
+
+    def resolve_ships(self, info):
+        return [] # ...
+```
+
+
+
+### Custom Connections
+
+- `extra` an extra field of the connection
+- `other_extra` an extra field in the connection edge
+
+```python
+class ShipConnection(Connection):
+    extra = String()
+    class Meta:
+        node = Ship
+    class Edge:
+        other_extra = String()
+```
+
+
+
+## Nodes
+
+- Interface provided by `graphene.relay`
+  - field: `id: ID!` 
+  - method: `get_node(cls, info, id)` get node by id
+
+**Example**
+
+```python
+class Ship(graphene.ObjectType):
+    '''A ship in the Star Wars saga'''
+    class Meta:
+        interfaces = (relay.Node, )
+
+    name = graphene.String(description='The name of the ship.')
+
+    @classmethod
+    def get_node(cls, info, id):
+        return get_ship(id)
+```
+
+**Root Node**
+
+```python
+class Query(graphene.ObjectType):
+    # Should be CustomNode.Field() if we want to use our custom Node
+    node = relay.Node.Field()
+```
 
 
 
 
 
 # SQLAlchemy: Integration
-
-
 
 **Object definition from SQLAlchemy model**
 
@@ -315,26 +395,43 @@ class User(SQLAlchemyObjectType):
         exclude_fields = ("last_name",)
 ```
 
+**Standard Query Resolvers**
 
-
-**Query fields for Relay connections**
-
-- `SQLAlchemyConnectionField`
+- `{SQL-Alchemy-ObjectType}.get_query` get a query to fetch the models
 
 ```python
+class Query(graphene.ObjectType):
+    users = graphene.List(User)
 
-SQLAlchemyConnectionField
+    def resolve_users(self, info):
+        query = User.get_query(info)  # SQLAlchemy query
+        return query.all()
+```
+
+Alternative:
+
+- Use `SQLAlchemyConnectionField` which encapsulates a `graphene.relay` connection
+
+Executing the Query:
+
+`schema = graphene.Schema(query=Query)`
+
+```
+query = '''
+    query {
+      users {
+        name,
+        lastName
+      }
+    }
+'''
 ```
 
 
 
+# SQL-Alchemy & Relay
 
-
-
-
-
-
-
+- [Example: SQLAlchemy & Grapheme & Relay](https://github.com/graphql-python/graphene-sqlalchemy/blob/master/examples/nameko_sqlalchemy/schema.py)
 
 
 
@@ -384,7 +481,8 @@ SQLAlchemyConnectionField
 
 ```python
 import graphene
-from graphene_sqlalchemy import SQLAlchemyConnectionField, SQLAlchemyObjectType
+from graphene_sqlalchemy import 
+, SQLAlchemyObjectType
 from models import *
 
 class Person(SQLAlchemyObjectType):
@@ -407,10 +505,7 @@ class Query(graphene.ObjectType):
         return query.get(uuid)
 
 schema = graphene.Schema(query=Query, types=[Person])
-
 ```
-
-
 
 
 
@@ -440,8 +535,6 @@ if __name__ == '__main__':
 
 
 
-
-
 #### Alterations
 
 
@@ -455,8 +548,6 @@ if __name__ == '__main__':
 
 
 #### Authentication
-
-
 
 
 
