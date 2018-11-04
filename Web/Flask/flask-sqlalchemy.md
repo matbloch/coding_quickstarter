@@ -4,7 +4,15 @@
 
 
 
-**Integration**
+
+
+## Integration
+
+- See also [Integration Pattern Overview](http://flask.pocoo.org/docs/1.0/patterns/sqlalchemy/)
+
+
+
+#### Option 1: `flask_sqlalchemy`
 
 ```python
 from flask import Flask
@@ -14,6 +22,25 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db = SQLAlchemy(app)
 ```
+
+
+
+#### Option 2: Declarative
+
+```python
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+engine = create_engine('sqlite:////tmp/test.db', convert_unicode=True)
+db_session = scoped_session(sessionmaker(autocommit=False,
+                                         autoflush=False,
+                                         bind=engine))
+Base = declarative_base()
+Base.query = db_session.query_property()
+```
+
+
 
 
 

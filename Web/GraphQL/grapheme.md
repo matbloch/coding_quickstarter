@@ -103,6 +103,10 @@ mutation myFirstMutation {
 
 
 - List: `graphene.List(graphene.String)`
+
+
+  - with self reference: `graphene.List(lambda: Character)`
+
 - Non-null: `graphene.NonNull(graphene.String)`
 
   - Equivalent to: `graphene.String(required=True)`
