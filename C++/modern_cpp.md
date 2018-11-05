@@ -13,7 +13,7 @@ for (const auto &i : vector) {}
 - Use `emplace_back` if you pass a constructor (allows to move)
 	```cpp
     vec.emplace_back(std::string("Hello"))
-    ```
+  ```
 - Also for perfect forwarding (allows to directly call the constructor on the actual memory location inside the vector). To do so, remove implicit constructor call, e.g. `MyObj(` and just pass the arguments into `emplace_back`
     ```cpp
     std::vector<MyClass> v;
@@ -106,16 +106,16 @@ struct Record
 
 
 
-
 -------------
 ### `std` library
 
 - `std::accumulate`: Accumulate all values in range
 	```cpp
     sum = accumulate(float_vector.begin(), float_vector.end(), 0.0);
-    ```
+  ```
 - `std::max_element`: find maximum element
-	- hint: overload comparison operator, or provide comparison function
+
+  - hint: overload comparison operator, or provide comparison function
 
 -------------
 ### `auto` return type
@@ -215,7 +215,7 @@ class A {
     }
 }
 ```
-        
+
 
 **define function pointer**
 ```cpp
@@ -302,8 +302,32 @@ double sum(T t, Rest... rest) {
 }
 ```
 
-
 ### Variadic Arguments
+
+**Processing by recursion**
+
+```cpp
+void foo(int);
+
+template<typename ...Args>
+void foo(int first, Args... more)
+{
+   foo(first);
+   foo(std::forward(more)...);
+}
+```
+
+**For references**
+
+```cpp
+template <typename ...Args>
+int myfunction(Args & ... args)
+{
+  /* ... */
+}
+```
+
+
 
 
 ### Non-type Template parameters

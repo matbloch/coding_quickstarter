@@ -168,6 +168,8 @@ print("my name is \(name)")
 
 
 #### Enums
+- Advanced usage: [Link](https://appventure.me/2015/10/17/advanced-practical-enum-examples/#sec-1-5-1)
+
 ```swift
 enum DaysofaWeek {
    case Sunday
@@ -198,6 +200,15 @@ switch studMarks {
    case .Mark(let Mark1, let Mark2, let Mark3):
       print("Student Marks are: \(Mark1),\(Mark2),\(Mark3).")
 }
+```
+
+**Case Checking**
+```swift
+if case .Sunday = weekDay {}
+// AND
+if case .Monday = weekDay, .Tuesday = weekDay {}
+// OR
+
 ```
 
 #### Structs
@@ -544,7 +555,7 @@ func ls(array: [Int]) -> (large: Int, small: Int) {
 print(ls(array: [1,2,3,4]).large)
 ```
 
-**Optional Tuple Return*
+**Optional Tuple Return**
 
 ```swift
 func maybeGetHighScore() -> (String, Int)? {

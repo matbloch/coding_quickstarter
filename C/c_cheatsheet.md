@@ -169,7 +169,7 @@ double getAverage(int arr[], int size) {
 
 
 
-## Misc notes
+## Dynamic Memory
 
 
 
@@ -216,8 +216,12 @@ vector<string> v(c, c + nr_elements);
 ```
 
 **Allocate**
+- `new` -> `delete`
+- `malloc` -> `free`
+
 ```cpp
 int ** allocateTwoDimenArrayOnHeapUsingNew(int row, int col) {
+	// USE delete
 	int ** ptr = new int*[row];
 	for(int i = 0; i < row; i++) {
 		ptr[i] = new int[col];
@@ -226,6 +230,7 @@ int ** allocateTwoDimenArrayOnHeapUsingNew(int row, int col) {
 }
 
 int ** allocateTwoDimenArrayOnHeapUsingMalloc(int row, int col) {
+	// USE free
 	int ** ptr = (int **) malloc(sizeof(int *)*row);
 	for(int i = 0; i < row; i++) {
 		ptr[i] = (int *) malloc(sizeof(int)*col);

@@ -213,4 +213,26 @@ if let encoded = try? JSONEncoder().encode(user) {
 ```
 
 
+# Storing Data
+
+
+**Simple Examples**
+
+```swift
+// set
+let defaults = UserDefaults.standard
+defaults.set(25, forKey: "Age")
+defaults.set(true, forKey: "UseTouchID")
+defaults.set(CGFloat.pi, forKey: "Pi")
+defaults.set("Paul Hudson", forKey: "Name")
+defaults.set(Date(), forKey: "LastRun")
+let array = ["Hello", "World"]
+defaults.set(array, forKey: "SavedArray")
+// get
+let age = defaults.integer(forKey: "Age")
+let useTouchID = defaults.bool(forKey: "UseTouchID")
+let pi = defaults.double(forKey: "Pi")
+let name = UserDefaults.standard.string(forKey: “name”) ?? “”
+let savedArray = defaults.object(forKey: "SavedArray") as? [String] ?? [String]()
+```
 
