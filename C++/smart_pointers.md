@@ -139,14 +139,9 @@ sp5 = make_shared<Song>(L"Elton John", L"I'm Still Standing");
 **Check for null**
 
 ```cpp
-if(ptr != nullptr){
-
-}
-
+if(ptr != nullptr){}
 // or (overloaded boolean operator)
-if(!ptr){
-
-}
+if(!ptr){}
 ```
 
 **As Class members**

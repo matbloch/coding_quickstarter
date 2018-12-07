@@ -131,6 +131,9 @@ auto & a2 = i;  // reference
 
 ## Rvalue References
 
+**Reads**
+- [Returning R-val-references](https://stackoverflow.com/questions/4986673/how-to-return-an-object-from-a-function-considering-c11-rvalues-and-move-seman/4986802#4986802)
+
 **rvalues vs lvalues**
 - `lvalues`:
 	- refers to an object that persists beyond a single expression
@@ -445,7 +448,8 @@ const int myVariable = [&] {
 # Polymorphism
 
 **Virtual Destructor on Base Class**
-- Otherwise: Destructor of Base is called: Memory Leak
+- When deleting instance of **derived** class through **base** class pointer
+  - Just base class destructor is called: Memory leak
 
 ```cpp
 class Interface {
@@ -468,6 +472,7 @@ void myFunc(void)
 ```
 
 **Pointer to a base class**
+
 - `std::unique_ptr<base> derived = std::make_unique<Derived>();`
 - `Base* derived = new Derived();`
 
