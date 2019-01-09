@@ -32,7 +32,6 @@
 
 ### Project setup
 
-
 ---
 
 ### Packages
@@ -239,6 +238,9 @@ arr[0] = 123;
 
 
 #### Enums
+
+- reference type (just like classes)
+- can include compoents of traditional classes (constructors, members, methods, ...) - more powerful than C++ counterpart
 
 ```java
 class FreshJuice {

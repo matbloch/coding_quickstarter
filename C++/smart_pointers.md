@@ -1,11 +1,16 @@
+# Smart Pointers
 
-### Smart pointers
+- Only for object that can be allocated with **new** and deleted with **delete**
+
+**Pointer Types**
+
+- `unique_ptr` : **Single owner pointer**. Holding a pointer, providing interface for construction, ensure deletion on destruction
+- `shared_ptr`: **Multiple owners pointer**.same as unique_ptr but allows copies of the pointer in multiple places (`unique_ptr` must be moved). Memory is freed when all objects that where holding the `shared_ptr` are destroyed (or realeased it).
+- `weak_ptr`: **Non-owning pointer reference**. Reference (that can be invalidated) to object that is managed by a `shared_ptr`
 
 
-- `shared_ptr` functions the same way as `unique_ptr` – holding a pointer, providing the same basic interface for construction and using the pointer, and ensuring that the pointer is deleted on destruction.
-- Unlike `unique_ptr`, it also allows copying of the shared_ptr object to another shared_ptr, and then ensures that the pointer is still guaranteed to always be deleted once (but not before) all `shared_ptr` objects that were holding it are destroyed (or have released it).
-- You can only use these smart pointers to refer to objects allocated with new and that can be deleted with delete
-- e.g. Boost/std shared pointers
+
+## shared_ptr and uniqe_ptr
 
 
 
@@ -89,7 +94,7 @@ if (!blah)
 }
 ```
 
-#### Unique vs. Shared pointeres
+#### Unique vs. Shared Pointers
 **Unique pointer**
 - there can be only 1 unique_ptr pointing at any one resource
 
@@ -111,8 +116,9 @@ shared_ptr<T> myPtr(new T);       // Okay
 shared_ptr<T> myOtherPtr = myPtr; // Sure!  Now have two pointers to the resource.
 ```
 
+## STD Implementation
 
-## STD
+- Alternative: e.g. Boost
 
 ```cpp
 
@@ -171,3 +177,12 @@ int main() {
     // do something with myDevice...
 }
 ```
+
+
+
+
+
+## weak_ptr
+
+
+

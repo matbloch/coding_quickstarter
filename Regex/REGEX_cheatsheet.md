@@ -1,13 +1,9 @@
-﻿Regular expressions cheatsheet
+Regular Expressions
 ================
 
 
 
-NOTATION
-==========
-
 ##### Modifikatoren
-
 
 [Begrenzungszeichen][RegEx][Begrenzungszeichen][Modifikator(en)]   // z.B. :  /(Mein|Ausdruck)/im 
 • i: Case-Insensitivity: Groß- und Kleinschreibung nicht beachten
@@ -25,15 +21,13 @@ NOTATION
 `[REGEX][REGEX]` 	zwei zeichen
 
 
-##### Klammerung und Speicherung
-
+##### Capturing Groups
 
 `Ba(na)*ne`   			// Banananane
 
-##### Gruppierung ohne Speicherung
+##### Non-capturing Groups
 
-
-`(?:abc)`	"?:" am Anfang der Klammer
+`(?:abc)`
 
 Sonderzeichen escapen (mit "\")
 `[/. \-]` 	ein "/", ".", " ", "-"
@@ -41,9 +35,7 @@ Sonderzeichen escapen (mit "\")
 Characters which must be escaped:
 ```\ ^ . $ | ( ) [ ]  * + ? { } ,  ```
 
-
-Special Character Definitions
-==========
+## Special Character Definitions
 
 `\` Quote the next metacharacter  
 `^` Match the beginning of the line  
@@ -88,52 +80,24 @@ Even More Special Characters
 `\z` Match only at end of string  
 `\G` Match only where previous m//g left off (works only with /g)  
 
-
-
-Usage with PHP
-==========
-
-return: (bool) match found
-```php
-preg_match($pattern, $subject);
-```
-
-extract pattern
-```php
-preg_match($pattern, $subject, $matches);
-```
-
-all hits
-```php
-preg_match_all($pattern, $subject, $matches);
-$matches[0]	// zeichen, die auf suchmuster passen
-$matches[1] // zeichen zwischen tags (eingeklammerte teilsuchmuster)
-```
-
-remove search result
-```php
-$trimmed = str_replace($search, '', $subject);
-```
-
-Filters
-==========
+## Filters
 
 ##### Single characters
 
 `[ab13c]`    a, b, 1, 3, c
 
 ##### Classes
-`[1-6]` 		 Zahl 1-6   
-`[a-g]` 		 von a bis g   
+`[1-6]` 		 Number 1-6   
+`[a-g]` 		 from a to g   
 `\w \d \s`	     word, digit, whitespace   
 
-`[1-9][a-dA-D]` Zahl 1-9 und Buchstaben inc. gross/klein
+`[1-9][a-dA-D]` Number 1-9 and character inclusive lower/uppercase
 
 ##### optional wiederholte zeichen
 `a{1,5}`		 {min_anz_zeichen, max_anz_zeichen}   
-`a{3,}` 		 mindestens 3   
-`a+` 			 1 oder mehr wiederholungen   
-`a*`			 0 oder mehr wiederholungen   
+`a{3,}` 		 minium 3 repetitions   
+`a+` 			 1 or more repetitions   
+`a*`			 0 or more repetitions  
 `a* a+ a?`	 0 or more, 1 or more, 0 or 1   
 
 ##### beliebiges Zeichen
@@ -154,5 +118,35 @@ Filters
 
 
 
+## Integration
 
+
+
+#### PHP
+
+return: (bool) match found
+
+```php
+preg_match($pattern, $subject);
+```
+
+extract pattern
+
+```php
+preg_match($pattern, $subject, $matches);
+```
+
+all hits
+
+```php
+preg_match_all($pattern, $subject, $matches);
+$matches[0]	// zeichen, die auf suchmuster passen
+$matches[1] // zeichen zwischen tags (eingeklammerte teilsuchmuster)
+```
+
+remove search result
+
+```php
+$trimmed = str_replace($search, '', $subject);
+```
 

@@ -23,6 +23,14 @@
 
 ## Misc
 
+
+
+### Code Signing
+
+follow [this](https://ioscodesigning.com/generating-code-signing-files/) tutorial
+
+
+
 ### Running App on the Phone
 
 - Connect Phone
