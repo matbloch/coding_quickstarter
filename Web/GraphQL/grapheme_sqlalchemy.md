@@ -2,11 +2,55 @@
 
 
 
+### Schemas
+
+**Object definition from SQLAlchemy model**
+
+- inherit from `SQLAlchemyObjectType`
+- parameters:
+  - `only_fields`
+  - `exclude_fields`
+
+```python
+from graphene_sqlalchemy import SQLAlchemyObjectType
+
+class User(SQLAlchemyObjectType):
+    class Meta:
+        model = UserModel
+        # only return specified fields
+        only_fields = ("name",)
+        # exclude specified fields
+        exclude_fields = ("last_name",)
+```
 
 
-## Queries
 
 
+
+### Queries
+
+
+
+**Standard Query Resolvers**
+
+- `{SQL-Alchemy-ObjectType}.get_query()` get a query to fetch the models
+
+```python
+class Query(graphene.ObjectType):
+    users = graphene.List(User)
+
+    def resolve_users(self, info):
+        query = User.get_query(info)  # SQLAlchemy query
+        return query.all()
+```
+
+Alternative:
+
+- Use `SQLAlchemyConnectionField` which encapsulates a `graphene.relay` connection
+
+
+
+**Example**
 
 ```python
 from graphene_sqlalchemy import SQLAlchemyObjectType
@@ -22,8 +66,6 @@ class User(SQLAlchemyObjectType, AnnotatorAttribute):
         # exclude specified fields
         exclude_fields = ("last_name",)
         interfaces = (graphene.relay.Node,)
-        
-        
         
 
 class Query(graphene.ObjectType):
@@ -55,9 +97,7 @@ query {
 
 
 
-
-
-## Mutations
+### Mutations
 
 
 
@@ -65,3 +105,14 @@ query {
 
 
 
+### Executing the Queries/Mutations
+
+
+
+`schema = graphene.Schema(query=Query)`
+
+
+
+# SQL-Alchemy & Relay
+
+- [Example: SQLAlchemy & Grapheme & Relay](https://github.com/graphql-python/graphene-sqlalchemy/blob/master/examples/nameko_sqlalchemy/schema.py)

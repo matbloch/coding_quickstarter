@@ -192,6 +192,8 @@ pass in separate json:
 
 ## Integration
 
+TODO: move to graphene section
+
 
 
 ### Frontend/Client
@@ -219,8 +221,6 @@ pass in separate json:
 - GraphQL Python Library: Graphene
 - Graphene-SQLAlchemy: SQL-Alchemy Plugin for Graphene
 - SQL-Alchemy: ORM DB Plugin
-
-
 
 
 
