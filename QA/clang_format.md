@@ -16,15 +16,9 @@
 
 ## Usage
 
+- `git clang-format` format the current staged diff
 
-
-
-
-
-
-- `git clang-format` format the current stage diff
-
-- `git clang-format -f` without stagin the files
+- `git clang-format -f` format changes without stagin the files
 
 
 

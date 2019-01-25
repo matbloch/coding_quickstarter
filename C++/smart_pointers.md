@@ -1,6 +1,11 @@
 # Smart Pointers
 
+- Manage storage of pointer (providing limited garbage-collection facility)
 - Only for object that can be allocated with **new** and deleted with **delete**
+
+
+
+
 
 **Pointer Types**
 
@@ -10,176 +15,101 @@
 
 
 
-## shared_ptr and uniqe_ptr
 
 
 
-```cpp
-unique_ptr<troidee::PointCloudReconstruct> dense_mapper(new troidee::PointCloudReconstruct);
 
-if(dense_mapper.get() == nullptr){
-	// not correctly assigned
-}
 
-// always use smartvariable for pointer
-void f(shared_ptr<int>, int);
-int g();
 
-void ok()
-{
-    shared_ptr<int> p( new int(2) );
-    f( p, g() );
-}
 
-void bad()
-{
-    f( shared_ptr<int>( new int(2) ), g() );
-}
-```
 
-**Allocate memory in loop**
-```cpp
-for(int i = 0; i < 10; ++i)
-{
-    smart_ptr<some_class> object(new some_class());
-    //use object
-} // object gets destroyed here automatically 
-```
-**Assigning an Adress to a boost pointer**
+### General
+
+**Check if is set**
 
 ```cpp
-boost::shared_ptr<Car> sptr;
-Car object;
-sptr = boost::shared_ptr<Car>(&object);
+//This checks if the object was reset() or never initialized
+if (!pt) {}
+if (pt != nullptr) {}
 ```
 
-**delete pointed content**
-```cpp
-// shared_ptr::reset example
-#include <iostream>
-#include <memory>
 
-int main () {
-  std::shared_ptr<int> sp;  // sp is now a null pointer and evaluates to boolean false
 
-  sp.reset (new int);       // takes ownership of pointer
-  *sp=10;
-  std::cout << *sp << '\n';
 
-  sp.reset (new int);       // deletes managed object, acquires new pointer
-  *sp=20;
-  std::cout << *sp << '\n';
 
-  sp.reset();               // deletes managed object
+## shared_ptr
 
-  return 0;
-}
-```
+Release ownership of object as soon as:
 
-**Value assignment**
-- no direct address assignement
+- they destroy themselves
+- their value changes
+- if two shared_ptrs are created from same raw pointer, **both will be owning**, causing potential problems
+
+### Initialization
 
 ```cpp
-shared_ptr<int>   sp;
-sp = new int(5);  		// ERROR!
-sp.reset(new int(10));	// the right way
+auto p1 = std::make_shared<myClass>(my_args);
+// Ok, less efficient
+auto p2 = std::shared_ptr<myClass>(new myClass(my_args));
 ```
 
-**Check if pointer is set**
-- use as boolean
+**make_shared**
+
+- no way to create two pointers to the same resource
+- **new** operator for data structure only called once (one memory allocation)
+
+**Copy/assignment**
+
 ```cpp
-if (!blah)
-{
-    //This checks if the object was reset() or never initialized
-}
+auto p2(p1);
+auto p3 = p2;
 ```
 
-#### Unique vs. Shared Pointers
-**Unique pointer**
-- there can be only 1 unique_ptr pointing at any one resource
+**nullptr**
+
+```cpp
+auto p3 = std::shared_ptr<myClass>(nullptr);
+std::shared_ptr<myClass> p4;	// equal
+```
+
+**swap**
+
+- exchange contents between pointers
+
+```cpp
+std::shared_ptr<int> foo (new int(10));
+std::shared_ptr<int> bar (new int(20));
+foo.swap(bar);
+```
+
+**reset**
+
+- eliminate one owner of the pointer
+
+```cpp
+p.reset();
+p = nullptr;
+p.reset(new int);
+```
+
+**Accessing the Raw Pointer**
+
+```cpp
+smart_pointer.get()
+```
+
+
+
+
+
+## unique_ptr
+
+- there can be only 1 `unique_ptr` pointing at any one resource
 
 ```cpp
 unique_ptr<T> myPtr(new T);       // Okay
 unique_ptr<T> myOtherPtr = myPtr; // Error: Can't copy unique_ptr
 ```
-Pass pointer to function: pass by reference
-```cpp
-bool func( const SmartPointer& base, int other_arg);
-// call
-func(*some_unique_ptr, 42);
-```
-
-
-**Shared pointer**
-```cpp
-shared_ptr<T> myPtr(new T);       // Okay
-shared_ptr<T> myOtherPtr = myPtr; // Sure!  Now have two pointers to the resource.
-```
-
-## STD Implementation
-
-- Alternative: e.g. Boost
-
-```cpp
-
-// Use make_shared function when possible.
-auto sp1 = make_shared<Song>(L"The Beatles", L"Im Happy Just to Dance With You");
-
-// or
-std::shared_ptr<Song> = make_shared<Song>(L"The Beatles", L"Im Happy Just to Dance With You");
-
-// Ok, but slightly less efficient.
-// Note: Using new expression as constructor argument
-// creates no named variable for other code to access.
-shared_ptr<Song> sp2(new Song(L"Lady Gaga", L"Just Dance"));
-
-// When initialization must be separate from declaration, e.g. class members, 
-// initialize with nullptr to make your programming intent explicit.
-shared_ptr<Song> sp5(nullptr);
-//Equivalent to: shared_ptr<Song> sp5;
-//...
-sp5 = make_shared<Song>(L"Elton John", L"I'm Still Standing");
-```
-
-
-**Check for null**
-
-```cpp
-if(ptr != nullptr){}
-// or (overloaded boolean operator)
-if(!ptr){}
-```
-
-**As Class members**
-
-
-```cpp
-class Device {
-};
-
-class Settings {
-    std::shared_ptr<Device> device;
-public:
-    Settings(std::shared_ptr<Device> const& d) {
-        device = d;
-    }
-
-    std::shared_ptr<Device> getDevice() {
-        return device;
-    }
-};
-
-int main() {
-    std::shared_ptr<Device> device = std::make_shared<Device>();
-    Settings settings(device);
-    // ...
-    std::shared_ptr<Device> myDevice = settings.getDevice();
-    // do something with myDevice...
-}
-```
-
-
-
 
 
 ## weak_ptr

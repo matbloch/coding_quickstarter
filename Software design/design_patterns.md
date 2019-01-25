@@ -19,17 +19,9 @@
 
 
 
-**C++ Implementation:**
+**C++ 11 Implementation:**
 
 ```java
-
-```
-
-
-
-**Double-checked locking pattern**
-
-```cpp
 
 ```
 
