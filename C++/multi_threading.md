@@ -10,6 +10,21 @@
 
 
 
+- Difficulties
+
+- - Access to data from multiple threads must be properly synchronized.
+  - Locks, lock-free programming Immutable data structures.
+  - Deadlocks
+  - Not all problems can be parallelized without making algorithms more complex.
+  - Communication between threads
+  - lock-free, starvation free, forward progress guarantee. memory_order in C++.
+
+
+
+
+
+
+
 ## Measuring Performance
 
 
@@ -60,7 +75,7 @@ void safe_increment() {
 
 - general purpose mutex ownership wrapper
 - lockes for scope
-- can be unlocked/locked again
+- can be unlocked/locked again (included delayed locking)
 
 ```cpp
 std::mutex mutex;

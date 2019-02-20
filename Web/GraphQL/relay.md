@@ -1,5 +1,46 @@
 # Relay
 
+> This documentation covers the Relay UI integration
+
+
+
+
+
+**GraphQL Client**
+
+- automatic low-level networking and local caching
+- fetch any combination of data from the backend (compared to REST)
+
+
+
+
+
+**GraphQL Server**
+
+- Gets requests in the form `{ "query": "query { allLinks { url } }" }`
+- Connects to any database/service for storing/fetching the actual data
+- Returns a GraphQL response in the format: `{ "data": { "allLinks": { "url": "http://graphql.org/" } } }`
+- Incoming requests are validated against the schema definition and the supported format
+- self-descriptive api, easy to extend and change
+
+
+
+**GraphQL Schemas**
+
+-  Contract agreed on between ui and backend
+
+
+
+**GraphQL Backend Development** (Schema-Driven)
+
+1. Define types and appropriate queries and mutations for them
+2. Implement **resolver** functions to handle them
+3. Requirement update: Go back to step 1
+
+
+
+
+
 
 
 ## Setup

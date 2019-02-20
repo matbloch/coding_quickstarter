@@ -132,6 +132,7 @@ auto & a2 = i;  // reference
 ## Rvalue References
 
 **Reads**
+
 - [Returning R-val-references](https://stackoverflow.com/questions/4986673/how-to-return-an-object-from-a-function-considering-c11-rvalues-and-move-seman/4986802#4986802)
 
 **rvalues vs lvalues**
@@ -432,7 +433,7 @@ const int myVariable = [&] {
 
 # Argument Passing and Function Returns
 
-- See [This post](http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters)
+- See [Guideline on argument passing](http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters)
 
 - always return by value if possible (complier optimizations make this very fast)
 - only as in-out param, if additional sucess parameter is returned
@@ -563,10 +564,68 @@ std::cout << measure<>::execution(a, method, 123) << std::endl;
 # General Design Patterns
 
 
+
+
+
 # Misc Knowledge
 
-#### Move Semantics
 
+
+**Non-static member function pointers**
+
+```cpp
+template <typename MemberType>
+class Proxy {
+public:
+    template <typename... Args1, typename... Args2>
+    void forwardCall(void (ObjectType::*member_func)(Args1...), Args2 &&... args) {
+        (member_.*member_func)(std::forward<Args2>(args)...);
+    }
+    
+    template <typename... Args1, typename... Args2>
+    void forwardConstCall(void (ObjectType::*member_func)(Args1...) const, Args2 &&... args) const {
+        (member_.*member_func)(std::forward<Args2>(args)...);
+    }
+    
+private:
+	MemberType member_;
+}
+
+
+Proxy<std::vector<int>> proxy;
+proxy.forwardCall(&std::vector<int>::push_back, 123);
+const auto &proxy_ref = proxy;
+size_t size = proxy_ref.forwardConstCall(&std::vector<int>::size);
+```
+
+`<const BcDirectPartMarkingBinarizer::Mode &, _Bool, unsigned long> vs. <const BcDirectPartMarkingBinarizer::Mode &, _Bool &, unsigned long &>`
+
+
+
+Alternative (much cleaner):
+
+```cpp
+template <typename F>
+void forwardCall(F &&process) {
+    for (const auto &o : pool_) {
+        process(member_);
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Move Semantics
 
 In general you have to implement:
 1) Copy ctor

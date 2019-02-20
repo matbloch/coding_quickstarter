@@ -15,9 +15,14 @@ git commit
 ```
 
 
-#### Pushing Commit after Master has been updated
 
-- rebase then push
+#### Squashing Commits
+
+**Write new commit message**
+
+`git reset --soft HEAD~3 &&` squash last 3 commits
+
+
 
 #### Update Branch `bugfix` from Master
 

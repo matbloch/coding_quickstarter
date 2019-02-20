@@ -2,6 +2,10 @@
 
 
 
+- [ ] TODO: merge with c++ design pattern docs
+
+
+
 ## Singleton
 
 - Class with a single instance and global access

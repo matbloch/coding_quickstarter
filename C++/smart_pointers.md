@@ -3,23 +3,21 @@
 - Manage storage of pointer (providing limited garbage-collection facility)
 - Only for object that can be allocated with **new** and deleted with **delete**
 
+**Two Memory Types**
 
-
-
+- **Stack**: defined lifetime, e.g. scope of a function
+- **Heap**: memory that needs to be freed again, eventually managed through smart pointers
 
 **Pointer Types**
 
 - `unique_ptr` : **Single owner pointer**. Holding a pointer, providing interface for construction, ensure deletion on destruction
 - `shared_ptr`: **Multiple owners pointer**.same as unique_ptr but allows copies of the pointer in multiple places (`unique_ptr` must be moved). Memory is freed when all objects that where holding the `shared_ptr` are destroyed (or realeased it).
-- `weak_ptr`: **Non-owning pointer reference**. Reference (that can be invalidated) to object that is managed by a `shared_ptr`
+- `weak_ptr`: **Non-owning pointer reference**. Reference (that can be invalidated) to object that is managed by a `shared_ptr`. Use to break reference cycles.
 
+**Performance**
 
-
-
-
-
-
-
+- Stack > unique_ptr > shared_ptr
+- due to atomic reference count
 
 
 

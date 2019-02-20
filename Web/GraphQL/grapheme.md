@@ -6,6 +6,24 @@
 
 - [Grapheme example on Medium](https://medium.com/@fasterpancakes/graphql-server-up-and-running-with-50-lines-of-python-85e8ada9f637)
 
+**Overview**
+
+
+
+
+
+- **Schema**: Contract UI and backend agree on. Defines the possible Queries and Mutations
+  - **Queries**: For data fetching
+  - **Mutations**: For data alteration
+
+- **Datatypes**: Describe the different data containers available
+  - **Fields**: The attributes of a datatype
+  - Can e.g. automatically be inferred from a database model using SQLAlchemy
+
+
+
+
+
 
 
 ## Schemas
@@ -137,10 +155,6 @@ class Person(graphene.ObjectType):
     last_name = graphene.String()
     full_name = graphene.String()
 ```
-
-
-
-
 
 #### Resolvers
 

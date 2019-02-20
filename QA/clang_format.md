@@ -20,6 +20,8 @@
 
 - `git clang-format -f` format changes without stagin the files
 
+- `git clang-format HEAD~2` format latest 2 commits
+
 
 
 ## Editor Integration
