@@ -39,6 +39,12 @@
 
 
 
+
+
+## STD Implementation
+
+
+
 ### Threads
 
 **std::thread**
@@ -74,8 +80,8 @@ void safe_increment() {
 **std::unique_lock**
 
 - general purpose mutex ownership wrapper
-- lockes for scope
 - can be unlocked/locked again (included delayed locking)
+- unlocks by default upon destruction
 
 ```cpp
 std::mutex mutex;
@@ -131,6 +137,57 @@ int main() {
 
 
 ## Futures
+
+- Read-only container for result that does not yet exist
+- Provides mechanism to access result of async operation
+
+
+
+```cpp
+std::future<int> future = std::async(std::launch::async, [](){
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+    return 42;
+});
+// wait until result is available
+int val = future.get();
+```
+
+
+
+**Waiting for results**
+
+- `wait()`
+- `wait_for(duration)`
+- `wait_until(timepoint)`
+- `valid()` returns `false` if future has already been consumed (through `get()`)
+
+
+
+**Example:** Spawning multiple tasks
+
+```cpp
+std::vector<std::future<size_t>> futures;
+for (size_t i = 0; i < 10; ++i) {
+    futures.emplace_back(std::async(std::launch::async, [](size_t param){
+        std::this_thread::sleep_for(std::chrono::seconds(param));
+        return param;
+    }, i));
+}
+std::cout << "Start querying" << std::endl;
+for (auto &future : futures) {
+    std::cout << future.get() << std::endl;
+}
+```
+
+
+
+
+
+
+
+## Promises
+
+
 
 
 

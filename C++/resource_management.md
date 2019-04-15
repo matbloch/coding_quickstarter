@@ -11,6 +11,8 @@
 **Topics**
 
 - RAII
+- Stack/heap, allocation/cleanup
 
-
-
+- cache miss
+- branch miss
+- memory layouts

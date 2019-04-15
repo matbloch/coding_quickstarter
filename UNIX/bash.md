@@ -1,17 +1,7 @@
 # Bash
 
 
-
-
-
-
-
-
-
-
-
 **`.bash_profile` vs `.bashrc`**
-
 
 
 ### SSH
@@ -19,10 +9,6 @@
 - Keychains
 - SSH
 - Rsync
-
-
-
-
 
 ### Misc Commands
 
@@ -32,29 +18,9 @@
 
 **Unzipping files**
 
-
-
 **Moving files**
 
 `mv /path/to/source /path/to/destination`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Rsync
 

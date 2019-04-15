@@ -1,18 +1,11 @@
 # C++ Design Patterns
 
-
-
-
-
 - [Excellent list, summarize this!](https://sourcemaking.com/design_patterns)
-
-
 
 ### Proxy Wrapper 
 
 - Protect members, restrict access to wrapper
 
-  
 
 ```cpp
 template <class ObjectType>
@@ -35,4 +28,10 @@ auto wrapper = Wrapper<Resource>(res);
 wrapper->a = 345;
 wrapper->b = 345;
 ```
+
+
+
+### Trait Classes
+
+….
 

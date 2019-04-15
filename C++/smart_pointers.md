@@ -98,8 +98,6 @@ smart_pointer.get()
 
 
 
-
-
 ## unique_ptr
 
 - there can be only 1 `unique_ptr` pointing at any one resource
@@ -110,7 +108,13 @@ unique_ptr<T> myOtherPtr = myPtr; // Error: Can't copy unique_ptr
 ```
 
 
-## weak_ptr
 
+**Consuming Unique Ptr**
+
+- `class_variable_(std::move(input));`
+
+
+
+## weak_ptr
 
 

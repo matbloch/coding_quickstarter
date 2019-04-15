@@ -1,9 +1,4 @@
-# Bitmasks
-
-
-## Enum Bitmasks
-
-**Masks**
+# Bit Flags
 
 ```cpp
 enum State
