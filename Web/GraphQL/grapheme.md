@@ -1,5 +1,9 @@
 # Grapheme
 
+Python and JavaScript library for a GraphQL server.
+
+
+
 
 
 **Reads**
@@ -26,11 +30,24 @@
 
 
 
-## Schemas
+## Schema
+
+- describes data model: Methods to **resolve **or **mutate** data
 
 **Definition**
 
-`schema = graphene.Schema(query=Query, mutation=MyMutations)`
+```python
+schema = graphene.Schema(
+    query=Query, 	# query resolvers
+    mutation=MyMutations, # mutation resolvers
+    types=[SomeExtraObjectType, ]  # return types
+)
+
+```
+
+
+
+- combines query and mutation definitions
 
 ```python
 # 1. Mutation
@@ -169,7 +186,7 @@ class Person(graphene.ObjectType):
 
 #### Interfaces
 
-- Base class that define certain set of fields that 
+- Base class that define certain set of fields
 - Each class that implements interface **inherits** fields
 
 ```python
@@ -205,6 +222,11 @@ class Human(graphene.ObjectType):
 
 
 ```python
+class Character(graphene.Interface):
+    id = graphene.ID(required=True)
+    name = graphene.String(required=True)
+    friends = graphene.List(lambda: Character)
+    
 class Query(graphene.ObjectType):
     hero = graphene.Field(
         Character,
@@ -304,13 +326,10 @@ class CreatePerson(graphene.Mutation):
 
 
 
-
-
-
-
-# Relay: Integration
+# Relay Integration
 
 - Graphene has built-in support for *Relay*
+- **Benefits**: 
 
 
 
@@ -457,11 +476,9 @@ query = '''
 
 
 
-# Integration
+# Frontend Integration
 
 ### Frontend/Client
-
-
 
 **Frameworks**
 
@@ -470,13 +487,7 @@ query = '''
 
 
 
-
-
-
-
 ### Backend
-
-
 
 **Example Tech Stack**
 
