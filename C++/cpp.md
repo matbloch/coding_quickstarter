@@ -153,7 +153,7 @@ public:
 };
 
 #endif // __MYCLASS_H_INCLUDED__
-``` 
+```
 
 
 ##Debugging##
@@ -231,7 +231,6 @@ printf ("%s, %d, %f \n","test", 2, 2.312);
 ```
 
 ##Basic Variable Types
-
 
 ----------
 ###Character sequences
@@ -569,7 +568,7 @@ myfunct(params);
 
 - - -
 
-##Pointers##
+##Pointers
 
 ###Definition
 
@@ -637,7 +636,7 @@ pptr = ptr;
 See [smart_pointers.md](smart_pointers.md)
 
 
-##Compound data types##
+##Compound data types
 
 ###Struct
 
@@ -1097,10 +1096,9 @@ thread2.join();
 
 ```
 
-
 - - -
 
-##OOP##
+##OOP
 
 
 ### visibility
@@ -1198,11 +1196,11 @@ As far as which one to use; you choose the method that works best for you, given
     - If you'd like to return a pointer to your object from a function, you must use new
 
 
-##Type aliases (typedef/using)##
+##Type aliases (typedef/using)
 
 typedef existing_type new_type_name;
 
-##IO-stream##
+##IO-stream
 
 ```cpp
 #include <iostream>

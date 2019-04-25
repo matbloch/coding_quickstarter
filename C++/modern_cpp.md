@@ -129,6 +129,17 @@ auto a1 = i;    // value
 auto & a2 = i;  // reference
 ```
 
+- use `decltype` to refer to the type declared by `auto`
+
+```cpp
+auto result = do_something();
+result = decltype(result)(so_something_else());
+```
+
+
+
+
+
 ## Rvalue References
 
 **Reads**
@@ -429,6 +440,62 @@ const int myVariable = [&] {
 }();
 ```
 
+
+
+## Custom Iterators
+
+- `std::iterator` is deprecated
+- do defines manually (see `std::iterator` implementation)
+
+```cpp
+
+struct Iterator {
+  public:
+  using value_type = float;
+  using difference_type = ptrdiff_t;
+  using pointer = float*;
+  using reference = float&;
+  using iterator_category = std::input_iterator_tag;
+
+  Iterator(const CustomValueContainer *items, int index) :
+  items_(items), current_index_(index) {
+  }
+
+  Iterator& operator++() {
+    index_++;
+    return *this;
+  }
+
+  Iterator operator++(int) {
+    Iterator result(*this);
+    ++(*this);
+    return result;
+  }
+
+  bool operator==(const Iterator &rhs) const {
+    return items_ == rhs.items_ && current_index_ == rhs.current_index_;
+  }
+
+  bool operator!=(const Iterator &rhs) const {
+    return !(*this == rhs);
+  }
+
+  float operator*() const {
+    return (*items_)[index_];
+  }
+
+  private:
+    const CustomValueContainer *items_;
+    int current_index_;
+};
+```
+
+
+
+
+
+
+
 # Argument Passing and Function Returns
 
 - See [Guideline on argument passing](http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters)
@@ -545,7 +612,51 @@ void forwardCall(F &&process) {
 
 
 
+**Reference Wrappers**
 
+`std::reference_wrapper<T>`
+
+- used as a mechanism to store references inside **standard** containers (like **std::**vector) which cannot normally hold references.
+
+```cpp
+class MyClass
+{
+public:
+    MyClass& operator=(MyClass const& other)
+    {
+        ???
+    }
+    // ...
+private:
+    T& reference;
+};
+```
+
+What should `operator=` do? The natural thing would be to make `reference` point to the same object as `other.reference` does,
+but references can’t rebind. For this reason, the compiler gives up and
+doesn’t implement a default assignment operator in this case.
+
+
+
+```
+T object1;
+auto reference = std::ref(object1); // reference is of type std::reference_wrapper<T>
+T object2;
+reference = std::ref(object2); // reference now points to object2
+// object 1 hasn't changed
+```
+
+Returning references instead of pointers: make it clear that caller is not responsible for lifetime management:
+
+```cpp
+std::vector<std::reference_wrapper<Foo>> Bar::getFoos() const {
+  std::vector<std::reference_wrapper<Foo>> fooRefs;
+  for (auto &ptr : foos) {
+    fooRefs.push_back(std::ref(*ptr));
+  }
+  return fooRefs;
+}
+```
 
 
 

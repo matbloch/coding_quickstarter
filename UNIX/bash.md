@@ -4,13 +4,13 @@
 **`.bash_profile` vs `.bashrc`**
 
 
-### SSH
+## SSH
 
 - Keychains
 - SSH
 - Rsync
 
-### Misc Commands
+## Misc Commands
 
 **Downloading files**
 
@@ -22,5 +22,18 @@
 
 `mv /path/to/source /path/to/destination`
 
-### Rsync
+## Rsync
 
+
+
+**copy from remote**
+
+```bash
+rsync -chavzP --stats --exclude="_build" user@<remote-ip>:/dir/on/remote /local/folder
+```
+
+**copy specific file from remote**
+
+```bash
+rsync -avz root@<remote-ip>:/var/www/public_html/ /var/www/public_html/.htaccess
+```
