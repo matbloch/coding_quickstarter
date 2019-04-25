@@ -1,80 +1,80 @@
 # Access Control and Authentication
 
-## Overview
+### Method Overview
 
-**Stateless**
-- Token based authentication
-	- Basic Authentification
-	- Digest Authentification
-    - JSON Web Tokens
-        - 
+[TOC]
 
-**Stateful**
-- Cookies
+**Which method to choose?**
 
-
-
-**Which method to choose**
 - Web application only: either cookies or tokens
 - Web and mobile: token-based
 - Communicating APIs: Request signing
 
-## Methods
 
-#### *Basic* Access Authentication
+
+## Stateless Authentication
+
+### 1. *Basic* Access Authentication
 
 **Process**
 - string concatenation: `username:password`
-- encoding with Base64
+- Encoded with Base64
 - `Basic` is put before basic keyword
 - Client sends the `Authorization` header along with every request it makes
-	- e.g. `curl --header "Authorization: Basic am9objpzZWNyZXQ=" my-website.com`
+  - e.g. `curl --header "Authorization: Basic am9objpzZWNyZXQ=" my-website.com`
 
-![basic_auth.png](.\img\basic_auth.png)
+**Header Signature**![basic_auth](img/basic_auth.png)
 
 **Advantages**
+
 - Stateless: Doesn't require cookies, sessions or anything else
 
 **Disadvantages**
+
 - Login credentials sent with every request - potentially exposing them
 - DB queries (authorization) needed for every request
-- Uses easily reversible Base64 encoding for username/password instead of encrpytion
-- Unsafe if not used with TLS (Transport Layer Security) or preprocessor SSL (Secure Socket Layer)
+- Uses easily **reversible** Base64 encoding for username/password instead of encrpytion
+- **Unsafe** if not used with TLS (Transport Layer Security) or preprocessor SSL (Secure Socket Layer)
 - No way to logout user
 - Expiration of credentials is not trivial
 
-#### *Digest* Access Authentication
+### *2. Digest* Access Authentication
 - Applies hash function to username and password before sending the over network
 
-#### JWT: JSON Web Tokens
+### 3. JWT: JSON Web Tokens
 
 **Contains of 3 parts:**
+
 - Header, with type of token and hashing algorithm
 - Payload
 - Signatur, which is calculated e.g. as:
-	- `HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)`
+  - `HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)`
+
+**Header Signature**
+`Authorization: Bearer <token>`
+![json_token_auth.png](/Users/matthias/dev/coding_quickstarter/Web/Authentication/./img/json_token_auth.png)
 
 **Authentication Process**
+
 1. User provides credentials (POST request)
 2. Server verifies credentials (query) and returns a signed token
 3. Token is stored in client side
 4. Subsequent requests to the server will be sent with the token as authentication header
 5. Server verifies token and returns requested data
 6. Token is destroyed in client on logout
-![jwt-diagram.png](.\img\jwt-diagram.png)
-
-
-**Header Signature**
-`Authorization: Bearer <token>`
-![json_token_auth.png](.\img\json_token_auth.png)
-
+  ![jwt-diagram.png](.\img\jwt-diagram.png)
 
 **Advantages**
+
 - JWTs are self containing: No need to query database multiple times
 
 **Disadvantages**
 
-#### Cookies
+
+
+## Stateful Authentication
+
+### 1. Cookies
 
 - Server responds with a `Set-Cookie` header
 - Cookie is sent along every request made to the same origin of the Cookie
@@ -95,7 +95,7 @@
 - Extra efford to protect against CSRF attacks
 - Incompatiblye with REST (stateless protocol)
 
-#### Signatures
+### 2. Signatures
 
 - If transport layer is exposed: credentials are easy to access
 - **Solution**: Sign each request with a private key
@@ -111,7 +111,7 @@
 - cannot use in the browser/client, only between APIs (both the consumer of the API and the provider have to have the same private key)
 
 
-#### One-Time Passwords
+### 3. One-Time Passwords
 - one-time password generated with a shared secret and/either the current time or a counter
 - Two-factor authentication
 
@@ -124,9 +124,25 @@
 - clients can be stolen/lost, application must have a method to bypass this (like reset email), which provides additional attack vectors
 
 
-#### Public Key Authentication
+### 4. Public Key Authentication
 
-#### Kerberos
+### 5. Kerberos
+
+
+
+## Nonce and Salts
+
+### Salts
+
+- Random data to help protect agains **precomputation attacks** (e.g. dict attack)
+- Salt is concatenated to the front of password before hasing it and then comparing the output to the hashed values in the database
+- Attackers would have to generate totally different dictionary of passwords for every salt
+
+### Nonce
+
+
+
+
 
 
 
