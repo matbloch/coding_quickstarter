@@ -2,12 +2,17 @@
 
 
 
-- the flask app and the celery tasks have a different codebase (flask app doesn't need access to celery task module)
-- flask app uses `name` attribute of a task and `celery.send_task` to submit a job without having access to the celery workers codebase
-
-
-
 **example**: mattkohl/docker-flask-celery-redis
+
+
+
+**How task scheduling works**
+
+- Client sends new task to message broker
+- message broker stores task in result backend
+- worker fetches task over message broker
+- saves task over message broker to result backend
+- Client polls result backend for completed task
 
 
 
@@ -18,15 +23,11 @@
 3. Define tasks
 4. Running the workers
 
+## Integration
 
-
-### Using Redis as a Celery Broker
+#### Defining Tasks
 
 - default broker port for Redis: `6379`
-
-
-
-**Defining Tasks**
 
 ```python
 from celery import Celery
@@ -39,11 +40,70 @@ def add(x,y):
     return x + y
 ```
 
-**Starting a Celery worker**
+#### Starting a Celery worker
 
-- execute 
+- start celery worker for `tasks` module:
 
 `$ celery -A tasks worker --loglevel=info`
 
 
 
+#### Sending Tasks to Celery
+
+**From within the task code base**
+
+```python
+@app.tasks
+def add(x,y):
+    return x + y
+
+add.delay(1, y=2)
+add.apply_async(args=[1], kwargs={'y': 2})
+```
+
+
+
+**From outside the task code base**
+
+```python
+
+```
+
+
+
+#### Linking Tasks and Error Callbacks
+
+- `add.s()` is a signature
+
+```python
+add.apply_async((2, 2), link=add.s(16))
+```
+
+```
+@app.tasks
+def error_handler(uuid):
+    result = AsyncResult(uuid)
+    exc = result.get(propagte=False)
+    print("Task {} raised exception".format(uuid))
+    print(result.traceback)
+    
+add.apply_async((2, 2), link_error=error_handler.s())
+```
+
+
+
+
+
+#### Polling the Task State
+
+```python
+
+```
+
+
+
+## Task Monitoring
+
+
+
+flower
