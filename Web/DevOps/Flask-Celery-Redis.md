@@ -65,8 +65,15 @@ add.apply_async(args=[1], kwargs={'y': 2})
 
 **From outside the task code base**
 
-```python
+- use `Celery` instance with same broker url
 
+```python
+from celery import Celery
+MODULE_NAME = 'tasks'
+BROKER_URL = 'redis://localhost:6379'
+app = Celery(MODULE_NAME, broker=BROKER_URL)
+
+app.send_task('tasks.add', (2,5))
 ```
 
 
@@ -89,8 +96,6 @@ def error_handler(uuid):
     
 add.apply_async((2, 2), link_error=error_handler.s())
 ```
-
-
 
 
 
