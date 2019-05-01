@@ -148,7 +148,7 @@ class Engineer(Person):
 
 ## Data Relationships
 
-#### 1-to-Many Relationships
+### 1-to-Many Relationships
 
 ![1-to-many](img\1-to-many.png)
 
@@ -175,7 +175,7 @@ u = User.query.get(1)
 posts = u.posts.all()
 ```
 
-**1-to-1 Relationships**
+### 1-to-1 Relationships
 
 - `db.relationship(uselist=False)`
 
@@ -190,7 +190,7 @@ class MobilePhone(Base):
     person_id = Column(Integer, ForeignKey('people.id'))
 ```
 
-#### Many-to-Many Relationships
+### Many-to-Many Relationships
 
 ![many-to-many](img\many-to-many.png)
 
@@ -227,7 +227,21 @@ followers = db.Table('followers',
 )
 ```
 
-#### Nullable Relationships
+
+
+### Association Object
+
+The association object pattern is a variant on many-to-many: it’s used when your association table contains additional columns beyond those which are foreign keys to the left and right tables. 
+
+- see [doocumentation](https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html#association-object)
+
+
+
+----------
+
+### Additional Configurations
+
+#### Required/Nullable Relationships
 
 Add `nullable` to *"many"* side in case the object can exist without assignment
 
@@ -242,6 +256,10 @@ class Todo(Base):
     id = Column(Integer, primary_key=True)
     person_id = Column(Integer, ForeignKey('people.id'), nullable=True)
 ```
+
+
+
+
 
 #### Subset Relationships
 
@@ -279,7 +297,7 @@ class Order(Base):
 
 - `save-update`: all objects associated with `relationship` will be added to session on `session.add`
 - `delete` if parent is marked for deletion, child should also be deleted
-  - ORM vs "FOREIGN KEY" cascade: either use
+  - ORM vs "FOREIGN KEY" cascade: use either
   - many-to-many: `secondary` many-to-many table entries are updated automatically
 - `relationship()` or `FOREIGN KEY` constraint to 
 - `delete-orphan` deleted if de-associated from parent
@@ -289,6 +307,25 @@ class Order(Base):
 - `all`: `save-update, merge, refresh-expire, expunge, delete`
 - default value: `save-update, merge`
 - common: `all, delete-orphan`
+
+
+
+**Example: `save-update`**
+
+- automatically adds child relationships to session
+
+```python
+user1 = User()
+address1, address2 = Address(), Address()
+user1.addresses = [address1, address2]
+sess = Session()
+sess.add(user)
+# address 1 and 2 also added to session
+```
+
+
+
+
 
 
 
@@ -394,7 +431,7 @@ users = User.query.all().delete()
 db.session.commit()
 ```
 
-**Adding Relationships**
+**Adding/Removing Relationships**
 
 1-to-many:
 ```python
