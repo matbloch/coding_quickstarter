@@ -72,13 +72,41 @@ class ModelName(db.Model):
 
 
 
-#### Base Class
+### Base Class
+
+Augmenting the base class allows to e.g. create the same base columns for all models.
+
+```python
+from sqlalchemy.ext.declarative import declared_attr
+
+class Base(object):
+    @declared_attr
+    def __tablename__(cls):
+        return cls.__name__.lower()
+
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
+    id =  Column(Integer, primary_key=True)
+
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base(cls=Base)
+
+class MyModel(Base):
+    name = Column(String(1000))
+```
+
+### Mixins
+
+Mixing classes inherit in addition to the primary base (preferred to base extension).
+
+
 
 
 
 ## Inheritance
 
-`polymorphic_*` keywords are defined on ``__mapper_args__``  property.
+- Inheritance is controlled by `polymorphic_*` keywords defined on ``__mapper_args__``  property
 
 ### Multiple Tables
 
