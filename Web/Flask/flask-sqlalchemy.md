@@ -2,9 +2,7 @@
 
 
 
-
-
-
+[TOC]
 
 ## Integration
 
@@ -20,10 +18,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-db = SQLAlchemy(app)
+db = SQLAlchemy(app
 ```
-
-
 
 #### Option 2: Declarative
 
@@ -39,10 +35,6 @@ db_session = scoped_session(sessionmaker(autocommit=False,
 Base = declarative_base()
 Base.query = db_session.query_property()
 ```
-
-
-
-
 
 
 
@@ -90,8 +82,8 @@ class ModelName(db.Model):
 
 - `db.relationship`, defined in the **one** structure
 	- `lazy` Bool - Default: load data in one go using a standard select statement
-	- `backref`String - create property of this model in linked models
-	- `uselist` Bool - set to `True` if its a 1-to-1 relationship
+	- `backref` String - create property of this model in linked models
+	- `uselist` Bool - set to `False` if its a 1-to-1 relationship
 - `db.ForeignKey` separately defined key (on the **many** side) that refers to other model
 
 
@@ -109,8 +101,6 @@ class Post(db.Model):
 u = User.query.get(1)
 posts = u.posts.all()
 ```
-
-
 
 **1-to-1 Relationships**
 
@@ -164,9 +154,7 @@ followers = db.Table('followers',
 )
 ```
 
-
-
-### Restricted Relationships
+#### Subset Relationships
 
 - `primaryjoin`
 - Only link a specific subset
@@ -188,11 +176,30 @@ class Address(Base):
     city = Column(String)
 ```
 
+#### ORM Cascade
 
+- configurable behavior for `relationship` construct
 
+```python
+class Order(Base):
+    items = relationship("Item", cascade="all, delete-orphan")
+    customer = relationship("User", cascade="save-update")
+```
 
+**Cascades:**
 
+- `save-update`: all objects associated with `relationship` will be added to session on `session.add`
+- `delete` if parent is marked for deletion, child should also be deleted
+  - ORM vs "FOREIGN KEY" cascade: either use
+  - many-to-many: `secondary` many-to-many table entries are updated automatically
+- `relationship()` or `FOREIGN KEY` constraint to 
+- `delete-orphan` deleted if de-associated from parent
 
+**Defaults:**
+
+- `all`: `save-update, merge, refresh-expire, expunge, delete`
+- default value: `save-update, merge`
+- common: `all, delete-orphan`
 
 
 
@@ -220,7 +227,7 @@ class Interval(Base):
 
 **Hybrid Attributes for queriyng**
 
-- **Note**: user sqlalchemy `abs` for SQL function
+- **Note**: use sqlalchemy `abs` for SQL function
 
 ```python
 from sqlalchemy import func
@@ -240,17 +247,7 @@ class Interval(object):
 
 
 
-
-
-
-
-
-
-
-
 ## Setters
-
-
 
 ```python
 class Interval(object):
@@ -266,17 +263,6 @@ class Interval(object):
 
 - `interval = Interval(5, 10)`
 - `interval.length = 12`
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -343,8 +329,6 @@ my_day.players.remove(my_player) #Remove
 
 ### Bulk Operations
 
-
-
 **Saving**
 
 ```python
@@ -354,40 +338,9 @@ session.commit()
 
 
 
-
-
-## ORM Cascade
-
-- configurable behavior for `relationship` construct
-
-
-```python
-class Order(Base):
-    items = relationship("Item", cascade="all, delete-orphan")
-    customer = relationship("User", cascade="save-update")
-```
-
-
-**Cascades:**
-- `save-update`: all objects associated with `relationship` will be added to session on `session.add`
-- `delete` if parent is marked for deletion, child should also be deleted
-	- ORM vs "FOREIGN KEY" cascade: either use
-	- many-to-many: `secondary` many-to-many table entries are updated automatically
-- `relationship()` or `FOREIGN KEY` constraint to 
-- `delete-orphan` deleted if de-associated from parent
-
-**Defaults:**
-- `all`: `save-update, merge, refresh-expire, expunge, delete`
-- default value: `save-update, merge`
-- common: `all, delete-orphan`
-
-
-
 # Query API
 
 - `session.query(User)` or `User.query`
-
-
 
 **filtering**
 
@@ -416,10 +369,6 @@ class Order(Base):
 - `join()`: Creates a [SQL join](https://www.w3schools.com/sql/sql_join.asp) in a query.
 - `limit()`: Limits the number of rows returned by a query.
 - `order_by()`: Sets an order in the rows returned by a query.
-
-
-
-
 
 **Examples**
 
@@ -465,8 +414,6 @@ print('')
 
 
 ### SQL Operators
-
-
 
 **IN**
 
