@@ -2,31 +2,15 @@
 
 
 
-### PEP 8 and Naming
+## PEP 8 and Naming
 
-
-
-
-
-### Project Structure and Imports
-
-
-
-
-
-
+Project Structure and Imports
 
 `from .game_round_settings import GameRoundSettings`
 
 
 
-
-
-
-
-
-
-### Control Structures
+## Control Structures
 
 **for in range**
 
@@ -49,7 +33,35 @@ for key, item in my_dict.items():
     print(item)
 ```
 
-### Type Declarations
+## Standard Containers
+
+#### Strings
+
+`mystr.startswith("abc")`
+
+`mystr.endswith("abc")``mystr.split(";")`
+
+```
+name = "Emil"
+age = 63
+f"Hello, {name}. You are {age}."
+```
+
+#### Lists
+
+**List Comprehension**
+
+- ``[youfunc(tmp) for tmp in YOURARRAY if condition(tmp)]`
+
+```python
+word_lengths = [len(word) for word in words if word != "the"]
+```
+
+
+
+
+
+## Type Declarations
 
 - variables: `variable_name: type`
 - methods: ``def function_name(parameter1: type) -> return_type:``
@@ -70,7 +82,46 @@ def get_first_name(full_name: str) -> str:
 	return full_name.split(" ")[0]
 ```
 
-### Interfaces
+
+
+## Generators
+
+- using `yield`
+
+```python
+import random
+def lottery():
+    for i in range(6):
+        yield random.randint(1, 40)
+for random_number in lottery():
+       print("And the next number is... %d!" %(random_number))
+```
+
+
+
+## OOP
+
+```python
+class MyClass:
+    pass
+
+class MyClass(Base1, Base2):
+    
+    # private variable
+	__my_private_var = 123
+    
+    # static method
+    @staticmethod
+	def info(name, email, username):
+        
+    # class methods: work with the class itself (e.g. for factory methods)
+    @classmethod
+    def all(cls):
+        return db.session.query(cls).all()
+        
+```
+
+**Interfaces**
 
 - raise `NotImplementedError`
 
@@ -85,44 +136,4 @@ class Derived(Base):
     def virtualMethod(self):
         return 1
 ```
-
-### String Manipulation
-
-- `mystr.startswith("abc")`, `mystr.endswith("abc")`
-- `mystr.split(";")`
-
-### List Comprehension
-
-- ``[youfunc(tmp) for tmp in YOURARRAY if condition(tmp)]`
-
-```python
-word_lengths = [len(word) for word in words if word != "the"]
-```
-
-### Generators
-
-- using `yield`
-
-```python
-import random
-def lottery():
-    for i in range(6):
-        yield random.randint(1, 40)
-for random_number in lottery():
-       print("And the next number is... %d!" %(random_number))
-```
-
-### OOP
-
-
-
-```python
-class MyClass:
-    pass
-
-class MyClass(Base1, Base2):
-	__my_private_var = 123
-```
-
-
 
