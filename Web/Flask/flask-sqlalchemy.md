@@ -72,6 +72,50 @@ class ModelName(db.Model):
 
 
 
+#### Base Class
+
+
+
+## Inheritance
+
+`polymorphic_*` keywords are defined on ``__mapper_args__``  property.
+
+### Multiple Tables
+
+- subclass that defines it's own table
+
+```python
+class Person(Base):
+    __tablename__ = 'people'
+    id = Column(Integer, primary_key=True)
+    discriminator = Column('type', String(50))
+    __mapper_args__ = {'polymorphic_on': discriminator}
+
+class Engineer(Person):
+    __tablename__ = 'engineers'
+    __mapper_args__ = {'polymorphic_identity': 'engineer'}
+    id = Column(Integer, ForeignKey('people.id'), primary_key=True)
+    primary_language = Column(String(50))
+```
+
+
+
+### Single Table Inheritance
+
+- no `__tablename__` defined in child class
+
+```python
+class Person(Base):
+    __tablename__ = 'people'
+    id = Column(Integer, primary_key=True)
+    discriminator = Column('type', String(50))
+    __mapper_args__ = {'polymorphic_on': discriminator}
+
+class Engineer(Person):
+    __mapper_args__ = {'polymorphic_identity': 'engineer'}
+    primary_language = Column(String(50))
+```
+
 
 
 ## Data Relationships
@@ -83,6 +127,7 @@ class ModelName(db.Model):
 - `db.relationship`, defined in the **one** structure
 	- `lazy` Bool - Default: load data in one go using a standard select statement
 	- `backref` String - create property of this model in linked models
+	- (`back_populates` String - alternative to `backref` where link in other object is not automatically created)
 	- `uselist` Bool - set to `False` if its a 1-to-1 relationship
 - `db.ForeignKey` separately defined key (on the **many** side) that refers to other model
 
@@ -154,6 +199,22 @@ followers = db.Table('followers',
 )
 ```
 
+#### Nullable Relationships
+
+Add `nullable` to *"many"* side in case the object can exist without assignment
+
+```python
+class Person(Base):
+    __tablename__ = 'people'
+    id = Column(Integer, primary_key=True)
+    todos = relationship("Todo", backref=backref("person"))
+    
+class Todo(Base):
+    __tablename__ = 'todos'
+    id = Column(Integer, primary_key=True)
+    person_id = Column(Integer, ForeignKey('people.id'), nullable=True)
+```
+
 #### Subset Relationships
 
 - `primaryjoin`
@@ -223,9 +284,9 @@ class Interval(Base):
         return self.end - self.start
 ```
 
+**Hybrid Attributes for querying**
 
-
-**Hybrid Attributes for queriyng**
+- `@{hybrid_property}.expression`
 
 - **Note**: use sqlalchemy `abs` for SQL function
 
