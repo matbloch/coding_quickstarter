@@ -148,6 +148,13 @@ class Engineer(Person):
 
 ## Data Relationships
 
+Patterns:
+
+- Foreign-Key: Value should be constrained to primary key of other table
+- Relationship: ORM pattern to link classes
+
+
+
 ### 1-to-Many Relationships
 
 ![1-to-many](img\1-to-many.png)
@@ -285,15 +292,20 @@ class Address(Base):
 
 #### ORM Cascade
 
+- Determines how changes from the parent (the class that defines the relationship) are propagated to child objects
+
 - configurable behavior for `relationship` construct
 
 ```python
 class Order(Base):
+    # define cascade on a relationship
     items = relationship("Item", cascade="all, delete-orphan")
     customer = relationship("User", cascade="save-update")
+    # define cascade on a backref
+    products = relationship("Product", backref=backref("products", cascade="all, delete-orphan"))
 ```
 
-**Cascades:**
+**Available Options**
 
 - `save-update`: all objects associated with `relationship` will be added to session on `session.add`
 - `delete` if parent is marked for deletion, child should also be deleted
@@ -308,8 +320,6 @@ class Order(Base):
 - default value: `save-update, merge`
 - common: `all, delete-orphan`
 
-
-
 **Example: `save-update`**
 
 - automatically adds child relationships to session
@@ -323,9 +333,19 @@ sess.add(user)
 # address 1 and 2 also added to session
 ```
 
+#### Foreign-Key Cascade
 
+```python
+class Address(Base):
+    __tablename__ = 'address'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'), 
+                     onupdate="CASCADE", ondelete="CASCADE"), primary_key=True)
+```
 
+- `onupdate="CASCADE"`: updates this field when other key is updated
 
+- `ondelete="CASCADE"`: deletes this instance if other item is deleted
 
 
 
