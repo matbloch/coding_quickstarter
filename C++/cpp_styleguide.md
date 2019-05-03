@@ -93,10 +93,12 @@ int * const - const pointer to int
 ```cpp
 enum class Color { red, green, blue }; // enum class
 enum Animal { dog, cat, bird, human }; // plain enum
-```
-- **enum classes** - enumerator names are local to the enum and their values do not implicitly convert to other types (like another enum or int)
-- **Plain enums** - where enumerator names are in the same scope as the enum and their values implicitly convert to integers and other types
 
+Color my_color = Color::red;	// scoped
+Animal my_animal = dog;				// NOT scoped
+```
+- **enum classes**: + scoped, - cannot be converted to integer/others (e.g. for bit flags)
+- **Plain enums** - not scoped, + implicitly convert to integers
 
 **shared pointers**
 

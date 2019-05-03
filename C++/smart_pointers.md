@@ -33,15 +33,13 @@ if (pt != nullptr) {}
 
 
 
-
-
 ## shared_ptr
 
-Release ownership of object as soon as:
-
-- they destroy themselves
-- their value changes
-- if two shared_ptrs are created from same raw pointer, **both will be owning**, causing potential problems
+- Reference counted
+- Release ownership of object as soon as:
+  - they destroy themselves
+  - their value changes
+  - if two shared_ptrs are created from same raw pointer, **both will be owning**, causing potential problems
 
 ### Initialization
 
@@ -54,7 +52,7 @@ auto p2 = std::shared_ptr<myClass>(new myClass(my_args));
 **make_shared**
 
 - no way to create two pointers to the same resource
-- **new** operator for data structure only called once (one memory allocation)
+- **new** operator for data structure only called once (one memory allocation compared to allocating control block and data container).
 
 **Copy/assignment**
 
@@ -90,6 +88,56 @@ p = nullptr;
 p.reset(new int);
 ```
 
+### Initialization from this
+
+- `std::shared_ptr<T>(this)` is not working
+- Create `shared_ptr` reference to self using `std::enable_shared_from_this`
+- Use **public** inheritance
+
+```cpp
+struct Good: public std::enable_shared_from_this<Good> { // note: public inheritance
+    std::shared_ptr<Good> getptr() {
+        return shared_from_this();
+    }
+};
+```
+
+**Initialization of the owner**
+
+- caller of `std::shared_from_this` has to be owned by a `std::shared_ptr` (only for this method, others are fine)
+
+```cpp
+// correct usage
+std::shared_ptr<Good> gp1 = std::make_shared<Good>();
+std::shared_ptr<Good> gp2 = gp1->getptr();
+// bad
+Good not_so_good;
+std::shared_ptr<Good> gp1 = not_so_good.getptr();
+// fine
+Good not_so_good;
+not_so_good.do_something_else();
+```
+
+**Forcing `shared_ptr` creation**
+
+- private construtor
+- static factory method
+
+```cpp
+class MyObject {
+  public:
+  static std::shared_ptr<MyObject> create_object {
+  	return std::make_shared<MyObject>();
+  }
+  private:
+  	MyObject(){}
+}
+```
+
+
+
+### Observers
+
 **Accessing the Raw Pointer**
 
 ```cpp
@@ -98,16 +146,26 @@ smart_pointer.get()
 
 
 
+### Multi-Threading
+
+- Safe when altering the underlying object (atomic reference count)
+- **Unsafe** when altering the instance in different threads 
+
+
+
+
+
+
+
 ## unique_ptr
 
 - there can be only 1 `unique_ptr` pointing at any one resource
+- no computational overhead - same as raw ptr under the hood
 
 ```cpp
 unique_ptr<T> myPtr(new T);       // Okay
 unique_ptr<T> myOtherPtr = myPtr; // Error: Can't copy unique_ptr
 ```
-
-
 
 **Consuming Unique Ptr**
 
@@ -117,4 +175,14 @@ unique_ptr<T> myOtherPtr = myPtr; // Error: Can't copy unique_ptr
 
 ## weak_ptr
 
+- doesn't increase reference count
+
+#### Initialization
+
+- Always need to be initialized from `std::shared_ptr`
+
+```cpp
+auto ptr = std::make_shared<int>(1337);  // ref-count 1 
+std::weak_ptr<int> weak_ptr = ptr;       // ref-count 1
+```
 
