@@ -1,19 +1,11 @@
 # Relay
 
-> This documentation covers the Relay UI integration
-
-
-
-
+### Terminology
 
 **GraphQL Client**
 
 - automatic low-level networking and local caching
 - fetch any combination of data from the backend (compared to REST)
-
-
-
-
 
 **GraphQL Server**
 
@@ -23,13 +15,11 @@
 - Incoming requests are validated against the schema definition and the supported format
 - self-descriptive api, easy to extend and change
 
-
-
 **GraphQL Schemas**
 
 -  Contract agreed on between ui and backend
 
-
+### Best Practices
 
 **GraphQL Backend Development** (Schema-Driven)
 
@@ -37,7 +27,10 @@
 2. Implement **resolver** functions to handle them
 3. Requirement update: Go back to step 1
 
+**GraphQL Frontent Integration**
 
+1. Generate GraphQL API scheme from backend service
+2. 
 
 
 
