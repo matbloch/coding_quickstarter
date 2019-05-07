@@ -2,6 +2,16 @@
 
 - [Excellent list, summarize this!](https://sourcemaking.com/design_patterns)
 
+
+
+
+
+### Inheritance vs Composition
+
+
+
+
+
 ### Proxy Wrapper 
 
 - Protect members, restrict access to wrapper
@@ -28,8 +38,6 @@ auto wrapper = Wrapper<Resource>(res);
 wrapper->a = 345;
 wrapper->b = 345;
 ```
-
-
 
 ### Trait Classes
 

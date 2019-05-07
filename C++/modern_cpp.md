@@ -1,4 +1,4 @@
-# C++ Cheatsheet
+# Modern C++ Cheatsheet
 
 **Ressources**
 - [New C++ language features](https://github.com/AnthonyCalandra/modern-cpp-features#return-type-deduction)

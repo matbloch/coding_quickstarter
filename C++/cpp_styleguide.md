@@ -7,8 +7,7 @@
 - Always use `nullptr` for initializing null pointers.
 - use range based for loop, when iterating vectors
 ```cpp
-for (const auto &data_block : dataBlocks) {
-}
+for (const auto &data_block : dataBlocks) {}
 ```
 - use `const T&` istead of `T const&`
 - for "direct" header files use `#include "MyClass.h"` instead of `<...>`
@@ -25,6 +24,46 @@ for (const auto &data_block : dataBlocks) {
 
 ## Control Flow
 - Prefer early exit of nested if statements
+
+
+
+## OOP
+
+**private static vs private const**
+
+- use `private static`, if the method does not belong to an instance of the object
+
+**`virtual` Destructors**
+
+- add `virtual` keyword to destructor to prevent memory leak for child data containers (correct destructor, pointer type, is looked up at code execution time in object known as *vtable*)
+- When a base class destructor is declared virtual then the destructor of the actual class pointed to by a base class pointer `bp` is going to be called when `delete bp` is executed.
+
+```cpp
+void do_something() {
+ Base* p = new Derived;
+ // Derived destructor not called!!
+ delete p;  
+}
+```
+
+instead:
+
+```cpp
+class Base {
+public:
+ virtual ~Base();
+};
+
+class Derived : public Base {
+ virtual ~Derived();
+}
+```
+
+**`explicite` Constructors**
+
+- add `explicite` to ctors with single argument to avoid implicite conversion, e.g. `A a = 1`
+
+
 
 ## Misc
 
@@ -66,9 +105,6 @@ Mode * const mode = nullptr;
 int const * - pointer to const int
 int * const - const pointer to int
 ```
-
-**private static vs private const**
-- use `private static`, if the method does not belong to an instance of the object
 
 
 **inline functions**

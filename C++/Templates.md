@@ -42,9 +42,84 @@ T mypair<T>::getmax () {
 
 ### Template Specialization
 
+**Function specialization**
+
+```cpp
+template <typename T>
+T add(T x, T y)  {
+	return x+y;
+}
+
+template<>
+char add<char>(char x, char y) {
+	int i = x - '0';
+	int j = y - '0';
+	return i + j;
+}
+```
+
+**Class specialization**
+
 ```
 template <class T> class mycontainer { ... };
 template <> class mycontainer <char> { ... };
+```
+
+```cpp
+// Normal class
+template <typename T>
+class A
+{
+public:
+	A(){ cout << "A()\n"; }
+	T add(T x, T y);
+};
+
+template <typename T>
+T A<T>::add(T x, T y)
+{
+	return x+y;
+}
+// Specialized class
+template <>
+class A <char>
+{
+public:
+	A() { cout << "Special A()\n"; }
+	char add(char x, char y);
+};
+
+// template <>   <= this is not needed if defined outside of class
+char A<char>::add(char x, char y)
+{
+	int i = x-'0';
+	int j = y-'0';
+	return i+j;
+}
+```
+
+**Member function specialisation**
+
+```cpp
+class Test
+{
+  public:
+    template <typename T>
+    void function (T data) {
+      std::cout << data;
+    }
+};
+
+template <>
+void Test::function <char> (char data);
+
+// Test.cpp
+#include "Test.h"
+
+template <>
+void Test::function <char> (char data) {
+  std::cout << 'Z',
+}
 ```
 
 
@@ -76,10 +151,6 @@ class Thing<A,int>  //partial specialization of the class template
 template <class A>
 int Thing<A,int>::doSomething()  { /* do whatever you want to do here */ }
 ```
-
-
-
-
 
 
 

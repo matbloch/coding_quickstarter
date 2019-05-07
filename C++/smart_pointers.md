@@ -153,10 +153,6 @@ smart_pointer.get()
 
 
 
-
-
-
-
 ## unique_ptr
 
 - there can be only 1 `unique_ptr` pointing at any one resource
@@ -186,3 +182,6 @@ auto ptr = std::make_shared<int>(1337);  // ref-count 1
 std::weak_ptr<int> weak_ptr = ptr;       // ref-count 1
 ```
 
+
+
+TODO
