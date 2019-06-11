@@ -25,11 +25,7 @@ class User(SQLAlchemyObjectType):
 
 
 
-
-
 ### Queries
-
-
 
 **Standard Query Resolvers**
 

@@ -2,19 +2,11 @@
 
 Python and JavaScript library for a GraphQL server.
 
-
-
-
-
 **Reads**
 
 - [Grapheme example on Medium](https://medium.com/@fasterpancakes/graphql-server-up-and-running-with-50-lines-of-python-85e8ada9f637)
 
 **Overview**
-
-
-
-
 
 - **Schema**: Contract UI and backend agree on. Defines the possible Queries and Mutations
   - **Queries**: For data fetching
@@ -26,11 +18,7 @@ Python and JavaScript library for a GraphQL server.
 
 
 
-
-
-
-
-## Schema
+## Schema Definition
 
 - describes data model: Methods to **resolve **or **mutate** data
 
@@ -42,7 +30,6 @@ schema = graphene.Schema(
     mutation=MyMutations, # mutation resolvers
     types=[SomeExtraObjectType, ]  # return types
 )
-
 ```
 
 
@@ -62,18 +49,22 @@ class CreatePerson(graphene.Mutation):
         person = Person(name=name)
         ok = True
         return CreatePerson(person=person, ok=ok)
+    
 # 2. Object
 class Person(graphene.ObjectType):
     name = graphene.String()
     age = graphene.Int()
-# 3. Mutations
+  
+# 3. Query
+class MyQuery(graphene.ObjectType):
+    person = graphene.Field(Person)
+    
+# 4. Mutations
 class MyMutations(graphene.ObjectType):
     create_person = CreatePerson.Field()
-# 4. Query
-class Query(graphene.ObjectType):
-    person = graphene.Field(Person)
+
 # 5. The Schema
-schema = graphene.Schema(query=Query, mutation=MyMutations)
+schema = graphene.Schema(query=MyQuery, mutation=MyMutations)
 ```
 
 
@@ -217,9 +208,320 @@ class Human(graphene.ObjectType):
 
 
 
-## Query Types
+## Queries
+
+#### 1. Default definition
+
+1. define object scheme (fields you can query)
+2. define `resolve_{field-name}`
+
+```python
+class Patron(graphene.ObjectType):
+    id = graphene.ID()
+    name = graphene.String(description="The persons name")
+
+class Query(graphene.ObjectType):
+    patron = graphene.Field(Patron, description="Query a user.")
+    def resolve_patron(self, info):
+        # fetch the object. Here: just return it.
+		return Patron(id=1, name="Syrus")
+    
+schema = graphene.Schema(query=Query)
+```
+
+#### 2. SQLAlchemy Auto-Generated
+
+**Benefits**
+
+- no input definition required
+
+**Integration**
+
+- inherit from `SQLAlchemyObjectType`
+- documentation extracted from SQLAlchemy db model (from `doc` attribute)
+- SQLAlchemy query automatically generated from query arguments
+
+```python
+class UserModel(Base):
+    id = Column('id', Integer, primary_key=True, doc="Id of the person.")
+    name = Column('name', String, doc="Name of the person.")
+    name = Column('last_name', String, doc="The last name of the person.")
+```
+
+```python
+from graphene_sqlalchemy import SQLAlchemyObjectType
+
+class User(SQLAlchemyObjectType):
+    class Meta:
+        model = UserModel
+        # only return specified fields
+        only_fields = ("name",)
+        # exclude specified fields
+        exclude_fields = ("last_name",)
+
+class Query(graphene.ObjectType):
+    users = graphene.List(User)
+
+    def resolve_users(self, info):
+        query = User.get_query(info)  # SQLAlchemy query
+        return query.all()
+```
+
+#### 3. SQLAlchemy Auto-Generated & Relay
+
+**Benefits**
+
+- no input definition required
+- no `resolve_{field-name}` method required
+
+**Integration**
+
+- define query object type with SQLAlchemy model and attribute `interfaces = (graphene.relay.Node,)`
+- add `node = graphene.relay.Node.Field()` to `Query`
+- use `graphene.relay.Node.Field` as type for single object query
+- use `SQLAlchemyConnectionField` as type for multi object query
+
+```python
+class User(SQLAlchemyObjectType):
+    class Meta:
+        model = UserModel
+        interfaces = (graphene.relay.Node,)  # required
+        # additional restrictions
+        only_fields = ("name",)
+        exclude_fields = ("last_name",)
+        
+class Query(graphene.ObjectType):
+    """Query objects for GraphQL API."""
+    node = graphene.relay.Node.Field()  # required
+    user = graphene.relay.Node.Field(User)
+    users = SQLAlchemyConnectionField(User)
+```
+
+**Example Query**
+
+```json
+query {
+  users {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }       
+}
+```
 
 
+
+## Mutations
+
+#### Default definition
+
+**Integration**
+
+- e.g. `person` and `ok` (status of mutation) as return parameters
+- `mutate()` method has to be implemented
+- `Arguments` class implements the input parameters
+
+```python
+class Person(graphene.ObjectType):
+    name = graphene.String()
+    age = graphene.Int()
+
+class CreatePerson(graphene.Mutation):
+    class Arguments:
+        name = graphene.String(required=True)
+
+    ok = graphene.Boolean()
+    person = graphene.Field(lambda: Person)
+
+    def mutate(self, info, name):
+        person = Person(name=name)
+        ok = True
+        return CreatePerson(person=person, ok=ok)
+```
+
+```python
+class MyMutations(graphene.ObjectType):
+    create_person = CreatePerson.Field()
+
+# We must define a query for our schema
+class Query(graphene.ObjectType):
+    person = graphene.Field(Person)
+
+schema = graphene.Schema(query=Query, mutation=MyMutations)
+```
+
+query:
+
+```json
+mutation myFirstMutation {
+    createPerson(name:"Peter") {
+        person {
+            name
+        }
+        ok
+    }
+}
+```
+
+**Nested inputs**
+
+- allows to pass a dictionary as argument for the mutation
+- use `graphene.InputField` for nested input arguments
+
+```python
+class AddressInput(graphene.InputObjectType):
+    street = graphene.String(required=True)
+    city = graphene.String()
+
+class PersonInput(graphene.InputObjectType):
+    name = graphene.String(required=True)
+    age = graphene.Int(required=True)
+    # nested input type
+    address = graphene.InputField(AddressInput)
+
+class CreatePerson(graphene.Mutation):
+    class Arguments:
+        person_data = PersonInput(required=True)
+    person = graphene.Field(Person)
+    @staticmethod
+    def mutate(root, info, person_data=None):
+        person = Person(
+            name=person_data.name,
+            age=person_data.age
+        )
+        return CreatePerson(person=person)
+```
+
+query:
+
+```json
+mutation myFirstMutation {
+    createPerson(personData: {name:"Peter", age: 24}) {
+        person {
+            name,
+            age
+        }
+    }
+}
+```
+
+**Specifying the output type**
+
+- assign model class to `Output`
+- allows to specify explicit instead of mutation-specific object type as output 
+
+```python
+class CreatePerson(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+    Output = Person
+    def mutate(self, info, name):
+        return Person(name=name)
+```
+
+#### 1. SQLAlchemy Mutations
+
+```python
+class Planet(SQLAlchemyObjectType):
+    class Meta:
+        model = ModelPlanet
+        interfaces = (graphene.relay.Node,)
+```
+
+**Insert**
+
+
+```python
+class CreatePlanetInput(graphene.InputObjectType):
+    name = graphene.String(description="Name of the planet.")
+    
+class CreatePlanet(graphene.Mutation):
+    planet = graphene.Field(lambda: Planet, description="created planet.")
+
+    class Arguments:
+        input = CreatePlanetInput(required=True)
+
+    def mutate(self, info, input):
+        data = utils.input_to_dictionary(input)
+        data['created'] = datetime.utcnow()
+        data['edited'] = datetime.utcnow()
+        planet = ModelPlanet(**data)
+        db_session.add(planet)
+        db_session.commit()
+        return CreatePlanet(planet=planet)
+```
+
+**Update**
+
+```python
+class UpdatePlanetInput(graphene.InputObjectType, PlanetAttribute):
+    """Arguments to update a planet."""
+    id = graphene.ID(required=True, description="Global Id of the planet.")
+    name = graphene.String(required=True, description="Name of the planet.")
+
+class UpdatePlanet(graphene.Mutation):
+    planet = graphene.Field(lambda: Planet, description="Updated planet.")
+
+    class Arguments:
+        input = UpdatePlanetInput(required=True)
+
+    def mutate(self, info, input):
+        data = utils.input_to_dictionary(input)
+        data['edited'] = datetime.utcnow()
+
+        planet = db_session.query(ModelPlanet).filter_by(id=data['id'])
+        planet.update(data)
+        db_session.commit()
+        planet = db_session.query(ModelPlanet).filter_by(id=data['id']).first()
+
+        return UpdatePlanet(planet=planet)
+```
+
+Query:
+
+```json
+mutation {
+  updatePlanet (input:{
+    id: "UGxhbmV0Ojk"
+    name: "The new planet name"
+  }) {
+    planet {
+      id
+      name
+	}
+}
+```
+
+#### 2. Auto-generated CRUD Mutations
+
+
+
+
+
+## Custom Feedback Messages
+
+
+
+## Server-Side Input Validation
+
+
+
+
+
+
+
+## Custom Queries/Mutations
+
+
+
+**Queries with additional arguments**
+
+- additional argument not directly related to object attribute
+- add to `graphene.Field` as additional argument
+- write custom resolver with additional argument
 
 ```python
 class Character(graphene.Interface):
@@ -234,8 +536,8 @@ class Query(graphene.ObjectType):
         episode=graphene.Int(required=True)
     )
 
+    # custom resolver with additional attribute
     def resolve_hero(_, info, episode):
-        # Luke is the hero of Episode V
         if episode == 5:
             return get_human(name='Luke Skywalker')
         return get_droid(name='R2-D2')
@@ -245,29 +547,56 @@ schema = graphene.Schema(query=Query, types=[Human, Droid])
 
 
 
-## Unions
+**Search Query**
 
-- used to refer to possible objecttypes
+- search across different models
 
 ```python
-import graphene
-
-class Human(graphene.ObjectType):
-    name = graphene.String()
-    born_in = graphene.String()
-
-class Droid(graphene.ObjectType):
-    name = graphene.String()
-    primary_function = graphene.String()
-
-class Starship(graphene.ObjectType):
-    name = graphene.String()
-    length = graphene.Int()
-
+class Book(SQLAlchemyObjectType):
+    class Meta:
+        model = BookModel
+        interfaces = (relay.Node,)
+class BookConnection(relay.Connection):
+    class Meta:
+        node = Book
+class Author(SQLAlchemyObjectType):
+    class Meta:
+        model = AuthorModel
+        interfaces = (relay.Node,)
+class AuthorConnection(relay.Connection):
+    class Meta:
+        node = Author
 class SearchResult(graphene.Union):
     class Meta:
-        types = (Human, Droid, Starship)
+        types = (Book, Author)
+class Query(graphene.ObjectType):
+    node = relay.Node.Field()
+    search = graphene.List(SearchResult, q=graphene.String())  # List field for search results
+    # Normal Fields
+    all_books = SQLAlchemyConnectionField(BookConnection)
+    all_authors = SQLAlchemyConnectionField(AuthorConnection)
+
+    def resolve_search(self, info, **args):
+        q = args.get("q")  # Search query
+        # Get queries
+        bookdata_query = BookData.get_query(info)
+        author_query = Author.get_query(info)
+        # Query Books
+        books = bookdata_query.filter((BookModel.title.contains(q)) |
+                                      (BookModel.isbn.contains(q)) |
+                                      (BookModel.authors.any(AuthorModel.name.contains(q)))).all()
+
+        # Query Authors
+        authors = author_query.filter(AuthorModel.name.contains(q)).all()
+        return authors + books  # Combine lists
+schema = graphene.Schema(query=Query, types=[Book, Author, SearchResult])
 ```
+
+
+
+
+
+
 
 
 
@@ -280,8 +609,6 @@ class SearchResult(graphene.Union):
 - mutation function: `mutate` (will be called uppon mutation)
 
 ````python
-import graphene
-
 class CreatePerson(graphene.Mutation):
     class Arguments:
         name = graphene.String()
@@ -294,6 +621,49 @@ class CreatePerson(graphene.Mutation):
         ok = True
         return CreatePerson(person=person, ok=ok)
 ````
+
+**Separate inputs into class**
+
+```python
+class People(SQLAlchemyObjectType):
+    """People node."""
+
+    class Meta:
+        model = ModelPeople
+        interfaces = (graphene.relay.Node,)
+        
+class CreatePersonInput(graphene.InputObjectType):
+    """Arguments to create a person."""
+    name = graphene.String(required=True, description="Name of the person.")
+    height = graphene.String(description="Height of the person.")
+
+class CreatePerson(graphene.Mutation):
+    # output of the mutation
+    person = graphene.Field(lambda: People, description="Person created by this mutation.")
+    class Arguments:
+        input = CreatePersonInput()
+
+```
+
+The query: Create the person and fetch it's name
+
+```json
+mutation {
+  createPerson (input: {
+    name: "Alexis ROLLAND"
+    height: "189"
+    }) {
+    person {
+      name
+	}
+}
+```
+
+
+
+
+
+
 
 
 
@@ -326,12 +696,44 @@ class CreatePerson(graphene.Mutation):
 
 
 
+
+
+
+
+## Unions
+
+- used to refer to possible objecttypes
+
+```python
+import graphene
+
+class Human(graphene.ObjectType):
+    name = graphene.String()
+    born_in = graphene.String()
+
+class Droid(graphene.ObjectType):
+    name = graphene.String()
+    primary_function = graphene.String()
+
+class Starship(graphene.ObjectType):
+    name = graphene.String()
+    length = graphene.Int()
+
+class SearchResult(graphene.Union):
+    class Meta:
+        types = (Human, Droid, Starship)
+```
+
+
+
+
+
+
+
 # Relay Integration
 
 - Graphene has built-in support for *Relay*
-- **Benefits**: 
-
-
+- **Benefits**: Auto-creation of search queries
 
 
 
@@ -339,14 +741,10 @@ class CreatePerson(graphene.Mutation):
 
 - ++ version of list that allows slicing and pagination
 
-
-
 **All connection classes have**
 
 - `pageInfo`
 - `edges`
-
-
 
 ### Connection Fields
 
@@ -358,8 +756,6 @@ class Faction(graphene.ObjectType):
     def resolve_ships(self, info):
         return [] # ...
 ```
-
-
 
 ### Custom Connections
 
@@ -407,62 +803,6 @@ class Query(graphene.ObjectType):
 ```
 
 
-
-
-
-# SQLAlchemy: Integration
-
-**Object definition from SQLAlchemy model**
-
-- inherit from `SQLAlchemyObjectType`
-
-- parameters:
-  - `only_fields`
-  - `exclude_fields`
-
-```python
-from graphene_sqlalchemy import SQLAlchemyObjectType
-
-class User(SQLAlchemyObjectType):
-    class Meta:
-        model = UserModel
-        # only return specified fields
-        only_fields = ("name",)
-        # exclude specified fields
-        exclude_fields = ("last_name",)
-```
-
-**Standard Query Resolvers**
-
-- `{SQL-Alchemy-ObjectType}.get_query` get a query to fetch the models
-
-```python
-class Query(graphene.ObjectType):
-    users = graphene.List(User)
-
-    def resolve_users(self, info):
-        query = User.get_query(info)  # SQLAlchemy query
-        return query.all()
-```
-
-Alternative:
-
-- Use `SQLAlchemyConnectionField` which encapsulates a `graphene.relay` connection
-
-Executing the Query:
-
-`schema = graphene.Schema(query=Query)`
-
-```
-query = '''
-    query {
-      users {
-        name,
-        lastName
-      }
-    }
-'''
-```
 
 
 
