@@ -40,7 +40,7 @@ T mypair<T>::getmax () {
 
 
 
-### Template Specialization
+## Template Specialization
 
 **Function specialization**
 
@@ -155,6 +155,63 @@ int Thing<A,int>::doSomething()  { /* do whatever you want to do here */ }
 
 
 ### Template Inheritance
+
+```cpp
+class Rectangle: public Area<int> {
+
+};
+```
+
+**Templated inheritance**
+
+```cpp
+template<typename T> class Rectangle: public Area<T> {
+
+};
+```
+
+**Accessing members of superclass**
+
+- not automaticall due to two-phase name lookup of compiler
+
+First option: `using`
+
+```cpp
+template<typename T> struct Subclass : public Superclass<T> {
+  using Superclass<T>::b;
+  using Superclass<T>::g;
+
+  void f() {
+    g();
+    b = 3;
+  }
+};
+```
+
+Second option: `this`
+
+```cpp
+template<typename T> struct Subclass : public Superclass<T> {
+  void f() {
+    this->g();
+    this->b = 3;
+  }
+};
+```
+
+**Inheriting Base Class constructor**
+
+```cpp
+template <type T>
+class A {
+  A(T input);
+}
+
+template <type T>
+class B : public A<T> {
+  using A<T>::A;
+}
+```
 
 
 

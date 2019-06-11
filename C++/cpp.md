@@ -156,7 +156,7 @@ public:
 ```
 
 
-##Debugging##
+##Debugging
 
 fatal error LNK1120: 1 nicht aufgeloeste externe Verweise.
 projekt > eigenschaften > linker > system > subSystem auf "Konsole (/SUBSYSTEM:CONSOLE)"
@@ -164,7 +164,7 @@ projekt > eigenschaften > linker > system > subSystem auf "Konsole (/SUBSYSTEM:C
 ###Exception Handling
 
 
-##Basic concepts##
+##Basic concepts
 
 
 ###The `main` function
@@ -260,7 +260,7 @@ _ _ _
 
 
 
-##Control structures##
+##Control structures
 
 
 > `break;`		breaks the loop  
@@ -318,7 +318,7 @@ while(condition)   // condition at start
 ```
 
 
-##Functions##
+##Functions
 
 ##### with return
 

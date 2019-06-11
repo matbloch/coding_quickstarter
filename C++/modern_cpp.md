@@ -390,16 +390,20 @@ struct Iterator {
 
 
 
-
-
-
-
 # Argument Passing and Function Returns
 
 - See [Guideline on argument passing](http://www.modernescpp.com/index.php/c-core-guidelines-how-to-pass-function-parameters)
-
 - always return by value if possible (complier optimizations make this very fast)
 - only as in-out param, if additional sucess parameter is returned
+
+
+
+**Passing Arguments**
+
+- small values: `const` reference
+- special types: 
+
+
 
 # CMake
 
@@ -556,6 +560,27 @@ std::vector<std::reference_wrapper<Foo>> Bar::getFoos() const {
 }
 ```
 
+
+
+## Pittfalls
+
+
+
+
+
+### Temporaries in Range-based for loops
+
+- range based for loop gets constructed as  `auto && val = A().get();`
+- `A()` is destroyed after construction
+
+```cpp
+class A {
+  int a_;
+  const &getA() {return a_;}
+}
+
+for (auto v : A().getA()) {}
+```
 
 
 

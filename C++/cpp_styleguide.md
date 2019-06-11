@@ -1,5 +1,19 @@
 # Coding Styleguide for C++
 
+
+
+## Naming
+
+- Use `snake_case` for variables
+- Use `snake_case` for simple accessors (setter and getters)
+- Use `camelCase` for methods
+- Use `CamelCase` for classes
+- Use `snake_case_` for member variables.
+- Use `snake_case` for functions in anonymous space
+- Class enums: Use `CamelCase` for enum names, `UPPER_SNAKE_CASE` for enum values
+
+## General
+
 - as many variables `const` as possible
 - pass arguments: `const &`
 - use `std::move()` to copy data into output containers
@@ -13,19 +27,9 @@ for (const auto &data_block : dataBlocks) {}
 - for "direct" header files use `#include "MyClass.h"` instead of `<...>`
 - Use upper case for type declarations, e.g. `using ReturnType = ...`
 
-## Naming
-- Use `snake_case` for variables
-- Use `snake_case` for simple accessors (setter and getters)
-- Use `camelCase` for methods
-- Use `CamelCase` for classes
-- Use `snake_case_` for member variables.
-- Use `snake_case` for functions in anonymous space
-- Class enums: Use `CamelCase` for enum names, `UPPER_SNAKE_CASE` for enum values
-
 ## Control Flow
+
 - Prefer early exit of nested if statements
-
-
 
 ## OOP
 
@@ -63,7 +67,33 @@ class Derived : public Base {
 
 - add `explicite` to ctors with single argument to avoid implicite conversion, e.g. `A a = 1`
 
+**Member Variables**
 
+- if getter and setter: just use public variable
+
+**Member Initialization**
+
+- ***member-initializer-list***: follows rules of *direct-initialization* - 
+
+  - no temporaries are moved/copied
+  - **explicit** context (no implicit conversion)
+
+  ```cpp
+  X::X(int) : i{22}{}
+  ```
+
+- ***brace-or-equal-initializer***:
+
+  - guaranteed default, also if multiple contours are present
+
+  ```cpp
+  class X {
+    int i = 4;
+    int j {5};
+  };
+  ```
+
+  
 
 ## Misc
 
@@ -96,6 +126,10 @@ Mode * const mode = nullptr;
 
 **Mutable/Mutex**
 - use `mutable` instead of const for member, if const member functions need to modify the variable but for the user (public methods), the object still is the same
+
+**Pointer casting**
+
+- use `dynamic_cast` to cast from base to derived class
 
 ### Random
 
@@ -170,3 +204,4 @@ void f (std::string&& s)	// rvalue -> move
   ...
 }
 ```
+

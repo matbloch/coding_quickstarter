@@ -19,8 +19,6 @@
 - Stack > unique_ptr > shared_ptr
 - due to atomic reference count
 
-
-
 ### General
 
 **Check if is set**
