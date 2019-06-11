@@ -384,4 +384,28 @@ if (__DEV__) {
 
 
 
+### Conditional Compilation
+
+
+
+
+
+**Option 1: `UglifyJSPlugin`**
+
+- define global variables
+- use `if () {}` to wrap conditionals
+- `UglifyJSPlugin` will strip out `if(false)`
+- 
+
+
+
+**Option 2: `ifdef-loader`**
+
+https://stackoverflow.com/questions/28572380/conditional-build-based-on-environment-using-webpack
+
+```javascript
+/// #if ENV === 'production'
+console.log('production!');
+/// #endif
+```
 
