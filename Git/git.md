@@ -14,13 +14,27 @@ git merge --squash bugfix
 git commit
 ```
 
-
-
 #### Squashing Commits
 
 **Write new commit message**
 
 `git reset --soft HEAD~3 &&` squash last 3 commits
+
+
+
+#### Cherry Picking
+
+**From another branch**
+
+`git cherry-pick -x ea6128347797b9c268d95257ef17cb6ac0baaaab`
+
+**Pick merge request**
+
+`git checkout my-target-branch`
+
+`git cherry-pick -m 1 ea6128347797b9c268d95257ef17cb6ac0baaaab`
+
+
 
 
 
