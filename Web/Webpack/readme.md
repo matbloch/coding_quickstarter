@@ -386,6 +386,14 @@ if (__DEV__) {
 
 ### Conditional Compilation
 
+**Requirements**
+
+- compiles without having the conditionally required modules
+- completely strip out conditional code
+- don't ship modules that are not used
+
+
+
 
 
 
