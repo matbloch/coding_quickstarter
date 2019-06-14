@@ -10,12 +10,19 @@
 
 
 
+## 1. Creational Patterns
 
+- Factory
+- Singleton
+- Object Pool
+
+
+
+## 2. Structural Patterns
 
 ### Proxy Wrapper 
 
 - Protect members, restrict access to wrapper
-
 
 ```cpp
 template <class ObjectType>
@@ -43,3 +50,16 @@ wrapper->b = 345;
 
 ….
 
+
+
+## 3. Behavioral Patterns
+
+
+
+### Strategy Pattern
+
+
+
+
+
+### State Machine
