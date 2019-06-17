@@ -41,7 +41,8 @@ function rootReducer(state = {}, action) {
 ## Sharing State between Reducers
 
 **Your options:**
-- don’t use combineReducers (write your own that shares state/selector between two components)
+- don’t use `combineReducers` (write your own that shares state/selector between two components)
 - use `thunk` middleware
 - pass selectors on global store through all your actions
-- call window.store.getState().myreducer.myvalue directly to get the state (worst option)
+- call` window.store.getState().myreducer.myvalue` directly to get the state (worst option)
+

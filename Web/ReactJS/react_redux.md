@@ -374,3 +374,63 @@ render(
 )
 ```
 
+
+
+## Misc
+
+
+
+### Dispatch after Dispatch
+
+```javascript
+export const setSkip = (skip) => {
+    return (dispatch, getState) => {
+
+        dispatch(someFunc());
+        //Do someFunc first then this action, use getState() for currentState if you want
+        return {
+            type: 'LIST.SET_SKIP',
+            skip: skip
+        };
+    }
+};
+```
+
+
+
+
+
+## Redux Thunk Middleware
+
+- async action creators
+
+
+
+```javascript
+export function getUser(id) {
+  // Redux Thunk will inject dispatch here:
+  return dispatch => {
+    // Reducers may handle this to set a flag like isFetching
+    dispatch({ type: 'GET_USER_REQUEST', id })
+
+    // Perform the actual API call
+    return fetchUser().then(
+      response => {
+        // Reducers may handle this to show the data and reset isFetching
+        dispatch({ type: 'GET_USER_SUCCESS', id,  response })
+      },
+      error => {
+        // Reducers may handle this to reset isFetching
+        dispatch({ type: 'GET_USER_FAILURE', id,  error })
+        // Rethrow so returned Promise is rejected
+        throw error
+      }
+    )
+  }
+}
+```
+
+
+
+
+
