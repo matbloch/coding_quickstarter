@@ -404,7 +404,7 @@ export const setSkip = (skip) => {
 
 - async action creators
 
-
+- https://devinschulz.com/combining-synchronous-actions-using-redux-thunk/
 
 ```javascript
 export function getUser(id) {

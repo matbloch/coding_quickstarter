@@ -394,18 +394,13 @@ if (__DEV__) {
 
 
 
-
-
-
-
 **Option 1: `UglifyJSPlugin`**
 
 - define global variables
 - use `if () {}` to wrap conditionals
 - `UglifyJSPlugin` will strip out `if(false)`
-- 
 
-
+  
 
 **Option 2: `ifdef-loader`**
 
