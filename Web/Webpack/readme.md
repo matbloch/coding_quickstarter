@@ -412,3 +412,8 @@ console.log('production!');
 /// #endif
 ```
 
+
+
+### Bundle Optimization
+
+https://hackernoon.com/optimising-your-application-bundle-size-with-webpack-e85b00bab579

@@ -1,4 +1,4 @@
-# API calls with React.js
+# Async Actions
 
 
 
@@ -7,7 +7,7 @@
 
 `npm install --save axios redux-thunk`
 
-### Thunks
+### Redux-Thunk
 
 - allows you to write action creators that return a function instead of an action (=thunk)
 - Allows to perform async actions

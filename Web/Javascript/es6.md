@@ -55,3 +55,6 @@ function whois({displayName, fullName: {firstName: name}}) {
 
 ```
 
+
+
+## OOP

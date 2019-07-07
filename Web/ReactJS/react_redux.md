@@ -396,6 +396,52 @@ export const setSkip = (skip) => {
 };
 ```
 
+### Using Ref on Connected Components
+
+**Component**
+
+- use `forwardRef` as forth `connect` parameter
+
+```javascript
+class FileSelector extends Component {
+    myInternalFn = () => {}
+}
+
+const mapStateToProps = (state) => {
+    return {};
+};
+
+const mapDispatchToProps = (dispatch) => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {forwardRef : true})(FileSelector);
+```
+
+**Setting up the reference**
+
+```javascript
+class Element extends Component {
+    constructor(props) {
+    	super(props);
+        this.fileSelector = React.createRef();
+    }
+    
+    render() {
+        return (
+            <div>
+            	<a onClick={this.fileSelector.current.myInternalFn()}>Click me</a>
+				<FileSelector ref={this.fileSelector}/>
+            </div>
+        );   
+    }
+}
+
+
+```
+
+
+
+
+
 
 
 
