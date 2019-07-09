@@ -1,4 +1,4 @@
-# Coding Styleguide for C++
+# Coding Styleguide and Best Practice for C++
 
 
 

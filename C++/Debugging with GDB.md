@@ -2,22 +2,14 @@
 
 - first generate debugging information when compiling the program
 
-
-
-- 
-
 ### Compiling for debugging
 
 TODO
-
-
 
 ### Commands
 
 - `q` + [enter] to quit gdb
 - `p <variable_name>` print a local variable
-
-
 
 
 
@@ -80,10 +72,6 @@ $ gdb ./MyUnitTests
 ```bash
 (gdb) p cats[i]
 ```
-
-
-
-
 
 
 

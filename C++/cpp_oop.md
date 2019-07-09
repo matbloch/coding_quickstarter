@@ -9,7 +9,6 @@ class Line {
   		explicit Line(double len);
       void setLength(double len);
       double getLength() const;
-      
    private:
       double length_;
 };
@@ -20,14 +19,28 @@ void Line::setLength(double len) { length_ = len; }
 double Line::getLength(double len) const { return length_; }
 ```
 
-
-
 ## Member Initialization
 
-**Call order**:
 
-- Initialization list
-- Constructor Body
+
+**Initialization Order**
+
+1. `virtual` base classes
+2. direct base classes
+3. nonstatic data members, in order of class definition
+4. body of constructor
+
+
+
+### Initialization Types
+
+- initializer list just specifies values and base class constructors
+  - order of initialization not changed
+  - order of initilizer list should be canonical to prevent reading from uninitialized memory
+
+
+
+
 
 #### Method 1: Class constructor
 
@@ -57,6 +70,22 @@ class B
 
 ### 
 
+
+
+## Inheritance
+
+**Calling Child method from parent**
+
+
+
+
+
+
+
+
+
+
+
 ## Constructors
 
 ### Copy constructors
@@ -84,13 +113,101 @@ MyClass::MyClass( const MyClass& other ) :
 {}
 ```
 
+### Overloads for `const &` members
+
+- simple solution: if needs to support assignment, use ptr instead of references (can create pointer from reference)
+
+
+
+**Copy Constructor**
+
+Let compiler generate it:
+```cpp
+ModelRecorder(const ModelRecorder&) = default;
+```
+Own implementation:
+```cpp
+ModelRecorder(const ModelRecorder& arg)
+    :CompositionalModel{arg}, modelRef_{arg.modelRef_} {}
+```
+
+**Assignment Operator**
+
+
+
+
+
+## Virtual Classes
+
+**The `virtual` keyword:**
+
+- `virtual` methods can be overriden in derived classes
+- if derived class is handled by a reference to the base class: behaviour is still taken from **derived** class
+- overriden `virtual` methods are also `virtual`
+- Use `final` to prevent further overriding
+
+
+
+- `override` keyword on child class implementation verifies that the function actually implements a virtual method
+
+- if base class method is not `virtual` the implementation is **hiding** it
+  - Thus: `override` needs `virtual` base method
+
+- `virtual ` only for non-static
+
+
+
+### Calling `virtual` Child Method in Parent
+
+```cpp
+class A {
+  public:
+  virtual void do();
+  void go() {
+    do();
+  }
+}
+class B : public A {
+  public:
+  // this will override call go from A
+  virtual void do();
+}
+
+A* obj = new B;
+B->go();
+```
+
+
+
+### Calling `virtual` Base Method in Child
+
+```cpp
+class Bar : public Foo {
+  void printStuff() override {
+    Foo::printStuff(); // calls base class' function
+  }
+};
+```
+
+
+
+
+
+### Calling `virtual` Method in Constructor
 
 
 
 
 
 
-## Polymorphism - Base Class Container
+
+
+
+
+
+## Common Patterns
+
+### Base Class Container
 
 - Collect multiple derived classes in common vector of base class point type
 
@@ -125,9 +242,6 @@ int main()
     vector<a *> derivedClassHolder;
     derivedClassHolder.push_back(new b);
     derivedClassHolder.push_back(new c);
-    derivedClassHolder.push_back(new a);
-    derivedClassHolder.push_back(new c);
-    derivedClassHolder.push_back(new b);
 
     for(int i = 0; i < (int)derivedClassHolder.size() ; i++)
     {

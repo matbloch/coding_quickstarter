@@ -8,6 +8,20 @@
 
 ### Inheritance vs Composition
 
+**Composition**
+
+- implementation hidden (header files not exposed)
+- classes can be switched at runtime
+- methods need to be forwarded
+
+**Inheritance**
+
+- no code duplication for forwarding
+- headers exposed
+- class switch only at compile time
+
+
+
 
 
 ## 1. Creational Patterns

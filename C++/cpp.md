@@ -1100,67 +1100,7 @@ thread2.join();
 
 ##OOP
 
-
-### visibility
-
-```cpp
-
-class Line
-{
-   public:
-      void setLength( double len );
-      double getLength( void );
-      Line(double len);  // This is the constructor
-
-   private:
-      double length;
-};
-
-
-// Member functions definitions including constructor
-Line::Line( double len)
-{
-    cout << "Object is being created, length = " << len << endl;
-    length = len;
-}
-
-void Line::setLength( double len )
-{
-    length = len;
-}
-
-double Line::getLength( void )
-{
-    return length;
-}
-
-```
-
-
-
-
-
-```cpp
-
-int main(int argc, char *argv[])
-
-{
-
-    Enemy *enemy = new Enemy();		// create pointer to object
-
-    enemy->setHealth( 100 );	// member setHealth of object pointed to by enemy
-
-    cout << "Der Gegner hat " << enemy->getHealth() << " Lebenspunkte.\n";
-
-    delete enemy;
-
-    return 0;
-
-}
-
-```
-
-### initialization
+### Initialization
 
 ```cpp
 YourClass foo;

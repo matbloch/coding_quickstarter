@@ -86,7 +86,7 @@ p = nullptr;
 p.reset(new int);
 ```
 
-### Initialization from this
+### Initialization from `this`
 
 - `std::shared_ptr<T>(this)` is not working
 - Create `shared_ptr` reference to self using `std::enable_shared_from_this`
@@ -165,6 +165,27 @@ unique_ptr<T> myOtherPtr = myPtr; // Error: Can't copy unique_ptr
 
 - `class_variable_(std::move(input));`
 
+### Consume unique_ptr in Constructor
+
+- pass by value
+- options described [here](https://stackoverflow.com/questions/8114276/how-do-i-pass-a-unique-ptr-argument-to-a-constructor-or-a-function/8114913)
+
+**A. By Value: If claiming ownership of pointer**
+
+```cpp
+Base(std::unique_ptr<Base> n)
+  : next(std::move(n)) {}
+```
+
+User can call it:
+
+```cpp
+Base newBase(std::move(nextBase));
+Base fromTemp(std::unique_ptr<Base>(new Base(...));
+```
+
+
+
 
 
 ## weak_ptr
@@ -183,3 +204,4 @@ std::weak_ptr<int> weak_ptr = ptr;       // ref-count 1
 
 
 TODO
+

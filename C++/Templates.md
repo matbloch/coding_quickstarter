@@ -47,22 +47,24 @@ T mypair<T>::getmax () {
 ```cpp
 template <typename T>
 T add(T x, T y)  {
-	return x+y;
+	return x + y;
 }
 
+// implementation for chars
 template<>
 char add<char>(char x, char y) {
-	int i = x - '0';
-	int j = y - '0';
-	return i + j;
+	...
 }
 ```
 
 **Class specialization**
 
-```
-template <class T> class mycontainer { ... };
-template <> class mycontainer <char> { ... };
+```c++
+template <class T> 
+class mycontainer { ... };
+
+template <> 
+class mycontainer <char> { ... };
 ```
 
 ```cpp
@@ -98,11 +100,12 @@ char A<char>::add(char x, char y)
 }
 ```
 
-**Member function specialisation**
+**Member function specialization**
+
+Test.h
 
 ```cpp
-class Test
-{
+class Test {
   public:
     template <typename T>
     void function (T data) {
@@ -111,16 +114,17 @@ class Test
 };
 
 template <>
-void Test::function <char> (char data);
-
-// Test.cpp
-#include "Test.h"
-
-template <>
-void Test::function <char> (char data) {
-  std::cout << 'Z',
-}
+void Test::function<char>(char data);
 ```
+
+Test.cpp
+
+```cpp
+template <>
+void Test::function<char>(char data) {...}
+```
+
+
 
 
 
@@ -154,7 +158,11 @@ int Thing<A,int>::doSomething()  { /* do whatever you want to do here */ }
 
 
 
-### Template Inheritance
+
+
+
+
+### Inheritance from Templated Classes
 
 ```cpp
 class Rectangle: public Area<int> {
@@ -215,6 +223,18 @@ class B : public A<T> {
 
 
 
+### Parametrized Inheritance
+
+```cpp
+template <typename T>
+class MyClass : public T {
+  public:
+  MyClass(int param) : T(param) {}
+}
+```
+
+
+
 ### Variadic Templates
 
 - `typename... Ts` to define **template parameter pack**
@@ -260,8 +280,7 @@ void foo(int first, Args... more)
 
 ```cpp
 template <typename ...Args>
-int myfunction(Args & ... args)
-{
+int myfunction(Args & ... args) {
   /* ... */
 }
 ```
@@ -299,3 +318,61 @@ class Bar : public Foo <BETA> {
 ```
 
 ## 
+
+
+
+## Examples
+
+
+
+
+
+### Template method inside template class
+
+```cpp
+// .h
+template<typename ClassType>
+struct Foo{
+   template<typename MethodType>
+   void g(ClassType i, MethodType j); 
+};
+
+// .cpp
+template<typename ClassType>
+template<typename MethodType>
+void Foo<ClassType>::g(ClassType i, MethodType j){}
+```
+
+
+
+
+
+### Calling Method of Templated Base
+
+- [Explanation](https://stackoverflow.com/questions/610245/where-and-why-do-i-have-to-put-the-template-and-typename-keywords)
+
+```cpp
+template<typename T>
+class base {
+public:
+    virtual ~base(){}
+    template<typename F>
+    void foo(){}
+}
+
+
+template<typename T>
+class derived : public base<T>{
+public:
+    void bar(){
+        base<T>::template foo<int>();
+      // or:
+      this->template foo<int>();
+    }
+};
+```
+
+
+
+
+

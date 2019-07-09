@@ -21,13 +21,7 @@
 
 
 
-
-
-
-
 ## Measuring Performance
-
-
 
 
 
@@ -39,11 +33,7 @@
 
 
 
-
-
 ## STD Implementation
-
-
 
 ### Threads
 

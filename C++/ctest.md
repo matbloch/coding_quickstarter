@@ -29,3 +29,23 @@ TBD
 
 ```
 
+
+
+## Mocking
+
+
+
+```cpp
+class MyClass {
+  protected:
+  int foo(float input);
+}
+
+class Mock : public MyClass {
+  public:
+  using MyClass::foo;
+}
+```
+
+
+
