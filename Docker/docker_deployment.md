@@ -14,11 +14,14 @@
 - then `docker pull NAME[:TAG]` or `docker push NAME[:TAG]`
 
 
-# Sloppy.io
+
+## Services
+
+### Sloppy.io
 
 
 
-# Amazon Elastic Container Service (ECS)
+### Amazon Elastic Container Service (ECS)
 - Amazon authetication not integrated in Docker CLI
 - You need to generate a token with the Amazon CLI that will expire in 36 hours
 
