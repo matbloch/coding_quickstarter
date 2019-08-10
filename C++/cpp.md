@@ -939,6 +939,28 @@ Key - Value
     }
     ```
 
+* Custom search
+
+  ```cpp
+  typedef std::map<int, ValueType> MapType;
+  
+  auto beg_ = myMap.begin();
+  auto end_ = myMap.end();
+  // search by custom condition
+  auto it = find_if(beg_, end_,
+      [&some_val](decltype(*beg_) & vt) {
+          return vt.second == some_val;});
+  if (end_ != it) {
+      auto key_found = (*it).first;
+  } else {
+      // throw error not found.
+  }
+  ```
+
+  
+
+
+
 ###Set
 
 - Values are always **SORTED**

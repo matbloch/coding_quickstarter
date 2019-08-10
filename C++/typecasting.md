@@ -13,9 +13,25 @@
 
 ## Type Casting
 
+### C-style Casts
+
+- not checked at runtime
+
+```cpp
+Parent parent;
+Child child;
+// upcast - implicit type cast allowed
+Parent *pParent = &child;
+// downcast - explicit type case required 
+Child *pChild =  (Child *) &parent;
+```
+
+### C++ Casts
+
+- checked at runtime
+- make intend of developer more clear
+
 C++ supports 4 types of casting operators:
-
-
 
 1. **`static_cast`**
 
@@ -26,6 +42,7 @@ C++ supports 4 types of casting operators:
 
 2. **`dynamic_cast`**
 
+- requires Run-time type information (RTTI)
 - returns `NULL` if fails: allows to check success (if not a reference)
 
 `<type> *p_subclass = dynamic_cast<<type> *>( p_obj );`
@@ -47,7 +64,7 @@ C++ supports 4 types of casting operators:
 
 `reinterpret_cast<int *>(100);`
 
-### Examples
+#### Examples
 
 
 
@@ -55,11 +72,9 @@ C++ supports 4 types of casting operators:
 
 https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/
 
-
-
 For each concrete implementation of class:
 
-- Table of function pointers to all the virutal methods
+- Table of function pointers to all the virtual methods
 - pointer to this table exists as data member in all the objects
 - when virtual method is called, appropriate derived class method is looked up in the v-table
 
@@ -71,16 +86,35 @@ For each concrete implementation of class:
 
 
 
-### Up-Casting
-
-- cast derived as base class
+### Up-Casting (derived > base)
 
 
 
-### Down-Casting
+
+
+--------------
+
+### Down-Casting (base > derived)
 
 - Should be avoided in general, sign of bad design
-- use `dynamic_cast` to check that casting is safe
+
+#### A. Dynamic Cast
+
+- uses runtime type information (requires it to be enabled) to check if cast is save:
+
+  > Run-time type information (RTTI) is a feature of C++ that exposes 
+  > information about an object’s data type at runtime.  This capability is 
+  > leveraged by dynamic_cast.  Because RTTI has a pretty significant space 
+  > performance cost, some compilers allow you to turn RTTI off as an 
+  > optimization.  Needless to say, if you do this, dynamic_cast won’t 
+  > function correctly.
+
+- **can fail**
+
+- `dynamic_cast` will **not** work for:
+
+  - Private/protected inheritance
+  - For classes that have no virtual method (declared or inherited): *There is no virtual table*
 
 ```cpp
 Base* pBase = new Derived;
@@ -92,15 +126,29 @@ if (pDerived) {
 }
 ```
 
+**Casting Failure**
 
+- result is nullptr on failure
+
+#### B. Static Cast
+
+- no runtime type checking
+
+-----------
 
 ### Casting of Smart Pointers
 
 ```cpp
-struct A {}
-struct B : A {}
-// potentially incomplete object
-auto foo = std::make_shared<A>();
-std::shared_ptr<B> bar = std::static_pointer_cast<B>(foo);
+class Base {}
+class Derived : Base {}
+
+auto basePtr = std::make_shared<Base>();
+auto derivedPtr = std::make_shared<Derived>();
+
+// static_pointer_cast to go up class hierarchy
+basePtr = std::static_pointer_cast<Base>(derivedPtr);
+
+// dynamic_pointer_cast to go down/across class hierarchy
+auto downcastedPtr = std::dynamic_pointer_cast<Derived>(basePtr);
 ```
 

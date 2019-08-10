@@ -2,6 +2,12 @@
 
 - first generate debugging information when compiling the program
 
+
+
+
+
+
+
 ### Compiling for debugging
 
 TODO

@@ -60,6 +60,21 @@ wrapper->a = 345;
 wrapper->b = 345;
 ```
 
+
+
+**Proxy-Calling: ** Non-static member function pointers
+
+```cpp
+template <typename F>
+void forwardCall(F &&process) {
+    for (const auto &o : pool_) {
+        process(member_);
+    }
+}
+```
+
+
+
 ### Trait Classes
 
 ….

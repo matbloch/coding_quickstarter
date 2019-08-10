@@ -11,7 +11,7 @@
 - RAII
 - Stack/heap, allocation/cleanup
 - cache miss
-- branching
+- branching (prediction)
 - memory layouts
 - ...
 
@@ -112,7 +112,7 @@ However, most contemporary operating systems of general purpose (desktop UNIX-co
 
 
 
-## Basic Data Containers
+## Implementation of Basic Data Containers
 
 - array vs linked list
 

@@ -191,34 +191,6 @@ foo(foobar()); // argument is rvalue: calls foo(X&&)
 
 ## Pointers
 
-### Pointer Casting
-**Up/Downcasting**
-
-```cpp
-Parent parent;
-Child child;
-// upcast - implicit type cast allowed
-Parent *pParent = &child;
-// downcast - explicit type case required 
-Child *pChild =  (Child *) &parent;
-```
-
-**Up/Downcasting with shared pointers**
-```cpp
-class Base {}
-class Derived : Base {}
-
-auto basePtr = std::make_shared<Base>();
-auto derivedPtr = std::make_shared<Derived>();
-
-// static_pointer_cast to go up class hierarchy
-basePtr = std::static_pointer_cast<Base>(derivedPtr);
-
-// dynamic_pointer_cast to go down/across class hierarchy
-auto downcastedPtr = std::dynamic_pointer_cast<Derived>(basePtr);
-```
-
-
 ### Function Pointers
 
 ```cpp
@@ -501,20 +473,9 @@ memmove(b, a, sizeof(a));
 
 
 
-**Proxy-Calling: ** Non-static member function pointers
-
-```cpp
-template <typename F>
-void forwardCall(F &&process) {
-    for (const auto &o : pool_) {
-        process(member_);
-    }
-}
-```
 
 
-
-**Reference Wrappers**
+### Reference Wrappers
 
 `std::reference_wrapper<T>`
 
@@ -559,6 +520,31 @@ std::vector<std::reference_wrapper<Foo>> Bar::getFoos() const {
   return fooRefs;
 }
 ```
+
+
+
+
+
+### Using Pairs for std::map keys
+
+- `operator<` needs to be defined for map key
+- is defined for `std::pair`
+
+
+
+
+
+```cpp
+template <class T1, class T2>
+  bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+{ return lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second); }
+```
+
+
+
+
+
+
 
 
 

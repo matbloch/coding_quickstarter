@@ -78,8 +78,7 @@ public:
 };
 
 template <typename T>
-T A<T>::add(T x, T y)
-{
+T A<T>::add(T x, T y) {
 	return x+y;
 }
 // Specialized class
@@ -321,11 +320,31 @@ class Bar : public Foo <BETA> {
 
 
 
+## Compile-Time Type Assertion
+
+
+
+```cpp
+#include <type_traits>
+template <class T>
+void swap(T& a, T& b)
+{
+    static_assert(std::is_copy_constructible<T>::value,
+                  "Swap requires copying");
+    static_assert(std::is_nothrow_copy_constructible<T>::value
+               && std::is_nothrow_copy_assignable<T>::value,
+                  "Swap requires nothrow copy/assign");
+    auto c = b;
+    b = a;
+    a = c;
+}
+```
+
+
+
+
+
 ## Examples
-
-
-
-
 
 ### Template method inside template class
 

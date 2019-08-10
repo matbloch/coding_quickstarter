@@ -78,7 +78,8 @@ foo.swap(bar);
 
 **reset**
 
-- eliminate one owner of the pointer
+- Replaces the managed object with an object pointed to by `ptr`
+- eliminate one owner of the internally managed pointer
 
 ```cpp
 p.reset();
@@ -165,7 +166,7 @@ unique_ptr<T> myOtherPtr = myPtr; // Error: Can't copy unique_ptr
 
 - `class_variable_(std::move(input));`
 
-### Consume unique_ptr in Constructor
+### Consuming unique_ptr in Constructor
 
 - pass by value
 - options described [here](https://stackoverflow.com/questions/8114276/how-do-i-pass-a-unique-ptr-argument-to-a-constructor-or-a-function/8114913)

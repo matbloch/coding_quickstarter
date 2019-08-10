@@ -25,15 +25,21 @@
 
 
 
-
-
 ## The C++ Memory Model
 
 
 
 
 
-## STD Implementation
+
+
+## Other Concepts
+
+- pipelining
+
+
+
+## Std Lib Tools
 
 ### Threads
 
@@ -121,8 +127,6 @@ int main() {
     worker.join();
 }
 ```
-
-
 
 
 
