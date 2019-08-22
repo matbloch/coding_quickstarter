@@ -471,10 +471,6 @@ memmove(b, a, sizeof(a));
 
 # Misc Knowledge
 
-
-
-
-
 ### Reference Wrappers
 
 `std::reference_wrapper<T>`
@@ -530,21 +526,11 @@ std::vector<std::reference_wrapper<Foo>> Bar::getFoos() const {
 - `operator<` needs to be defined for map key
 - is defined for `std::pair`
 
-
-
-
-
 ```cpp
 template <class T1, class T2>
   bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
 { return lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second); }
 ```
-
-
-
-
-
-
 
 
 

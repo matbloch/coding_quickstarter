@@ -10,11 +10,7 @@ Topics:
 
 
 
-
-
-
-
-## Comparison
+### Comparison
 
 ```cpp
 bool operator==(Contact& other) const {
@@ -22,9 +18,7 @@ bool operator==(Contact& other) const {
 }
 ```
 
-
-
-## Assignment
+### Assignment
 
 ```cpp
 MyClass& MyClass::operator=( const MyClass& other ) {
@@ -36,6 +30,16 @@ MyClass& MyClass::operator=( const MyClass& other ) {
 **Special Cases**
 
 - `const` member: make private, add `getter`
+
+### Implicit Conversion
+
+```cpp
+TODO
+```
+
+
+
+
 
 ### Examples
 
