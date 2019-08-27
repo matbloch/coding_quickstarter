@@ -107,18 +107,17 @@ class MyClass:
 
 class MyClass(Base1, Base2):
     
-    # private variable
+  # private variable
 	__my_private_var = 123
     
-    # static method
-    @staticmethod
+  # static method
+  @staticmethod
 	def info(name, email, username):
         
-    # class methods: work with the class itself (e.g. for factory methods)
-    @classmethod
-    def all(cls):
-        return db.session.query(cls).all()
-        
+  # class methods: work with the class itself (e.g. for factory methods)
+  @classmethod
+  def all(cls):
+     return db.session.query(cls).all()
 ```
 
 **Interfaces**

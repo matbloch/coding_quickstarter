@@ -26,9 +26,23 @@
 
 
 
+## Caching
 
+**Installation** (MacOS)
 
+- `brew install --HEAD ccache`
 
+```bash
+# Prepend ccache into the PATH
+echo 'export PATH="/usr/local/opt/ccache/libexec:$PATH"' | tee -a ~/.bashrc
+
+# Source bashrc to test the new PATH
+source ~/.bashrc && echo $PATH
+```
+
+**Configuration**
+
+- set cache size **big enough:** `ccache -M <max size>`
 
 ## Clang-Format
 

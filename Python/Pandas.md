@@ -12,8 +12,6 @@
 
 ![pandas_series](/Users/matthias/dev/coding_quickstarter/Python/img/pandas_series.png)
 
-
-
 ### Initialization
 
 ```python
@@ -36,12 +34,6 @@ ser = pd.Series(data,index=[10,11,12,13,14,15,16,17,18,19,20,21,22])
 # accessing a element using index element
 print(ser[16])
 ```
-
-
-
-
-
-
 
 ### Naming
 
@@ -113,8 +105,6 @@ column_names = list(data.columns.values)
 column_names = list(data.columns.values.tolist())
 ```
 
-
-
 **Row Selection**
 
 ```python
@@ -176,7 +166,7 @@ result = df1.append(s2, ignore_index=True)
 
 ```python
 frames = [df1, df2, df3]
-result = pd.concat(frames)
+result = pd.concat(frames, axis=1)
 ```
 
 **Concatenate List of Dataframes**
@@ -220,8 +210,6 @@ dataframe[0:3]
 dataframe[-1:]
 ```
 
-
-
 **Slicing rows AND columns**
 
 - `iloc` integer based indexing
@@ -234,8 +222,6 @@ dataframe.loc[[0, 10], :]
 dataframe.loc[0, ['species_id', 'plot_id', 'weight']]
 dataframe.loc[[0, 10, 35549], :]
 ```
-
-
 
 **Serie from column/row**
 
