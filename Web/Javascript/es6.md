@@ -1,4 +1,17 @@
-# Javascript
+# Modern Javascript
+
+**ECMAScript 5**
+
+- 2009: Introduction of ECMAScript 5 (ES5), added new features to language and modified existing ones
+- To enable new features, add `"use strict"` at top of script
+
+
+
+
+
+**Resources**
+
+- https://javascript.info/
 
 
 
@@ -54,6 +67,37 @@ function whois({displayName, fullName: {firstName: name}}) {
 }
 
 ```
+
+
+
+## Variables
+
+- `let`
+- `const`
+- `var`
+  -  **old**, has **no block scope!** (variables only limited to functional scope)
+  - declaration at beginning of function start
+  - assignment at actual position
+
+
+
+## Data Types
+
+### Strings
+
+```javascript
+let single = 'single-quoted';
+let double = "double-quoted";
+let backticks = `backticks`;
+```
+
+**Evaluation in strings**
+
+```javascript
+let my var = `1 + 2 = ${sum(1, 2)}.`;  // 1 + 2 = 3.
+```
+
+
 
 
 

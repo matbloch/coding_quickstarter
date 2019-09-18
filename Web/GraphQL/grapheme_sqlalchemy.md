@@ -109,6 +109,12 @@ query {
 
 
 
+
+
+## Misc
+
+- [Performance Improvements](https://itnext.io/python-graphql-tips-tricks-and-performance-improvements-beede1f4adb6)
+
 # SQL-Alchemy & Relay
 
 - [Example: SQLAlchemy & Grapheme & Relay](https://github.com/graphql-python/graphene-sqlalchemy/blob/master/examples/nameko_sqlalchemy/schema.py)
