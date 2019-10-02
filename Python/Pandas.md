@@ -54,7 +54,11 @@ A   1   3
 B   2   4
 ```
 
+### Manipulation
 
+```python
+In [1]: my_series.tolist()
+```
 
 
 
@@ -79,6 +83,44 @@ data = {'Name':['Tom', 'nick', 'krish', 'jack'],
         'Age':[20, 21, 19, 18]}
 df = pd.DataFrame(data)
 ```
+
+
+
+
+
+### Indexing
+
+- **`Dataframe.[ ]`**This function also known as indexing operator
+- **`Dataframe.loc[ ]`** for labels
+- **`Dataframe.iloc[ ]`** for positions or integer based
+- **`Dataframe.ix[]`**  for both label and integer based
+
+
+
+##### **[]** Indexer Operator
+
+- Single/list selections
+
+##### .loc[] Operator
+
+- internally uses indexer operator
+- allows subqueries and result composition
+
+##### .iloc[] Operator
+
+- internally uses indexer operator
+
+##### .ix[] Operator
+
+
+
+
+
+### Misc Methods
+
+- `df.empty`
+
+
 
 
 
@@ -136,15 +178,11 @@ for i in columns:
 
 
 
-
-
 ### Loading From Files
 
 ```python
 data = pd.read_csv("nba.csv", index_col ="Name")
 ```
-
-
 
 
 
@@ -183,6 +221,24 @@ df = pd.concat(list_of_dataframes)
 
 
 
+
+
+### Sorting
+
+**Sorty by Column/Row names**
+
+```python
+df.sort_index(axis = 0)
+```
+
+
+
+
+
+
+
+
+
 ### Manipulating Dataframes
 
 **Flip Rows and Columns**
@@ -198,17 +254,21 @@ d2 = d1.transpose()
 
 
 
-
-
 ### Slicing and Data Access
 
 **Slicing rows**
 
 ```python
+# by integer
 dataframe[0]
 dataframe[0:3]
 dataframe[-1:]
+
+# by condition: df[{condition}]
+df[df.A > 3]
 ```
+
+
 
 **Slicing rows AND columns**
 

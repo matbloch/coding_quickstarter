@@ -1,6 +1,22 @@
-# Unit Testing
+# Testing in Python
+
+**Resources**
+
+- [!to summarize!](https://realpython.com/python-testing/#testing-for-web-frameworks-like-django-and-flask)
 
 
+
+## Unit Testing
+
+**Test runners:**
+
+- unittest
+- pytest (recommended)
+- Nose/nose2
+
+
+
+### Unittest
 
 ```python
 import unittest
@@ -23,4 +39,22 @@ class TestStringMethods(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 ```
+
+
+
+### Pytest
+
+[Tutorial](https://www.guru99.com/pytest-tutorial.html)
+
+```python
+def test_sum():
+    assert sum([1, 2, 3]) == 6, "Should be 6"
+
+def test_sum_tuple():
+    assert sum((1, 2, 2)) == 6, "Should be 6"
+```
+
+
+
+**Fixtures**
 
