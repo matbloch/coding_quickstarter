@@ -1,5 +1,9 @@
 # Git
 
+
+
+## Common Operations
+
 **Searching in files for string**
 `git grep -i somestring`
 
@@ -20,8 +24,6 @@ git commit
 
 `git reset --soft HEAD~3 &&` squash last 3 commits
 
-
-
 #### Cherry Picking
 
 **From another branch**
@@ -33,10 +35,6 @@ git commit
 `git checkout my-target-branch`
 
 `git cherry-pick -m 1 ea6128347797b9c268d95257ef17cb6ac0baaaab`
-
-
-
-
 
 #### Update Branch `bugfix` from Master
 
@@ -72,4 +70,4 @@ A --- B --- C --- D <-- master
                     \-- E' --- F' --- G' <-- b1
 ```
 
-
+## File Permissions in Git
