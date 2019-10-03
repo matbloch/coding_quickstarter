@@ -10,6 +10,33 @@ Topics:
 
 
 
+
+
+
+
+**Relational Operators**
+
+- Algorithms like `std::sort` expect `operator<` to be defined
+
+```cpp
+inline bool operator< (const X& lhs, const X& rhs){ /* do actual comparison */ }
+inline bool operator> (const X& lhs, const X& rhs){ return rhs < lhs; }
+
+// or in class:
+struct Record
+{
+	double weight;
+    friend bool operator<(const Record& l, const Record& r){
+    	return l.weight < r.weight;
+    }
+}
+
+```
+
+
+
+
+
 ### Comparison
 
 ```cpp
@@ -36,8 +63,6 @@ MyClass& MyClass::operator=( const MyClass& other ) {
 ```cpp
 TODO
 ```
-
-
 
 
 
