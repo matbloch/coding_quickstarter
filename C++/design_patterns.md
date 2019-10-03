@@ -81,6 +81,52 @@ void forwardCall(F &&process) {
 
 
 
+### PIMPL Pattern
+
+Pointer to Implementation
+
+- Remove compilation dependencies on internal class implementations and improve compile times.
+
+
+
+Foo.h
+
+```cpp
+ class foo {   
+   public:     
+   foo();     
+   ~foo();     
+   foo(foo&&);     
+   foo& operator=(foo&&);   
+   private:     
+   class impl;     
+   std::unique_ptr<impl> pimpl; 
+ };
+```
+
+foo.cpp
+
+```cpp
+// foo.cpp - implementation file 
+class foo::impl {   
+  public:     
+  void do_internal_work()     {       
+    internal_data = 5;     
+  }   
+  private:     
+  int internal_data = 0; 
+}; 
+foo::foo(): pimpl{std::make_unique<impl>()} {   
+  pimpl->do_internal_work(); 
+} 
+```
+
+
+
+
+
+
+
 ## 3. Behavioral Patterns
 
 
