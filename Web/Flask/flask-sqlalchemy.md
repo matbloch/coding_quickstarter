@@ -150,8 +150,8 @@ class Engineer(Person):
 
 Patterns:
 
-- Foreign-Key: Value should be constrained to primary key of other table
-- Relationship: ORM pattern to link classes
+- **Foreign-Key**: Primary key of other table. Used on the database level to **join** tables
+- **Relationship**: ORM pattern to link classes, complement foreign keys
 
 
 
@@ -240,7 +240,7 @@ followers = db.Table('followers',
 
 The association object pattern is a variant on many-to-many: it’s used when your association table contains additional columns beyond those which are foreign keys to the left and right tables. 
 
-- see [doocumentation](https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html#association-object)
+- see [documentation](https://docs.sqlalchemy.org/en/13/orm/basic_relationships.html#association-object)
 
 
 
@@ -263,8 +263,6 @@ class Todo(Base):
     id = Column(Integer, primary_key=True)
     person_id = Column(Integer, ForeignKey('people.id'), nullable=True)
 ```
-
-
 
 
 
