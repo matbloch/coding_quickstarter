@@ -1,7 +1,11 @@
-# Modern C++ Cheatsheet
+# Modern C++
 
 **Ressources**
 - [New C++ language features](https://github.com/AnthonyCalandra/modern-cpp-features#return-type-deduction)
+
+**TODO**
+
+- [Topics to cover](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996#reader_1491903996)
 
 # Misc
 
@@ -47,7 +51,7 @@ const SbVector2f check_dir = [&center_0, &center_1] {
 
 
 **Move Semantics**
-- only binds to r values, otherwise makes copy (?)
+- only binds to r values, otherwise makes copy
 ```cpp
 Foo (vector<int> vec) : _member{std::move(vec)} {}
 ```
@@ -78,31 +82,17 @@ namespace {
     // B b1 = 1; // NOT ALLOWED
 ```
 
+**`constexpr`**
+
+...
+
+- https://stackoverflow.com/questions/14116003/difference-between-constexpr-and-const
 
 
 
+### Braced Initialization
 
--------------
-### Operator Overloading
-
-
-**Relational Operators**
-- Algorithms like `std::sort` expect `operator<` to be defined
-
-```cpp
-inline bool operator< (const X& lhs, const X& rhs){ /* do actual comparison */ }
-inline bool operator> (const X& lhs, const X& rhs){ return rhs < lhs; }
-
-// or in class:
-struct Record
-{
-	double weight;
-    friend bool operator<(const Record& l, const Record& r){
-    	return l.weight < r.weight;
-    }
-}
-
-```
+- braced initialisation: https://blog.quasardb.net/2017/03/05/cpp-braced-initialization
 
 
 
@@ -111,7 +101,7 @@ struct Record
 
 - `std::accumulate`: Accumulate all values in range
 	```cpp
-    sum = accumulate(float_vector.begin(), float_vector.end(), 0.0);
+  sum = accumulate(float_vector.begin(), float_vector.end(), 0.0);
   ```
 - `std::max_element`: find maximum element
 
@@ -136,62 +126,7 @@ auto result = do_something();
 result = decltype(result)(so_something_else());
 ```
 
-
-
-
-
-## Rvalue References
-
-**Reads**
-
-- [Returning R-val-references](https://stackoverflow.com/questions/4986673/how-to-return-an-object-from-a-function-considering-c11-rvalues-and-move-seman/4986802#4986802)
-
-**rvalues vs lvalues**
-- `lvalues`:
-	- refers to an object that persists beyond a single expression
-	- can appear on both sides of an assignment
-	- has a name
-	- lvalues refer to a memory location and we can can get memory adress with `&`
-	- all variables, including `const` are `lvalues`
-
-- `rvalues`:
-	- temporary variable that does not persist beyond the expression that it uses
-	- can only appear on the right hand side of an assignment
-	- everything that is not an lvalue
-
-```cpp
-int x = 3 + 4;	// x: lvalue, (3+4): rvalue
-cout << x << endl;
-```
-
-**Rvalue References: &&**
-Used for:
-- Implementing move semantics
-- Perfect forwarding
-
-```cpp
-void foo(X& x); // lvalue reference overload
-void foo(X&& x); // rvalue reference overload
-X x;
-X foobar();
-foo(x); // argument is lvalue: calls foo(X&)
-foo(foobar()); // argument is rvalue: calls foo(X&&)
-```
-
-- The compiler treats a named rvalue reference as an lvalue and an unnamed rvalue reference as an rvalue
-- In `f(const MemoryBlock&)`. This version cannot modify the parameter.
-- In `f(MemoryBlock&&)`. This version can modify the parameter.
-
-
-- `const auto&&` will only bind to rvalue references. In this case you basically just want to say: "my_variable should bind to a (any) reference so I can make sure the return value does not get copied".
-- Hence, usually people choose `const auto &` instead of `const auto &&` as it is more concise and 'const auto &&' does not really offer any advantage over 'const auto &&'.
-
-
-- Wouldn't you always use `auto&&` whenever you want to bind something to a mutable reference? `auto&` only binds lvalue types, hence `auto&&` would be more concise for this case as it allows to bind both `rvalue` and `lvalue` types.
-
-## Pointers
-
-### Function Pointers
+## Function Pointers
 
 ```cpp
 class A {
@@ -377,13 +312,6 @@ struct Iterator {
 
 
 
-# CMake
-
-
-`VERBOSE=1 make`
-
-- [tutorial: building and linking libraries](https://github.com/ttroy50/cmake-examples/tree/master/01-basic/C-static-library)
-
 
 # Polymorphism
 
@@ -417,27 +345,9 @@ void myFunc(void)
 - `Base* derived = new Derived();`
 
 
-# Assertions
-- only enabled in debug build
-- depends on another macro definition `NDEBUG`
-
-```cpp
-#ifdef NDEBUG
-
-#define assert(condition) ((void)0)
-#else
-#define assert(condition) /*implementation defined*/
-#endif
-```
-
-```cpp
-#include <cassert>
-int main() {
-    assert(2+2==4);
-}
-```
 
 # Preprocessor Directives
+
 - subtracted at compile time
 
 **In-code definition**
@@ -457,19 +367,63 @@ target_compile_definitions(my_target PRIVATE FOO=1 BAR=1)
 ```
 
 
-# Low-Level Memory Handling
 
-**moving**
+# Misc Knowledge
+
+
+
+### std::function
+
+- general-purpose function wrapper
+- Instances of `std::function` can store, copy and invoke any Callable target (functions, lambda expressions, pointers to member functions, data member accessors ...)
+
+
+
+**Storing free functions**
+
 ```cpp
-memmove (str+20,str+15,11);
-int a[3] = {1,2,3};
-int b[3];
-memmove(b, a, sizeof(a));
+void print_num(int i){
+    std::cout << i << '\n';
+}
+// store a free function
+std::function<void(int)> f_display = print_num;
+f_display(-9);
+```
+
+**Storing member function**
+
+- non-static member function must be called with an object
+
+```cpp
+struct Foo {
+    Foo(int num) : num_(num) {}
+    void print_add(int i) const { std::cout << num_+i << '\n'; }
+    int num_;
+};
+
+// A. Store call to member function
+std::function<void(const Foo&, int)> f_add_display = &Foo::print_add;
+const Foo foo(314159);
+// Option A.1: call with instance
+f_add_display(foo, 1);
+// Option A.2: create new instance
+f_add_display(314159, 1);
+
+// B. Store call to member function and instance
+using std::placeholders::_1;
+// Note: if method has arguments, use placeholders
+std::function<void(const Foo&, int)> f_add_display = std::bind(&Foo::print_add, foo, _1);
+```
+
+**Static member function**
+
+```cpp
+std::function<void(int)> f_add_display = std::bind(&Foo::foo_static);
 ```
 
 
 
-# Misc Knowledge
+
 
 ### Reference Wrappers
 
@@ -535,8 +489,6 @@ template <class T1, class T2>
 
 
 ## Pittfalls
-
-
 
 
 
