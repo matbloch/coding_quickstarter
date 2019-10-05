@@ -2,6 +2,116 @@
 
 
 
+
+
+
+
+
+
+## Best Practices
+
+
+
+### 1. Use Application Factories
+
+- Testing: Allows to create different `app` instances
+- Prevent circular imports: `from app import app`
+
+
+
+**Use an application factory**
+
+```python
+from flask import Flask
+
+def factory():
+    app = Flask(__name__)
+    return app
+```
+
+**Use `current_app` to access the app**
+
+```python
+from flask import current_app
+current_app.config['RELEVANT_CONFIG_VARIABLE']
+```
+
+
+
+### 2. Modular configurations
+
+**Configure the application**
+
+```python
+def create_app(config=None, environment=None):
+    app = Flask(__name__)
+    app.config['ENVIRONMENT'] = environment
+    app.config.update(config or {})
+    return app
+```
+
+
+
+
+
+
+
+## Configuration Handling
+
+-  see [Documentation](https://flask.palletsprojects.com/en/1.1.x/config/)
+
+- https://pythonise.com/feed/flask/flask-configuration-files
+
+
+
+#### Best Practices
+
+config.py
+
+```python
+class Config(object):
+    DEBUG = False
+    TESTING = False
+
+class ProductionConfig(Config):
+    pass
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+
+class TestingConfig(Config):
+    TESTING = True
+```
+
+```python¨
+
+```
+
+
+
+
+
+#### Built-In Configuration Variables
+
+- `ENV` (default `'production'`) flask extension may enable behaviour based on the environment
+- `DEBUG` (default `false`) exceptions are thrown and printed to console, hot reloading etc.
+- `TESTING` (default `false`)exceptions are propagated instead of handled by app
+- `SECRET_KEY` String to encrypt sensitive information
+
+#### Configuration Sources
+
+- `app.config.from_object('config.Config')` from object
+
+- `app.config.from_envvar('APP_CONFIG')` from filepath in env
+
+- `app.config.from_pyfile('application.cfg', silent=True)` from .cfg file
+
+
+
+
+
+
+
 ## Routing
 - `<converter:variable_name>`
 	- `string`
@@ -27,7 +137,7 @@ def show_post(post_id):
 `print(url_for('show_user_profile', username='John Doe'))`
 
 
-#### Blueprint
+### Blueprints
 
 **Blueprint definition `admin.py`**
 ```python
