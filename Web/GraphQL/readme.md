@@ -82,31 +82,18 @@ class Query(graphene.ObjectType):
 
 
 
-
-
 ## Querying
-
-
 
 ```python
 result = schema.execute('{ hello }')
 print(result.data['hello']) # "Hello stranger"
-
 ```
-
-
-
-
 
 
 
 ## GraphQL Language
 
-
-
 **Arguments**
-
-
 
 ```python
 {
@@ -116,8 +103,6 @@ print(result.data['hello']) # "Hello stranger"
   }
 }
 ```
-
-
 
 **Aliases**
 
@@ -154,10 +139,6 @@ query HeroNameAndFriends {
   }
 }
 ```
-
-
-
-
 
 **Variables**
 
