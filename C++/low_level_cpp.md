@@ -19,8 +19,6 @@
 
 
 
-
-
 ## Resource Management
 
 [Summary](https://docs.microsoft.com/en-us/cpp/cpp/object-lifetime-and-resource-management-modern-cpp?view=vs-2017)
@@ -64,6 +62,17 @@ As far as which one to use; you choose the method that works best for you, given
 
 
 
+### Moving Memory
+
+```cpp
+memmove (str+20,str+15,11);
+int a[3] = {1,2,3};
+int b[3];
+memmove(b, a, sizeof(a));
+```
+
+
+
 ## Dynamic Memory
 
 ### Vector
@@ -77,21 +86,7 @@ myvector[0] = 1234;              // assign values like a c++ array
 
 ### Map
 
-
-
 ### Array
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Caching
 
@@ -115,14 +110,11 @@ However, most contemporary operating systems of general purpose (desktop UNIX-co
 ## Implementation of Basic Data Containers
 
 - array vs linked list
-
-
+- memory locality for classes/structs
 
 #### std::vector
 
 - usually implemented as [dynamic array](https://en.wikipedia.org/wiki/Dynamic_array)
-
-
 
 
 
@@ -136,3 +128,18 @@ https://medium.com/@gx578007/searching-vector-set-and-unordered-set-6649d1aa7752
 
 
 
+## Primitive Types
+
+
+
+- All char variables are 1 byte
+- All short variables are 2 bytes
+- All int variables are 4 byte
+- DO NOT use a "long", which is of indeterminate size.
+- All known compilers with support for 64 bit math allow "long long" as a native 64 bit type.
+
+
+
+Types defined in the std header:
+
+https://en.cppreference.com/w/cpp/header/cstdint

@@ -23,9 +23,12 @@
 - `sudo -s` Start a shell with superuser rights (usually as user `root`)
 - `sudo -su the_username` Starts a new shell with superuser rights under the user `the_username` (prevent access rights conflicts) 
 
+- display the file permissions:
+  -  `ls -l`
 
 
-- display the file permissions `ls -l`
+
+
 
 
 ## SSH

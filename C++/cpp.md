@@ -22,19 +22,7 @@
 	- CMakeLists.txt
 ```
 
-###.gitignore
 
-```git
-# Ignore the build and lib dirs
-build
-lib/*
-
-# Ignore any executables
-bin/*
-
-# Ignore Mac specific files
-.DS_Store
-```
 
 ###Makefile
 

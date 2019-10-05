@@ -12,7 +12,57 @@
 
 
 
-## Custom Data Structures
+## Rvalue References
+
+**Reads**
+
+- [Returning R-val-references](https://stackoverflow.com/questions/4986673/how-to-return-an-object-from-a-function-considering-c11-rvalues-and-move-seman/4986802#4986802)
+
+**rvalues vs lvalues**
+
+- `lvalues`:
+  - refers to an object that persists beyond a single expression
+  - can appear on both sides of an assignment
+  - has a name
+  - lvalues refer to a memory location and we can can get memory adress with `&`
+  - all variables, including `const` are `lvalues`
+- `rvalues`:
+  - temporary variable that does not persist beyond the expression that it uses
+  - can only appear on the right hand side of an assignment
+  - everything that is not an lvalue
+
+```cpp
+int x = 3 + 4;	// x: lvalue, (3+4): rvalue
+cout << x << endl;
+```
+
+**Rvalue References: &&**
+Used for:
+
+- Implementing move semantics
+- Perfect forwarding
+
+```cpp
+void foo(X& x); // lvalue reference overload
+void foo(X&& x); // rvalue reference overload
+X x;
+X foobar();
+foo(x); // argument is lvalue: calls foo(X&)
+foo(foobar()); // argument is rvalue: calls foo(X&&)
+```
+
+- The compiler treats a named rvalue reference as an lvalue and an unnamed rvalue reference as an rvalue
+- In `f(const MemoryBlock&)`. This version cannot modify the parameter.
+- In `f(MemoryBlock&&)`. This version can modify the parameter.
+
+- `const auto&&` will only bind to rvalue references. In this case you basically just want to say: "my_variable should bind to a (any) reference so I can make sure the return value does not get copied".
+- Hence, usually people choose `const auto &` instead of `const auto &&` as it is more concise and 'const auto &&' does not really offer any advantage over 'const auto &&'.
+
+- Wouldn't you always use `auto&&` whenever you want to bind something to a mutable reference? `auto&` only binds lvalue types, hence `auto&&` would be more concise for this case as it allows to bind both `rvalue` and `lvalue` types.
+
+
+
+## Move Semantics for Custom Data Structures
 
 In general you have to implement:
 1) Copy ctor
@@ -23,6 +73,35 @@ In general you have to implement:
 
 ```cpp
 Foo (vector<int> vec) : _member{std::move(vec)} {}
+```
+
+### Standard
+
+> If the class definition does not explicitly declare a copy constructor, one is declared *implicitly*. **If the class definition declares a move constructor or move assignment operator, the implicitly declared copy constructor is defined as deleted**; otherwise, it is defined as defaulted. The latter case is deprecated if the class has a user-declared copy assignment operator or a user-declared destructor. Thus, for the class definition
+>
+> ```
+> struct X {
+>     X(const X&, int);
+> };
+> ```
+>
+> a copy constructor is implicitly-declared. If the user-declared constructor is later defined as
+>
+> ```
+> X::X(const X& x, int i =0) { /* ... */ }
+> ```
+>
+> then any use of X’s copy constructor is ill-formed because of the ambiguity; no diagnostic is required.
+
+
+
+### Implementations
+
+**Invocation**
+
+```cpp
+    A c(5); // ctor
+    A cc(std::move(c)); // move ctor
 ```
 
 **Auto Generated Move Constructors**
@@ -71,8 +150,8 @@ public:
         std::copy(d.array, d.array+200, array); // <- copy data for that buffer from 'd's buffer
     } 
     Data(Data&& d) : 
-        a(std::move(d.a)),      // the std::moves here aren't really necessary because they are basic types.
-        b(std::move(d.b)),      //  but whatever.
+        a(std::move(d.a)),      // the std::moves here aren't really necessary (basic types)
+        b(std::move(d.b)),
         c(std::move(d.c))
     {
         array = d.array;        // we are not allocating an buffer, but are merely taking ownership of 'd's buffer
@@ -129,5 +208,25 @@ void* data;
 };
 ```
 
+**Move Operations on Derived Classes**
 
+```cpp
+class Shader {
+  public:
+    // custom move assignment
+    Shader& operator=(Shader&& other) { ... }
+}
+
+class VertexShader : public Shader {
+  public:
+    // move ctor
+    explicit VertexShader(VertexShader &&other) : Shader(std::move(other)) {}
+    // move assignment
+  	VertexShader& operator=(VertexShader&& other) { 
+        // call move assignment operator of parent class
+        Shader::operator=(std::move(rhs));
+        return *this;
+    }
+}
+```
 

@@ -64,6 +64,14 @@ C++ supports 4 types of casting operators:
 
 `reinterpret_cast<int *>(100);`
 
+### Castable Types
+
+- (smart-)pointers
+- references
+- basic types
+
+
+
 #### Examples
 
 
@@ -87,8 +95,6 @@ For each concrete implementation of class:
 
 
 ### Up-Casting (derived > base)
-
-
 
 
 
@@ -129,14 +135,15 @@ if (pDerived) {
 **Casting Failure**
 
 - result is nullptr on failure
+- failing reference cast has no failure indication, **throws `bad_cast` exception**
 
 #### B. Static Cast
 
 - no runtime type checking
 
------------
+  
 
-### Casting of Smart Pointers
+## Casting of Smart Pointers
 
 ```cpp
 class Base {}
@@ -152,3 +159,14 @@ basePtr = std::static_pointer_cast<Base>(derivedPtr);
 auto downcastedPtr = std::dynamic_pointer_cast<Derived>(basePtr);
 ```
 
+
+
+## `const` Casting
+
+
+
+
+
+## Common Pitfalls
+
+- references to managed memory

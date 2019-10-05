@@ -1,6 +1,18 @@
-## Templates
+# Templates
 
-### Regular templates
+
+
+## Understanding Template Type Deduction
+
+
+
+
+
+
+
+
+
+## Regular templates
 
 ```cpp
 template <class T>
@@ -125,8 +137,6 @@ void Test::function<char>(char data) {...}
 
 
 
-
-
 ### Partial Spezialization
 
 Partial specialization of a function template, whether it is member 
@@ -154,10 +164,6 @@ class Thing<A,int>  //partial specialization of the class template
 template <class A>
 int Thing<A,int>::doSomething()  { /* do whatever you want to do here */ }
 ```
-
-
-
-
 
 
 
@@ -390,7 +396,6 @@ public:
     }
 };
 ```
-
 
 
 
