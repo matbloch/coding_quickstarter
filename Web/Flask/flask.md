@@ -2,13 +2,13 @@
 
 
 
-
-
-
-
-
-
 ## Best Practices
+
+- See also: https://hackersandslackers.com/demystifying-flask-application-factory/
+
+- example app: https://github.com/JackStouffer/Flask-Foundation/blob/master/manage.py
+
+
 
 
 
@@ -16,8 +16,6 @@
 
 - Testing: Allows to create different `app` instances
 - Prevent circular imports: `from app import app`
-
-
 
 **Use an application factory**
 
@@ -50,6 +48,37 @@ def create_app(config=None, environment=None):
     return app
 ```
 
+**Defining Configurations**
+
+- Don't set `ENV` , use the environment variable `FLASK_ENV`
+
+
+
+
+
+
+
+### Extensions
+
+- instantiate globally in `__init__.py`
+- setup in application factory using `init_app()`
+
+Default structure of a Flask extension:
+
+```python
+class FlaskExtension(object):
+    def __init__(self, app=None):
+        if app:
+            self.init_app(app)
+
+    def init_app(self, app):
+        if not hasattr(app, 'extensions'):
+            app.extensions = {}
+        app.extensions['EXTENSION'] = self
+```
+
+
+
 
 
 
@@ -59,12 +88,52 @@ def create_app(config=None, environment=None):
 ## Configuration Handling
 
 -  see [Documentation](https://flask.palletsprojects.com/en/1.1.x/config/)
-
-- https://pythonise.com/feed/flask/flask-configuration-files
-
+- https://hackersandslackers.com/configuring-your-flask-application/
 
 
-#### Best Practices
+
+#### Basics
+
+- Configuration (including extensions) is stored in`config` attribute of `Flask` object
+
+- Access through `from flask import current_app`, see best practices section
+
+**Environment Variables**
+
+- `FLASK_ENV`  (default: `production`)
+  - Used by extensions. Available already before Flask setup, as compared to `DEBUG` and `ENV` in config
+  - **should always be set**
+  - options: 'development', 'testing', 'production'
+
+**Built-In Configuration Variables**
+
+- `ENV` (default `'production'`) flask extension may enable behaviour based on the environment
+  - **NOTE:** Don't set `ENV` in your config, instead set the environment variable `FLASK_ENV`
+- `DEBUG` (default `false`) exceptions are thrown and printed to console, hot reloading etc.
+- `TESTING` (default `false`) exceptions are propagated instead of handled by app
+- `SECRET_KEY` String to encrypt sensitive information
+
+**Configuration Sources**
+
+- `app.config.from_object('config.Config')` from object
+- `app.config.from_envvar('APP_CONFIG')` from filepath in env
+- `app.config.from_pyfile('application.cfg', silent=True)` from .cfg file
+
+
+
+#### Examples
+
+**Config Properties**
+
+```python
+class Config:
+    DB_SERVER = '192.168.1.56'
+    @property
+    def DATABASE_URI(self):         # Note: all caps
+        return 'mysql://user@{}/foo'.format(self.DB_SERVER)
+```
+
+**Object Based Configuration**
 
 config.py
 
@@ -83,30 +152,11 @@ class TestingConfig(Config):
     TESTING = True
 ```
 
-```python¨
+**Configuring Paths**
 
+```python
+filename = os.path.join(app.instance_path, 'my_folder', 'my_file.txt')
 ```
-
-
-
-
-
-#### Built-In Configuration Variables
-
-- `ENV` (default `'production'`) flask extension may enable behaviour based on the environment
-- `DEBUG` (default `false`) exceptions are thrown and printed to console, hot reloading etc.
-- `TESTING` (default `false`)exceptions are propagated instead of handled by app
-- `SECRET_KEY` String to encrypt sensitive information
-
-#### Configuration Sources
-
-- `app.config.from_object('config.Config')` from object
-
-- `app.config.from_envvar('APP_CONFIG')` from filepath in env
-
-- `app.config.from_pyfile('application.cfg', silent=True)` from .cfg file
-
-
 
 
 
@@ -144,7 +194,7 @@ def show_post(post_id):
 from flask import Blueprint
 admin_blueprint = Blueprint('admin', __name__)
 
-@admin.route('/items/', methods=['GET'])
+@admin_blueprint.route('/items/', methods=['GET'])
 def get_items():
 	pass
 ```
@@ -156,7 +206,18 @@ app.register_blueprint(admin_blueprint, url_prefix="/admin")
 
 ```
 
+**Dynamic URLs**
+
+```python
+url_for('admin.get_items')
+```
+
+
+
+
+
 #### HTTP Methods
+
 ```python
 from flask import request
 
