@@ -1,4 +1,4 @@
-# Flask SQL-Alchemy
+# SQL-Alchemy and Flask
 
 
 
@@ -18,7 +18,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-db = SQLAlchemy(app
+
+# Opt. 1
+db = SQLAlchemy(app)
+# Opt. 2 (factory method, preferred)
+db = SQLAlchemy()
+db.init_app(app)
 ```
 
 #### Option 2: Declarative
@@ -32,19 +37,24 @@ engine = create_engine('sqlite:////tmp/test.db', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
+
 Base = declarative_base()
+# Manually assign the query property. In flask-sqlalchemy db this is already integrated
 Base.query = db_session.query_property()
 ```
 
 
 
-## Model Definition
+# Model Definition
+
+- `db.Model` is a declarative base and has a `query` attribute attached that can be used to
+  query the model. 
 
 ```python
 class ModelName(db.Model):
     __tablename__ = 'my_model'
-    id = Column(integer, primary_key=True, auto_increment=True)
-    name = Column(String)
+    id = db.Column(db.Integer, primary_key=True, auto_increment=True)
+    name = db.Column(db.String)
     
     def __init__(self, a):
         	self.name = a
@@ -471,6 +481,14 @@ my_day.players.remove(my_player) #Remove
 
 
 
+**Example: Utility Base class**
+
+- insert, delete, refresh etc in base mixin
+
+
+
+
+
 ### Bulk Operations
 
 **Saving**
@@ -479,6 +497,22 @@ my_day.players.remove(my_player) #Remove
 session.bulk_save_objects(objects)
 session.commit()
 ```
+
+
+
+
+
+# Session Basics
+
+https://www.michaelcho.me/article/sqlalchemy-commit-flush-expire-refresh-merge-whats-the-difference
+
+
+
+`db.session.refresh(some_obj)`
+
+
+
+
 
 
 

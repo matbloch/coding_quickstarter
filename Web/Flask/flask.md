@@ -29,6 +29,8 @@ def factory():
 
 **Use `current_app` to access the app**
 
+> *Rather than referring to an app directly, you use the the* **current_app** *proxy, which points to the application handling the current activity.*
+
 ```python
 from flask import current_app
 current_app.config['RELEVANT_CONFIG_VARIABLE']
@@ -41,20 +43,32 @@ current_app.config['RELEVANT_CONFIG_VARIABLE']
 **Configure the application**
 
 ```python
-def create_app(config=None, environment=None):
-    app = Flask(__name__)
-    app.config['ENVIRONMENT'] = environment
-    app.config.update(config or {})
+def create_app(config_object_name) -> Flask:
+    app = Flask(__name__, instance_relative_config=False)
+    app.config.from_object(config_object_name)
     return app
 ```
 
 **Defining Configurations**
 
 - Don't set `ENV` , use the environment variable `FLASK_ENV`
+- Derive all app configuration values from a class or environment variables.
 
+config.py
 
+```python
+class DefaultConfig(object):
+    DEBUG = True
+```
 
+run.py
 
+```python
+from app import create_app
+app = create_app('config.DefaultConfig')
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=80)
+```
 
 
 
@@ -271,4 +285,86 @@ def upload_file():
 **URL parameters**
 - `?key=value`
 - `searchword = request.args.get('key', '')` get specific key
+
+
+
+
+
+
+
+## Full Example
+
+
+
+**/config.py**
+
+```python
+class Config(object):
+    DEBUG = False
+    TESTING = False
+
+class ProductionConfig(Config):
+    pass
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+```
+
+**/app/extensions.py**
+
+- store the extensions object globally
+- get registered using `db.init_app(app)` in the application factory
+
+```python
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+# setup database
+db = SQLAlchemy()
+# setup migration script
+migrate = Migrate()
+```
+
+**/app/routing.py**
+
+```python
+def register_routes(app):
+    @app.route('/')
+    def hello_world():
+        return 'Hello, World!'
+```
+
+**/app/\__init\___.py**
+
+- initialize database within application context
+
+```python
+from flask import Flask
+from .extensions import db, migrate
+from .routing import register_routes
+
+
+def init_extensions(app: Flask):
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+
+def create_app(config_object_name) -> Flask:
+    """
+    :param config_object_name: The python path of the config object.
+                               E.g. appname.settings.ProdConfig
+    """
+    # Initialize the core application
+    app = Flask(__name__, instance_relative_config=False)
+    # Initialize Plugins using init_app()
+    init_extensions(app)
+    # Load the configuration
+    app.config.from_object(config_object_name)
+    with app.app_context():
+        # Register Blueprints
+        register_routes(app)
+        # Create tables for our models
+        db.create_all()
+        return app
+```
 

@@ -103,9 +103,24 @@ query {
 
 ### Executing the Queries/Mutations
 
-
-
-`schema = graphene.Schema(query=Query)`
+```python
+schema = graphene.Schema(query=Query, mutation=Mutation)
+query = """
+        mutation {
+          insertTeacher(
+            input : {
+                name: "Edward Norton"
+            }
+          ) {
+            ok
+            teacher {
+                name
+            }
+          }
+        }
+    """
+result = schema.execute(query, context_value={"session": session})
+```
 
 
 
