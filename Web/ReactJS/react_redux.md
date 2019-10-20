@@ -478,5 +478,25 @@ export function getUser(id) {
 
 
 
+**Returning Promises from Action Creators**
 
+```javascript
+const update = (todoId, isDone) => (dispatch) =>
+  new Promise(function(resolve, reject) {
+    dispatch({
+      type: 'SET_SAVING',
+      saving: true
+    });    // Function is expected to return a promise
+    callUpdateApi(todoId, isDone).then(updatedTodo => {
+      dispatch({
+        type: 'SET_SAVING',
+        saving: false
+      });
+      resolve(updatedTodo);
+    }).catch(error => {
+      // TBD: Handle errors for Redux
+      reject(error);
+    })
+  });
+```
 
