@@ -70,6 +70,22 @@ function whois({displayName, fullName: {firstName: name}}) {
 
 
 
+## Imports
+
+**Import default export**
+
+```javascript
+import moduleName from 'module'
+```
+
+**Import named export**
+
+```javascript
+import { destructuredModule } from 'module'
+```
+
+
+
 ## Variables
 
 - `let`
@@ -78,8 +94,6 @@ function whois({displayName, fullName: {firstName: name}}) {
   -  **old**, has **no block scope!** (variables only limited to functional scope)
   - declaration at beginning of function start
   - assignment at actual position
-
-
 
 ## Data Types
 
@@ -98,6 +112,42 @@ let my var = `1 + 2 = ${sum(1, 2)}.`;  // 1 + 2 = 3.
 ```
 
 
+
+## Functions
+
+**Anonymous Function**
+
+```javascript
+(params) => { }
+```
+
+**Named Function**
+
+```javascript
+const functionName = (params) => { }
+```
+
+
+
+## Iteration
+
+**For each** (Array)
+
+```javascript
+arrayName.forEach(element => { })
+```
+
+**For of** (Array)
+
+```javascript
+for(let itemName of objectName) { }
+```
+
+**For in**  (Objects)
+
+```javascript
+for(let key in objectName) { }
+```
 
 
 
