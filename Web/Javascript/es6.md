@@ -151,4 +151,26 @@ for(let key in objectName) { }
 
 
 
+## Array Manipulation
+
+**Filtering**
+
+```javascript
+myArray.filter(word => word.length > 6);
+```
+
+**Re-Mapping**
+
+```javascript
+const new_array = array1.map(x => x * 2);
+
+const new_array = todos.map((todo, index) => {});
+```
+
+
+
+
+
+
+
 ## OOP
