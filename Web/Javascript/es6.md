@@ -245,3 +245,59 @@ my_car_instance.name = name
 
 
 
+## File Handling
+
+**Image Loading Promise**
+
+```javascript
+const loadImage = url => {
+  return new Promise((resolve, reject) => {
+    let img = new Image();
+    img.addEventListener('load', e => resolve(img));
+    img.addEventListener('error', () => {
+      reject(new Error(`Failed to load image's URL: ${url}`));
+    });
+    img.src = url;
+  });
+};
+
+loadImage(url).then(img => {
+    const width = img.naturalWidth;
+    const height = img.naturalHeight;
+    const src = img.src;
+});
+```
+
+### Object URLs
+
+- `window.URL.createObjectURL` to creates a **reference** url to a `File` or `Blob`
+
+- `window.URL.revokeObjectURL(url)` to free up memory (url lifetime is tied to the `document` of the window)
+
+```javascript
+var img_src = window.URL.createObjectURL(file_object);
+```
+
+Usage:
+
+```javascript
+var fileInput = document.querySelector('input[type="file"]');
+var preview = document.getElementById('preview');
+fileInput.addEventListener('change', function(e) {
+    var url = URL.createObjectURL(e.target.files[0]);
+    preview.setAttribute('src', url);
+});
+```
+
+### Base64 Encoding
+
+- embedding of file data in url
+
+```javascript
+getBase64(file_object, imageUrl =>
+    do_something(imageUrl);
+);
+```
+
+
+
