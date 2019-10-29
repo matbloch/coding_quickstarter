@@ -87,6 +87,27 @@ p = nullptr;
 p.reset(new int);
 ```
 
+**Initialize from existing object**
+
+```cpp
+
+```
+
+**copy vs reference**
+
+- reference does not increase count, could lead to invalid memory access
+
+**Assigning new Value**
+
+```cpp
+ptr.reset(new MyObject());
+ptr = std::make_shared<MyObject>();
+// NOT LIKE THIS:
+*ptr = MyObject;
+```
+
+
+
 ### Initialization from `this`
 
 - `std::shared_ptr<T>(this)` is not working
@@ -187,8 +208,6 @@ Base fromTemp(std::unique_ptr<Base>(new Base(...));
 
 
 
-
-
 ## weak_ptr
 
 - doesn't increase reference count
@@ -205,4 +224,127 @@ std::weak_ptr<int> weak_ptr = ptr;       // ref-count 1
 
 
 TODO
+
+
+
+## Common Mistakes
+
+
+
+- passing shared_ptrs as parameters by value. People do it all the time because "passing pointer parameters is as cheap as it gets, right?" But, shared_ptr's thread safety means that each copy involves a full trip past all cache levels to actual DRAM. 100+ cycles each. They are not pointers. They are small yet heavy objects and should be passed by reference. Copying implies assuming shared ownership and should not be done lightly.
+
+
+
+```cpp
+class MyRessource {
+  public:
+  MyRessource(int id): id_(id) {
+    std::cout << "-- MyRessource (" << id_ << "): " << this << std::endl;
+  }
+  ~MyRessource() {
+    std::cout << "-- ~MyRessource (" << id_ << "): " << this << std::endl;
+  }
+  private:
+     int id_;
+};
+
+std::shared_ptr<MyRessource> ptr = std::make_shared<MyRessource>(3);
+{ 
+  *ptr = MyRessource(123); 
+}
+std::cout << "shared_ptr.get(): " << ptr.get() << std::endl;
+
+// SIGABRT: Pointer being freed was not allocated
+```
+
+
+
+
+
+```cpp
+class MyRessource {
+  public:
+  MyRessource(size_t size) {
+    dataPtr = new int[size];
+    size_ = size;
+    std::cout << "-- MyRessource (" << size_ << "): " << this << std::endl;
+  }
+  ~MyRessource() {
+    std::cout << "-- ~MyRessource (" << size_ << "): " << this << std::endl;
+    delete[] this->dataPtr;
+  }
+
+  private:
+  int *dataPtr;
+  size_t size_;
+};
+
+std::shared_ptr<MyRessource> ptr = std::make_shared<MyRessource>(3);
+{ 
+  *ptr = MyRessource(123); 
+}
+std::cout << "shared_ptr.get(): " << ptr.get() << std::endl;
+
+// SIGABRT: Pointer being freed was not allocated
+```
+
+```cpp
+-- MyRessource    (3): 0x7fcc9b702298
+-- MyRessource  (123): 0x7ffee68f93e0
+-- ~MyRessource (123): 0x7ffee68f93e0
+shared_ptr.get(): 0x7fcc9b702298
+-- ~MyRessource (123): 0x7fcc9b702298
+```
+
+
+
+
+
+
+
+The problem is that the memory managed by the image gets freed twice.
+A simple example to illustrate this would be:
+
+```cpp
+    class MyRessource {
+    public:
+        MyRessource(size_t size): size(size) {
+            data_ptr = new int[size];
+            std::cout << "-- MyRessource (" << size << "): " << this << std::endl;
+        }
+        ~MyRessource() {
+            std::cout << "-- ~MyRessource (" << size << "): " << data_ptr << std::endl;
+            delete[] this->data_ptr;
+        }
+
+        int *data_ptr;
+        size_t size;
+    };
+
+    std::shared_ptr<MyRessource> ptr = std::make_shared<MyRessource>(3);
+    {
+        std::cout << "shared_ptr.get(): " << ptr.get() << std::endl;
+        *ptr = MyRessource(123);
+
+    }
+    std::cout << "shared_ptr.get(): " << ptr.get() << std::endl;
+```
+
+And the output:
+
+```cpp
+-- MyRessource (3)   : 0x7fc989615c08
+    shared_ptr.get() : 0x7fc989615c08
+-- MyRessource  (123): 0x7ffeeeb69420
+-- ~MyRessource (123): 0x7fc989617440
+     shared_ptr.get(): 0x7fc989615c08
+-- ~MyRessource (123): 0x7fc989617440
+```
+
+So when the ressource runs out of scope it's internally managed memory gets deleted.
+Then, when the `shared_ptr` gets destroyed, it calls the destructor again. This time the object itself is stored in a different location but it's internal datapointer still points to the old location which has already been freed.
+
+To fix this, the assignment operator would also need to swap the internal data pointers.
+
+## Type Conversion
 
