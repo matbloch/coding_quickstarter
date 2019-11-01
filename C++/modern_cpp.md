@@ -59,7 +59,7 @@ Foo (vector<int> vec) : _member{std::move(vec)} {}
 **Perfect forwarding**
 - constructor for temporary class object is not necessary - pass arguments directly
 ```cpp
-asdf
+...
 ```
 
 **Anonymous functions**

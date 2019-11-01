@@ -2,7 +2,7 @@
 
 
 
-**example**: mattkohl/docker-flask-celery-redis
+**example**: https://github.com/mattkohl/docker-flask-celery-redis
 
 
 
@@ -14,8 +14,6 @@
 - saves task over message broker to result backend
 - Client polls result backend for completed task
 
-
-
 **Steps to integrate Celery**
 
 1. Choose a Broker (e.g. Redis/Rabbit MQ)
@@ -23,7 +21,31 @@
 3. Define tasks
 4. Running the workers
 
-## Integration
+
+
+## Basic Setup and Configuration
+
+
+
+Celery config:
+
+https://docs.celeryproject.org/en/latest/getting-started/first-steps-with-celery.html
+
+
+
+## Starting a Celery worker
+
+- start celery worker for `tasks` module:
+
+`$ celery -A tasks worker --loglevel=info`
+
+
+
+
+
+
+
+## Task Definition
 
 #### Defining Tasks
 
@@ -40,15 +62,42 @@ def add(x,y):
     return x + y
 ```
 
-#### Starting a Celery worker
-
-- start celery worker for `tasks` module:
-
-`$ celery -A tasks worker --loglevel=info`
 
 
 
-#### Sending Tasks to Celery
+
+### Task Sets
+
+
+
+
+
+```python
+
+```
+
+
+
+
+
+
+
+
+
+### Chords
+
+- task that only executes after all tasks in taskset have finished
+- synchronization is expensive; avoid chords if possible
+
+
+
+
+
+
+
+
+
+## Task Scheduling
 
 **From within the task code base**
 
@@ -60,8 +109,6 @@ def add(x,y):
 add.delay(1, y=2)
 add.apply_async(args=[1], kwargs={'y': 2})
 ```
-
-
 
 **From outside the task code base**
 
@@ -99,7 +146,7 @@ add.apply_async((2, 2), link_error=error_handler.s())
 
 
 
-#### Polling the Task State
+## Fetching the Task Results
 
 ```python
 
