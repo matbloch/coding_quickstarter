@@ -121,8 +121,12 @@ location /images/ {
 
 **Example**: Application routing fallback
 
+- try to serve static files from `/static/`, else redirect request to application (and rewrite request parameters)
+
 ```nginx
 location / {
+    root /static/;
+    index index.html
 	try_files $uri @opencart;
 }
 

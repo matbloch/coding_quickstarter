@@ -1,4 +1,16 @@
-# Flask & Celery & Redis
+# Celery
+
+> Asynchronous task queue/job queue based on distributed message passing
+
+![celery](img/celery.jpg)
+
+
+
+
+
+
+
+
 
 
 
@@ -64,13 +76,50 @@ def add(x,y):
 
 
 
+**Names**
+
+```python
+@app.task(name='sum-of-two-numbers')
+def add(x, y):
+    return x + y
+```
+
+**Importing Tasks**
+
+- always use absolute imports
+- or new-style relative imports
+
+```python
+from project.myapp.tasks import mytask
+from .module import foo
+```
+
+
+
+
+
+### Logging
+
+```python
+from celery.utils.log import get_task_logger
+
+logger = get_task_logger(__name__)
+
+@app.task
+def add(x, y):
+    logger.info('Adding {0} + {1}'.format(x, y))
+    return x + y
+```
+
+
+
+
+
+### Best-Practices
+
 
 
 ### Task Sets
-
-
-
-
 
 ```python
 
@@ -84,14 +133,90 @@ def add(x,y):
 
 
 
-### Chords
 
-- task that only executes after all tasks in taskset have finished
+
+
+
+## Task Definition Primitives
+
+http://docs.celeryproject.org/en/master/userguide/canvas.html#the-primitives
+
+
+
+The concept of Signatures
+
+
+
+**Note:** Accessing the signature of a task: `mytaskname.s`
+
+
+
+
+
+### Chains
+
+- links signatures sequentially (chain of callbacks)
+
+```python
+from celery import chain
+res = chain(add.s(2, 2), add.s(4), add.s(8))()
+```
+
+
+
+
+
+### Groups
+
+- list of tasks that should be applied in parallel
+
+```python
+from celery import group
+res = group(add.s(i, i) for i in xrange(10))()
+```
+
+
+
+
+
+### Chord
+
+- Group with additional callback that is executed after all tasks have finished
 - synchronization is expensive; avoid chords if possible
 
 
 
+### Map
 
+- Creates a temporary task where a list of arguments is applied to the task
+
+` task.map([1, 2])` results in `res = [task(1), task(2)]`
+
+
+
+### Starmap
+
+- Like map but arguments are applied as `*args`
+
+`add.starmap([(2, 2), (4, 4)])`  results in `res = [add(2, 2), add(4, 4)]`
+
+
+
+### Chunks
+
+- splits a long list of arguments into parts
+
+**Example:**
+
+- split arguments `[(0, 0), (1, 1), (2, 2) ,...]` into chunks **10**
+
+- resulting in **100** tasks, each processing **10** items in sequence
+
+
+```python
+>>> items = zip(xrange(1000), xrange(1000))  # 1000 items
+>>> add.chunks(items, 10)
+```
 
 
 
@@ -147,6 +272,10 @@ add.apply_async((2, 2), link_error=error_handler.s())
 
 
 ## Fetching the Task Results
+
+
+
+
 
 ```python
 
