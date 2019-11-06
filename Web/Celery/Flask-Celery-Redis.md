@@ -388,6 +388,17 @@ add.apply_async((2, 2), link_error=error_handler.s())
 
 - `r.get(on_message=...)` callback on state update
 - `self.update_state()` to emit status update
+- Built-in states:
+  - `PENDING`
+  - `STARTED`
+  - `RETRY`
+  - `FAILURE`
+  - `SUCCESS`
+- Custom states: Choose any string as identifier and custom meta dictionary
+
+
+
+**Example:** Custom progress state
 
 ```python
 @app.task(bind=True)
@@ -409,6 +420,48 @@ final_result = r.get(on_message=on_raw_message, propagate=False)
 ```
 
 
+
+## Result Querying
+
+- `get()`
+
+```python
+result = add.apply_async(1, 2, ignore_result=False)
+result.get() # blocks till results are there
+```
+
+
+
+http://docs.celeryproject.org/en/latest/reference/celery.result.html#celery.result.AsyncResult.collect
+
+
+
+#### Task Status Polling
+
+```python
+@celery.task(bind=True)
+def long_task(self):
+  state_name = 'PROGRESS'
+  self.update_state(state=state_name, meta={'progress': 10})
+  time.sleep(1)
+  self.update_state(state=state_name, meta={'progress': 50})
+  time.sleep(1)
+  self.update_state(state=state_name, meta={'progress': 90})
+  time.sleep(1)
+```
+
+
+
+```python
+def poll_task_status(task_id):
+	task = long_task.AsyncResult(task_id)
+  if task.state == 'PENDING':
+    # ...
+   elif task.state != 'FAILURE':
+    # ...
+   else:
+    # ...
+```
 
 
 
