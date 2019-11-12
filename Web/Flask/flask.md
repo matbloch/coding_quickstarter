@@ -12,8 +12,35 @@
 
 
 
+### 0. Project Structure
+
+```bash
+README
+└── app/
+     ├── Dockerfile
+     ├── .dockerignore
+     ├── requirements.txt    # the requirements
+     ├── config.py           # contains the app configuration
+     ├── wsgi.py			 # WSGI entrypoint
+     ├── run_debug.py		 # debug entrypoint
+     └── app/
+          ├── __init__.py		# contains the app factory
+          ├── routing.py		# contains routing definitions
+          ├── extensions.py     # initializes the extensions
+          ├── models.py         # database models
+          ├── my_module/
+          └── static/
+```
+
+
+
+https://github.com/sdg32/flask-celery-boilerplate/blob/master/app/schedule/extension.py
+
+
+
 ### 1. Use Application Factories
 
+- Delays configuration until WSGI server is started (secure, dynamic configuration files)
 - Testing: Allows to create different `app` instances
 - Prevent circular imports: `from app import app`
 
@@ -75,7 +102,7 @@ if __name__ == "__main__":
 ### Extensions
 
 - instantiate globally in `__init__.py`
-- setup in application factory using `init_app()`
+- setup in application factory using `init_app()` (allows to configure extension after import when wsgi is initialized)
 
 Default structure of a Flask extension:
 
@@ -93,9 +120,47 @@ class FlaskExtension(object):
 
 
 
+**Example:** Wrapping Celery for post-import configuration
 
+```python
+class FlaskCelery:
+    """Flask celery extension."""
 
+    celery = None  # type: Celery
+    flask = None   # type: Flask
 
+    def __init__(self, name: str, app: Flask = None):
+        self.celery = Celery(name)
+        self.flask = app
+
+        if app is not None:
+            self.init_app(app)
+
+    def init_app(self, app: Flask):
+        self._load_config(app)
+
+        if not hasattr(app, 'extensions'):
+            app.extensions = {}
+
+        class ContextTask(BaseTask):
+            def __call__(self, *args, **kwargs):
+                with app.app_context():
+                    return super().__call__(*args, **kwargs)
+
+        self.celery.task_cls = ContextTask
+        app.extensions['celery'] = self
+
+    @property
+    def task(self):
+        return self.celery.task
+
+    def _load_config(self, app: Flask):
+        """Load config from flask."""
+        for k, v in app.config.items():
+            if not k.startswith('CELERY_'):
+                continue
+            self.celery.conf[k[7:].lower()] = v
+```
 
 
 
@@ -302,6 +367,7 @@ def upload_file():
 class Config(object):
     DEBUG = False
     TESTING = False
+    # ... some exention specific settings
 
 class ProductionConfig(Config):
     pass

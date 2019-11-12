@@ -6,14 +6,6 @@
 
 
 
-
-
-
-
-
-
-
-
 **example**: https://github.com/mattkohl/docker-flask-celery-redis
 
 
@@ -43,15 +35,78 @@ Celery config:
 
 https://docs.celeryproject.org/en/latest/getting-started/first-steps-with-celery.html
 
+### Project Setup
+
+Project Setup
+
+```
+proj/__init__.py
+    /celery.py
+    /tasks.py
+```
 
 
-## Starting a Celery worker
+
+**The Celery application:** `proj/celery.py`
+
+- `Celery`
+  - broker:
+  - backend:
+  - include: a list of modules to import when workers start
+
+```python
+from __future__ import absolute_import, unicode_literals
+from celery import Celery
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+app = Celery('proj',
+             broker=CELERY_BROKER_URL,
+             backend=CELERY_RESULT_BACKEND,
+             include=['proj.tasks'])
+
+# Optional configuration, see the application user guide.
+app.conf.update(
+    result_expires=3600,
+)
+
+if __name__ == '__main__':
+    app.start()
+```
+
+
+
+**The tasks:** `proj/tasks.py`
+
+```python
+from .celery import app
+
+
+@app.task
+def add(x, y):
+    return x + y
+
+
+@app.task
+def mul(x, y):
+    return x * y
+
+
+@app.task
+def xsum(numbers):
+    return sum(numbers)
+```
+
+
+
+### Controlling Celery
+
+
 
 - start celery worker for `tasks` module:
 
 `$ celery -A tasks worker --loglevel=info`
-
-
 
 
 
@@ -94,10 +149,6 @@ from project.myapp.tasks import mytask
 from .module import foo
 ```
 
-
-
-
-
 ### Logging
 
 ```python
@@ -110,30 +161,6 @@ def add(x, y):
     logger.info('Adding {0} + {1}'.format(x, y))
     return x + y
 ```
-
-
-
-
-
-### Best-Practices
-
-
-
-### Task Sets
-
-```python
-
-```
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -283,9 +310,9 @@ res = group(add.s(i, i) for i in xrange(10))()
 
 **Result Status**
 
-- `successful()` all subtasks were successfuly finished
+- `successful()` all subtasks were successfully finished
 
-- `failed()` if any subtaks failed
+- `failed()` if any subtasks failed
 - `waiting()` if any subtask is not ready yet
 - `ready()` if all subtasks are ready
 - `completed_count()` Number of completed subtasks
@@ -348,7 +375,7 @@ http://docs.celeryproject.org/en/master/userguide/calling.html#guide-calling
 - `T.delay(*arg, **kwargs)`
   - **Example**: `task.delay(arg1, arg2, kwarg1='x', kwarg2='y')`
   - star argument version of `apply_async()`
-  - doesn't support executino options (use `set()`)
+  - doesn't support execution options (use `set()`)
 - *calling* (`__call__`) 
   - **Example:** `task()`
   - executes task in current process
@@ -360,7 +387,7 @@ http://docs.celeryproject.org/en/master/userguide/calling.html#guide-calling
 **Callbacks**
 
 - `link=my_callback.s()`
-- executed after taks was successful
+- executed after task was successful
 - arguments: return value of parent task
 
 ```python
@@ -436,7 +463,11 @@ http://docs.celeryproject.org/en/latest/reference/celery.result.html#celery.resu
 
 
 
-#### Task Status Polling
+### Task Status Polling
+
+
+
+Task definition
 
 ```python
 @celery.task(bind=True)
@@ -450,7 +481,17 @@ def long_task(self):
   time.sleep(1)
 ```
 
+Task scheduling:
 
+```python
+@app.route('/longtask', methods=['POST'])
+def longtask():
+    task = long_task.apply_async()
+    return jsonify({}), 202, {'Location': url_for('taskstatus',
+                                                  task_id=task.id)}
+```
+
+Result polling in external application:
 
 ```python
 def poll_task_status(task_id):
@@ -462,6 +503,14 @@ def poll_task_status(task_id):
    else:
     # ...
 ```
+
+
+
+### Group Result Polling
+
+
+
+
 
 
 
@@ -497,6 +546,20 @@ app.send_task('tasks.add', (2,5))
 
 
 
+#### Examples
+
+
+
+```python
+@app.task
+def success_callback(response):
+    print("Processing task finished successfully!")
+
+app.send_task("remote.processing", link=success_callback.s())
+```
+
+
+
 ## Fetching the Task Results
 
 
@@ -514,3 +577,17 @@ app.send_task('tasks.add', (2,5))
 
 
 flower
+
+
+
+
+
+## Celery and Flask
+
+
+
+- Flask application factory pattern delays configuration until WSGI server is started (secure, dynamic configuration files)
+
+
+
+https://github.com/sdg32/flask-celery-boilerplate/blob/master/app/schedule/extension.py
