@@ -27,17 +27,19 @@
 
 
 
+
+
+
+
+
+
+
+
 ## Basic Setup and Configuration
 
 
 
-Celery config:
-
-https://docs.celeryproject.org/en/latest/getting-started/first-steps-with-celery.html
-
-### Project Setup
-
-Project Setup
+Project Setup:
 
 ```
 proj/__init__.py
@@ -45,14 +47,14 @@ proj/__init__.py
     /tasks.py
 ```
 
-
-
-**The Celery application:** `proj/celery.py`
+### Instantiating Celery
 
 - `Celery`
   - broker:
   - backend:
   - include: a list of modules to import when workers start
+
+ `proj/celery.py`
 
 ```python
 from __future__ import absolute_import, unicode_literals
@@ -70,53 +72,130 @@ app = Celery('proj',
 app.conf.update(
     result_expires=3600,
 )
+```
 
+ `proj/tasks.py`
+
+```python
+from .celery import app
+
+@app.task
+def add(x, y):
+    return x + y
+```
+
+
+
+### Configuration
+
+Celery config:
+
+https://docs.celeryproject.org/en/latest/getting-started/first-steps-with-celery.html
+
+```python
+app = Celery('proj',
+             broker=CELERY_BROKER_URL,
+             backend=CELERY_RESULT_BACKEND)
+app.conf.update(
+    result_expires=3600,
+)
+```
+
+
+
+
+
+
+
+### Task Queues
+
+
+
+**Change default Queue name**
+
+`app.conf.task_default_queue = 'default'`
+
+
+
+### Launching a Celery Worker
+
+- Celery worker controls multiple processes (configured through `--concurrency`)
+- Worker distributes tasks among it's controlled processes
+
+
+
+**From the command line**
+
+`celery -A my_application worker --loglevel=debug`
+
+- `-A`, `--app` application name
+- `-c` `--concurrency`  `<concurrency>`  Number of child processes processing the queue.  The default is the number of CPUs available on your system. 
+
+`my_application.py`
+
+```python
+celery = Celery(
+    MODULE_NAME,
+    backend=CELERY_RESULT_BACKEND,
+    broker=CELERY_BROKER_URL
+)
+@celery.task
+def task1(input):
+    time.sleep(1)
+    return input
+```
+
+**Through a script**
+
+```python
+app = Celery('proj',
+             broker=CELERY_BROKER_URL,
+             backend=CELERY_RESULT_BACKEND,
+             include=['proj.tasks'])
 if __name__ == '__main__':
     app.start()
 ```
 
 
 
-**The tasks:** `proj/tasks.py`
+#### Running worker as daemon
+
+- see [daemonizing celery]("daemonizing celery.md")
+
+
+
+
+
+### Logging
 
 ```python
-from .celery import app
+from celery.utils.log import get_task_logger
 
+logger = get_task_logger(__name__)
 
 @app.task
 def add(x, y):
+    logger.info('Adding {0} + {1}'.format(x, y))
     return x + y
-
-
-@app.task
-def mul(x, y):
-    return x * y
-
-
-@app.task
-def xsum(numbers):
-    return sum(numbers)
 ```
 
 
 
-### Controlling Celery
 
 
+### Sharing Memory between Worker Processes
 
-- start celery worker for `tasks` module:
-
-`$ celery -A tasks worker --loglevel=info`
-
-
+https://stackoverflow.com/questions/45459205/keras-predict-not-returning-inside-celery-task/49164854#49164854
 
 
 
 ## Task Definition
 
-#### Defining Tasks
+http://docs.celeryproject.org/en/master/userguide/canvas.html#the-primitives
 
-- default broker port for Redis: `6379`
+### Basics
+
+- `@task` decorator available on Celery instance
 
 ```python
 from celery import Celery
@@ -124,12 +203,10 @@ MODULE_NAME = 'tasks'
 BROKER_URL = 'redis://localhost:6379'
 app = Celery(MODULE_NAME, broker=BROKER_URL)
 
-@app.tasks
+@app.task
 def add(x,y):
     return x + y
 ```
-
-
 
 **Names**
 
@@ -149,35 +226,6 @@ from project.myapp.tasks import mytask
 from .module import foo
 ```
 
-### Logging
-
-```python
-from celery.utils.log import get_task_logger
-
-logger = get_task_logger(__name__)
-
-@app.task
-def add(x, y):
-    logger.info('Adding {0} + {1}'.format(x, y))
-    return x + y
-```
-
-
-
-## Task Definition Primitives
-
-http://docs.celeryproject.org/en/master/userguide/canvas.html#the-primitives
-
-#### Basic Task Definition
-
-
-
-```python
-@app.task
-def add(x, y):
-    return x + y
-```
-
 **Bound tasks**
 
 - access to `self`
@@ -186,7 +234,7 @@ def add(x, y):
 ```python
 logger = get_task_logger(__name__)
 
-@task(bind=True)
+@app.task(bind=True)
 def add(self, x, y):
     logger.info(self.request.id)
 ```
@@ -202,12 +250,10 @@ class MyBase(celery.Task):
 ```
 
 ```python
-@task(base=MyTask)
+@app.task(base=MyTask)
 def add(x, y):
     raise KeyError()
 ```
-
-
 
 
 
@@ -366,9 +412,22 @@ res.get()
 
 http://docs.celeryproject.org/en/master/userguide/calling.html#guide-calling
 
-#### Executing Tasks
+### Executing Tasks
 
-**NOTE:** this applies to tasks and signatures
+> **NOTE:** this applies to tasks and signatures
+
+
+
+**Execution in current Process**
+
+*calling* (`__call__`) 
+
+- **Example:** `task()`
+- executes task in current process
+
+**Asynchronous Execution**
+
+> All asynchronous executers return a promise `celery.result.AsyncResult`, see also section "Result Querying"
 
 - `T.apply_async(args, kwargs)`
   - **Example**: `task.apply_async(args=[arg1, arg2], kwargs={'kwarg1': 'x', 'kwarg2': 'y'})`
@@ -376,13 +435,13 @@ http://docs.celeryproject.org/en/master/userguide/calling.html#guide-calling
   - **Example**: `task.delay(arg1, arg2, kwarg1='x', kwarg2='y')`
   - star argument version of `apply_async()`
   - doesn't support execution options (use `set()`)
-- *calling* (`__call__`) 
-  - **Example:** `task()`
-  - executes task in current process
+- `send_task(name, args=None, ...)`
+  - use if task isn't registered in the current process
+  - supports same arguments as `T.apply_async`
 
 
 
-#### Callbacks/Errbacks
+### Callbacks/Errbacks
 
 **Callbacks**
 
@@ -411,7 +470,7 @@ add.apply_async((2, 2), link_error=error_handler.s())
 
 
 
-#### Communicating State Changes
+### Communicating State Changes
 
 - `r.get(on_message=...)` callback on state update
 - `self.update_state()` to emit status update
@@ -448,6 +507,29 @@ final_result = r.get(on_message=on_raw_message, propagate=False)
 
 
 
+## The Request Object
+
+
+
+
+
+```python
+@app.task(bind=True)
+def dump_context(self, x, y):
+    print('Executing task id {0.id}, args: {0.args!r} kwargs: {0.kwargs!r}'.format(
+            self.request))
+```
+
+
+
+
+
+
+
+
+
+
+
 ## Result Querying
 
 - `get()`
@@ -457,15 +539,88 @@ result = add.apply_async(1, 2, ignore_result=False)
 result.get() # blocks till results are there
 ```
 
-
-
 http://docs.celeryproject.org/en/latest/reference/celery.result.html#celery.result.AsyncResult.collect
 
 
 
+
+
+### Signature dependent returns
+
+
+
+#### Groups
+
+- return `GroupResult`
+  - `.completed_count()`
+- use `save()` and `restore()`
+
+
+
+```python
+from celery import group, chord
+
+callback = tsum.s()
+group_tasks = group([
+    add.s(5,5),
+    subtract.s(20,10),
+    multiply.s(2,5)
+])
+task = chord(group_tasks)(callback)
+task.parent.save()
+task.id
+task.parent
+task.parent.children
+```
+
+
+
+```python
+from app import celery_app # my celery instance in my app
+
+parent = celery_app.GroupResult.restore('f7991cea-03ce-4467-9a65-4b3331c6f66a')
+task = celery_app.AsyncResult('2303c00d-50b3-4c01-bf44-3d2aea741f19', parent=parent)
+task.parent
+```
+
+
+
+#### Serializing Result  Definitions
+
+```python
+from celery import chain
+import json
+
+result = chain(
+    add.s(1,2), multiple(4, 7)
+).apply_async()
+
+# the resulting tuple can be further serialized and stored if necessary
+res = result.as_tuple()
+
+# serialization with json module
+serialized = json.dumps(res)
+```
+
+
+
+```python
+from celery.result import result_from_tuple
+import json
+
+serialized = get_from_somewhere_else_like_maybe_your_database()
+
+# rehydrated_res will have parents hopefully
+rehydrated_res = result_from_tuple(json.loads(serialized)
+```
+
+
+
+
+
+
+
 ### Task Status Polling
-
-
 
 Task definition
 
@@ -516,6 +671,8 @@ def poll_task_status(task_id):
 
 
 
+
+
 ## Task Scheduling
 
 **From within the task code base**
@@ -548,26 +705,12 @@ app.send_task('tasks.add', (2,5))
 
 #### Examples
 
-
-
 ```python
 @app.task
 def success_callback(response):
     print("Processing task finished successfully!")
 
 app.send_task("remote.processing", link=success_callback.s())
-```
-
-
-
-## Fetching the Task Results
-
-
-
-
-
-```python
-
 ```
 
 
