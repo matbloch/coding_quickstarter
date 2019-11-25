@@ -40,6 +40,18 @@ stdout_logfile = /dev/stdout/celery-worker.log
 stdout_logfile_maxbytes = 0
 ```
 
+**Log to console: Redirect stderr to stdout**
+
+```ini
+[program:celery]
+...
+stdout_logfile=/dev/fd/1
+stdout_logfile_maxbytes=0
+redirect_stderr=true
+```
+
+
+
 **Running The Service**
 
 ```shell
@@ -50,6 +62,16 @@ supervisord
 #! /usr/bin/env sh
 exec /usr/bin/supervisord
 ```
+
+**Usage in Docker Image**
+
+```dockerfile
+RUN apt-get install -y supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+CMD ["/usr/bin/supervisord"]
+```
+
+
 
 
 
