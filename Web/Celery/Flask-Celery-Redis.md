@@ -255,6 +255,22 @@ def add(x, y):
     raise KeyError()
 ```
 
+**Variable Arguments**
+
+```python
+@app.task
+def add(first_arg, *argv, **kwargs):
+    logger.info(first_arg)
+    for arg in argv:  
+        logger.info(arg)
+    for key, value in kwargs.items(): 
+        print ("%s == %s" %(key, value)) 
+```
+
+
+
+
+
 
 
 ### Signatures
@@ -262,7 +278,7 @@ def add(x, y):
 - wraps arguments and execution option of a single task
 - signatures of tasks can be passed into another process or to another function
 
-**Extracting a Signature**
+**Defining a Signature**
 
 Option 1:
 
@@ -369,11 +385,32 @@ res = group(add.s(i, i) for i in xrange(10))()
 
 - Group with additional callback that is executed after all tasks have finished
 - synchronization is expensive; avoid chords if possible
+- tasks within chords must **not** ignore their results
+- see also `link` of `apply_async` (similar functionality but cannot be applied to groups)
 
 ```python
 from celery import chord
-res = chord((add.s(i, i) for i in xrange(10)), xsum.s())()
-res.get()
+callback = tsum.s()
+header = [add.s(i, i) for i in range(100)]
+task_signature = chord(header, callback)
+result = task_signature.delay()
+result.id # id of the callback
+```
+
+```python
+# __call__ executes the header inline.
+chord(header, body)()
+
+# apply_async executes the header in a task
+chord(header, body).apply_async()
+# same as apply_async()
+chord(header)(body)
+```
+
+Similar with `link`:
+
+```python
+add.apply_async((2, 2), link=mul.s(16))
 ```
 
 #### Map
@@ -402,6 +439,31 @@ res.get()
 ```python
 >>> items = zip(xrange(1000), xrange(1000))  # 1000 items
 >>> add.chunks(items, 10)
+```
+
+
+
+#### Operators
+
+https://docs.celeryproject.org/en/latest/userguide/canvas.html
+
+**Chaining**
+
+```python
+# same as a chord
+c3 = (group(add.s(i, i) for i in xrange(10)) | xsum.s())
+res = c3()
+res.get()
+```
+
+```python
+# ((4 + 16) * 2 + 4) * 8
+c2 = (add.s(4, 16) | mul.s(2) | (add.s(4) | mul.s(8)))
+```
+
+```python
+# (16 + 4) * 8
+c1 = (add.s(4) | mul.s(8))
 ```
 
 
@@ -532,28 +594,94 @@ def dump_context(self, x, y):
 
 ## Result Querying
 
-- `get()`
+
+
+### Result Types
+
+- chord: `AsyncResult` pointing to chord header
+- group: `GroupResult`
+  - use `children` to query sub-results
+- chain:  `AsyncResult` pointing to last task
+  - use `parent` to work way up the chain
+
+
+
+### Restoring `AsyncResult`
+
+Task definition
 
 ```python
-result = add.apply_async(1, 2, ignore_result=False)
-result.get() # blocks till results are there
+@celery.task(bind=True)
+def long_task(self):
+  time.sleep(1)
 ```
 
-http://docs.celeryproject.org/en/latest/reference/celery.result.html#celery.result.AsyncResult.collect
+Task scheduling:
+
+```python
+from celery import result
+
+@app.route('/start', methods=['POST'])
+def run_task():
+    result: result.AsyncResult = long_task.apply_async()
+    return jsonify({}), 202, {'Location': url_for('taskstatus',
+                                                  task_id=task.id)}
+```
+
+Result polling in external application:
+
+```python
+from celery import result
+def poll_task_status(task_id):
+	task = result.AsyncResult(task_id)
+   	if task.state == 'PENDING':
+    	# ...
+   	elif task.state != 'FAILURE':
+    	# ...
+   	else:
+    	# ...
+```
+
+### Restoring `GroupResult`
+
+- `save()` to store the group result in the celery instance
+- `restore(<ID>)` to restore the group result
+- same applies to `group` and `chord` signatures
+
+Scheduling
+
+```python
+from celery import result
+
+task_group = group([add.s(5,5), subtract.s(20,10)])
+result: result.GroupResult = task_group.delay()
+result.save()	# save the result to the results backend (e.g. Redis)
+response = {'task_id': result.id}
+```
+
+Restoring the group task
+
+```python
+from celery import result
+
+# restore the group result from the result backend
+group_result = result.GroupResult.restore(result_id)
+
+# check the status of the sub-tasks
+sub_result: result.AsyncResult
+for sub_result in group_result.children:
+    print(f'Task: {sub_result.id}, status: {sub_result.state}')
+    if sub_result.state == states.SUCCESS:
+        value = sub_result.get() # release the result after success
+```
+
+### Restoring Chord Results
 
 
 
-
-
-### Signature dependent returns
-
-
-
-#### Groups
-
-- return `GroupResult`
-  - `.completed_count()`
-- use `save()` and `restore()`
+- `parent` of GroupResult will get lost when restoring through `GroupResult.restore()`
+- restoring:
+  - json serialization
 
 
 
@@ -567,25 +695,26 @@ group_tasks = group([
     multiply.s(2,5)
 ])
 task = chord(group_tasks)(callback)
-task.parent.save()
-task.id
-task.parent
+task.parent.save()	# store the group
+task.id		# the chord task
+task.parent	# the group
 task.parent.children
+
+>>> 2303c00d-50b3-4c01-bf44-3d2aea741f19
+>>> <GroupResult: f7991cea-03ce-4467-9a65-4b3331c6f66a [5790dcc1-df60-4ce2-ab2f-8b649d99d9d3, 93d1cef3-1123-4272-8f3b-fc6e4397ad03, 7386ad7b-4e02-409c-a241-6ca6de1edf15]>
+>>> [<AsyncResult: 5790dcc1-df60-4ce2-ab2f-8b649d99d9d3>, <AsyncResult: 93d1cef3-1123-4272-8f3b-fc6e4397ad03>, <AsyncResult: 7386ad7b-4e02-409c-a241-6ca6de1edf15>]
+
 ```
 
 
 
-```python
-from app import celery_app # my celery instance in my app
-
-parent = celery_app.GroupResult.restore('f7991cea-03ce-4467-9a65-4b3331c6f66a')
-task = celery_app.AsyncResult('2303c00d-50b3-4c01-bf44-3d2aea741f19', parent=parent)
-task.parent
-```
 
 
 
-#### Serializing Result  Definitions
+
+### Serializing Result Definitions
+
+- `GroupResult.save()` stores definition in result back-end
 
 ```python
 from celery import chain
@@ -613,61 +742,6 @@ serialized = get_from_somewhere_else_like_maybe_your_database()
 # rehydrated_res will have parents hopefully
 rehydrated_res = result_from_tuple(json.loads(serialized)
 ```
-
-
-
-
-
-
-
-### Task Status Polling
-
-Task definition
-
-```python
-@celery.task(bind=True)
-def long_task(self):
-  state_name = 'PROGRESS'
-  self.update_state(state=state_name, meta={'progress': 10})
-  time.sleep(1)
-  self.update_state(state=state_name, meta={'progress': 50})
-  time.sleep(1)
-  self.update_state(state=state_name, meta={'progress': 90})
-  time.sleep(1)
-```
-
-Task scheduling:
-
-```python
-@app.route('/longtask', methods=['POST'])
-def longtask():
-    task = long_task.apply_async()
-    return jsonify({}), 202, {'Location': url_for('taskstatus',
-                                                  task_id=task.id)}
-```
-
-Result polling in external application:
-
-```python
-def poll_task_status(task_id):
-	task = long_task.AsyncResult(task_id)
-  if task.state == 'PENDING':
-    # ...
-   elif task.state != 'FAILURE':
-    # ...
-   else:
-    # ...
-```
-
-
-
-### Group Result Polling
-
-
-
-
-
-
 
 
 
@@ -722,6 +796,21 @@ app.send_task("remote.processing", link=success_callback.s())
 flower
 
 
+
+
+
+## Optimizations
+
+
+
+
+
+#### Task Distribution
+
+- **default**: Even number of task onto each worker
+- **fair**: Waiting to distribute tasks until each worker process is available for work
+
+![celery_task_distribution](img/celery_task_distribution.png)
 
 
 
