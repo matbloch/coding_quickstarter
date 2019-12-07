@@ -473,8 +473,6 @@ std::vector<std::reference_wrapper<Foo>> Bar::getFoos() const {
 
 
 
-
-
 ### Using Pairs for std::map keys
 
 - `operator<` needs to be defined for map key
@@ -488,9 +486,26 @@ template <class T1, class T2>
 
 
 
+### Comparison Operator for Structs
+
+- `std::tie` packs references to the arguments in a temporary struct for which a comparison operator is defined
+
+```cpp
+struct data {
+    bool operator!=(const data& p_rhs) const {
+        return std::tie(x, y) != std::tie(p_rhs.x, p_rhs.y);
+    }
+    int x, y;
+};
+```
+
+
+
+
+
+
+
 ## Pittfalls
-
-
 
 ### Temporaries in Range-based for loops
 
