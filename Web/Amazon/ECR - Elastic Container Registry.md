@@ -25,7 +25,7 @@
 
 **2. Authenticate With Repository**
 
-- Retrieve the Docker login command to authenticate Docker client with container registry: `aws ecr get-login --region us-east-1 --no-include-email`
+- Retrieve the Docker login command to authenticate Docker client with container registry: `aws ecr get-login --region us-east-2 --no-include-email`
 - Post the command
 
 **3. Pushing the Docker Image to ECR**
@@ -34,17 +34,31 @@
 
 - Tag the repository
 
-  `docker tag my-test-image:latest ACCT_ID.dkr.ecr.us-east-1.amazonaws.com/my-test-image:latest` (where ACCT_ID is your own AWS account ID)
+  `docker tag my-test-image:latest ACCT_ID.dkr.ecr.us-east-2.amazonaws.com/my-test-image:latest` (where ACCT_ID is your own AWS account ID)
 
 - Push the image to ECR
 
-  `docker push ACCT_ID.dkr.ecr.us-east-1.amazonaws.com/my-test-image:latest` (again, using your own AWS account ID in place of ACCT_ID)
+  `docker push ACCT_ID.dkr.ecr.us-east-2.amazonaws.com/my-test-image:latest` (again, using your own AWS account ID in place of ACCT_ID)
 
 **4. Pull Image**
 
 - Authenticate with repository (see 2.)
-- `docker pull ACCT_ID.dkr.ecr.us-east-1.amazonaws.com/my-test-image:latest`
+- `docker pull ACCT_ID.dkr.ecr.us-east-2.amazonaws.com/my-test-image:latest`
 
 **5. Delete Image**
 
 - `aws ecr batch-delete-image --repository-name my-test-image --image-ids imageTag=the-image-tag-you-want-to-delete`
+
+
+
+
+
+## Managing Repositories through the AWS Console
+
+1. Open the Amazon Container Service (ACS)
+2. Select the Amazon Container Registry (ACR)
+3. Create a new registry
+4. Select "View push commands" for how to push Docker images to the registry
+
+
+
