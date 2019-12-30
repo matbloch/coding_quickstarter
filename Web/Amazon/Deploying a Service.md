@@ -127,19 +127,13 @@ Redis
 
 
 
-## Insights
+## Insights/Troubleshooting
 
 
 
 **Load Balancer**
 
 - can have multiple target groups, e.g. an instance type group to an EC2 instance and a fargate target (?)
-
-
-
-**Security Group patterns**
-
-Security group rules are implicit deny, which means all traffic is denied unless an inbound or outbound rule explicitly allows it. You can only add or  remove "allow" rules—you can't add or remove "deny" rules, and there's  no need to.
 
 
 
@@ -179,52 +173,4 @@ In your instance it sounds like you should have a single inbound rule for the se
 
 By specifying the security group ID in the source field, instead of  an IP address or IP range, you can easily scale-out your EC2 server  cluster, or make modifications to your EC2 instance that might result in an IP address change, without needing to change the security group  rules for your ElastiCache cluster.
 
-
-
-
-
-### Security Groups
-
-- [Rule reference](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide//security-group-rules-reference.html)
-
-**Allow connections between instances within the same security group**
-
-| Protocol type | Protocol number | Ports    | Source IP                    |
-| ------------- | --------------- | -------- | ---------------------------- |
-| -1 (All)      | -1 (All)        | -1 (All) | The ID of the security group |
-
-**Allow HTTP requests from within the VPC**
-
-| Protocol type | Source      | Ports |
-| ------------- | ----------- | ----- |
-| tcp           | 10.0.0.0/16 | 80    |
-
-
-
-## VPCs and Public/Private Subnets
-
-- https://www.assistanz.com/creating-vpc-public-private-subnets/
-
-The Load Balancer should be your gateway to the cluster. When running a  web service, make sure you've running your cluster in a private subnet  and your containers cannot be accessed directly from the internet.  Ideally, your internal container should expose a random, ephemeral port  which is bound to a target group. Make sure also that traffic is only  allowed from the Load Balancer's Security Group.
-
-
-
-**ELB (Elastic Load Balancer)**
-
-- can be in public or private subnets
-- can be in multiple subnets (e.g. across availability zones)
-- public: connect service to internet
-- private: routing e.g. between web and app tier
-
-
-
-CIDR:
-
-https://www.ionos.de/digitalguide/server/knowhow/classless-inter-domain-routing/
-
-
-
-#### NAT Gateways
-
-- Network Address Translation (NAT)
 

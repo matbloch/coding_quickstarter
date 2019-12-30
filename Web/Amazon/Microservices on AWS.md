@@ -50,13 +50,11 @@ https://aws.amazon.com/de/getting-started/projects/break-monolith-app-microservi
 
 
 
-
-
 ### Inter-Container Communication
 
 **Inside same container**
 
-Containers that are collocated on a single container instance may be able to communicate with each other without requiring links or host  port mappings. Network isolation is achieved on the container instance  using security groups and VPC settings.
+Containers that are collocated on a single container instance may be able to communicate with each other without requiring links or host port mappings. Network isolation is achieved on the container instance  using security groups and VPC settings.
 
 ##### Inside same task
 
@@ -69,24 +67,6 @@ Through service discovery:
 - A task from one Amazon ECS service can connect with any other task in another Amazon ECS service.
 - Tasks can connect to each other directly (without going through load balancers).
 - Task IP addresses (and optionally, ports) in the Amazon ECS service are updated whenever tasks are started or stopped.
-
-
-
-### Service Discovery
-
-- enable service discovery during creation of the ECS services
-- during task creation:
-  - use bridge/host network mode for `SRV` records
-  - use awsvpc network mode for `A` record
-
-
-
-To allow your tasks to communicate with each other, complete the following steps:
-
-1. [Create a new service](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-service-discovery.html) using service discovery.
-2. [Confirm that tasks are running](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_run_task.html) in the Amazon ECS service.
-3. [Associate a private hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zone-private-associate-vpcs.html) with the correct Amazon Virtual Private Cloud (Amazon VPC).
-4. [Enable DNS resolution](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html#AmazonDNS) for the Amazon VPC with AmazonProvidedDNS.
 
 
 
@@ -178,35 +158,6 @@ If tag `latest` is specified:
 
 
 
-### Nginx and ECS Service discovery
-
-- use variable to force Nginx to resolve address at runtime
-- otherwise Nginx would not route to new containers
-
-```
-set $backend "api.local";
-proxy_pass http://$backend:5000;
-```
-
-- nginx container network mode to "host" (?)
-
-
-
-### Amazon Virtual Private Cloud(Amazon VPC)
-
-Bei der ersten Ausführung der Amazon ECS-Konsole wird eine VPC für Ihren Cluster erstellt.                        Wenn Sie also vorhaben, die Amazon ECS-Konsole zu verwenden, können Sie direkt zum                        nächsten Abschnitt übergehen.                     
-
-
-
-**Deriving VPC of your cluster**
-
-- Navigate to the ["CloudFormation" console](https://us-east-2.console.aws.amazon.com/cloudformation)
-- Select your cluster
-- Select "Resources"
-- The VPC allocated with this cluster is denoted under the "Vpc" id
-
-
-
 ### AWS Resource Management using the CLI
 
 Launching a cluster
@@ -288,57 +239,4 @@ Then we will isolate backend and frontend to a private subnet so they can’t be
 
 
 
-#### Internet Gateway
 
-Allows communication between the containers  and the internet. All the outbound traffic goes through it. In AWS it  must get attached to a VPC.
-
-All requests from a instances running  on the public subnet must be routed to the internet gateway. This is  done by defining routes laid down on route tables.
-
-
-
-#### Network Address Translation (NAT) Gateway
-
-When an application  is running on a private subnet it cannot talk to the outside world. The  NAT Gateway remaps the IP address of the packets sent from the private  instance assigning them a public IP so when the service the instance  wants to talk you replies, the NAT can receive the information (since  the NAT itself is public-facing and reachable from the Internet) and  hand it back to the private instance.
-
-An Elastic IP needs to be associated with each NAT Gateway we create.
-
-The reason why we traffic private tasks’ traffic through a NAT is so tasks  can pull the images from Docker Hub whilst keeping protection since  connections cannot be initiated from the Internet, just outbound traffic will be allowed through the NAT.
-
-#### Routes and Route Tables
-
-Route tables gather together a set of routes. A route describes where do  packets need to go based on rules. You can for instance send any packets with destination address starting with 10.0.4.x to a NAT while others  with destination address 10.0.5.x to another NAT or internet gateway (I  cannot find a proper example, I apologise). You can describe both in and outbound routes.
-
-The way we associate a route table with a subnet is by using *Subnet Route Table Association* resources, pretty descriptive.
-
-
-
-### Security
-
-Security groups act as firewalls between inbound and outbound communications of the instances we run.
-
-We need to create a security group shared by all containers running on  Fargate and another one for allowing traffic between the load balancer  and the containers.
-
-The stack has one security group with two ingress (inbound traffic) rules:
-
-1. To allow traffic coming from the Application Load Balancer *(PublicLoadBalancerSecurityGroup)*
-2. To allow traffic between running containers *(FargateContainerSecurityGroup)*
-
-
-
-### Load Balancer
-
-The Application Load Balancer (ALB) is the  single point of contact for clients (users). Its function is to relay  the request to the right running task (think of a task as an instance  for now).
-
-> In our case all requests on port 80 are forwarded to nginx task.
-
-To configure a load balancer we need to specify a *listener* and a *target group*. The listener is described through rules, where you can specify  different targets to route to based on port or URL. The target group is  the set of resources that would receive the routed requests from the  ALB.
-
-This target group will be managed by Fargate and every time a new instance of nginx spins up then it will register it automatically  on this group, so we don’t have to worry about adding instances to the  target group at all.
-
-#### Service Discovery
-
-In our application, we want the backend to be reachable at *ecsfs-backend.local*, the frontend at *ecsfs-frontend.local*, etc… You can see the names are suffixed with *.local.* In AWS we can create a ***PrivateDnsService\*** resource and add services to them, and that would produce the aforementioned names, that is, `.`.
-
-By creating various DNS names under the same namespace, services that get  assigned those names can talk between them, i.e. the frontend talking to a backend, or nginx to the frontend.
-
-The *IP* addresses  for each service task are dynamic, they change, and sometimes more than  task might be running for the same service… so… how do we associate the  DNS name with the right task? 🤔 Well we don’t! Fargate does it all for  us.
