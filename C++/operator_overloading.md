@@ -6,7 +6,12 @@ Guide: https://en.cppreference.com/w/cpp/language/operators
 
 Topics:
 
+- 
+
+## Definition Scope
+
 - Definition inside/outside class
+- duplicate symbols issue
 
 
 
@@ -14,7 +19,11 @@ Topics:
 
 
 
-**Relational Operators**
+## Example Operators
+
+
+
+### Relational Operators
 
 - Algorithms like `std::sort` expect `operator<` to be defined
 
@@ -32,8 +41,6 @@ struct Record
 }
 
 ```
-
-
 
 
 
@@ -63,6 +70,12 @@ MyClass& MyClass::operator=( const MyClass& other ) {
 ```cpp
 TODO
 ```
+
+
+
+### Call Operators
+
+
 
 
 

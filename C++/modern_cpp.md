@@ -107,6 +107,23 @@ namespace {
 
   - hint: overload comparison operator, or provide comparison function
 
+```cpp
+static bool abs_compare(int a, int b) {
+    return (std::abs(a) < std::abs(b));
+}
+auto result = std::max_element(v.begin(), v.end(), abs_compare);
+```
+
+```cpp
+// iterator of MyCustomType is convertable to uint16_t
+std::vector<MyCustomType> v;
+uint16_t result = std::max_element<uint16_t>(v.begin(), v.end());
+```
+
+
+
+
+
 -------------
 ### `auto` return type
 

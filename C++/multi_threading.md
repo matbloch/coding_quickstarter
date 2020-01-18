@@ -175,11 +175,11 @@ for (auto &future : futures) {
 
 
 
-
-
-
-
 ## Promises
+
+
+
+
 
 
 
@@ -203,7 +203,27 @@ for (auto &future : futures) {
 
 
 
+----------------
+
+## Pitfalls of Multi-Threading
+
+### Race Conditions
+
+http://jakascorner.com/blog/2016/01/data-races.html
+
+
+
+### Dead-Locks
+
+http://jakascorner.com/blog/2016/01/deadlock.html
+
+
+
+
+
 -----------------
+
+
 
 ## Misc
 

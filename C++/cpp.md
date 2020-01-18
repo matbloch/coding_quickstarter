@@ -626,6 +626,31 @@ See [smart_pointers.md](smart_pointers.md)
 
 ##Compound data types
 
+
+
+### Pair
+
+
+
+
+
+**Unpacking**
+
+```cpp
+std::pair<int, int> grow_a_pair() { return std::make_pair(3, 4); }
+
+int one, two;
+std::tie(one, two) = grow_a_pair();
+```
+
+
+
+### Tuple
+
+
+
+
+
 ###Struct
 
 - **Definition**

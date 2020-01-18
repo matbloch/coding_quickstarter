@@ -230,3 +230,20 @@ class VertexShader : public Shader {
 }
 ```
 
+
+
+## Examples
+
+
+
+
+
+#### Moving a Class Member
+
+- `std::move(object).member` safe - "a member of an rvalue"
+- `std::move(object.member)`
+
+
+
+
+

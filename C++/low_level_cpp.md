@@ -73,6 +73,17 @@ memmove(b, a, sizeof(a));
 
 
 
+### Object Lifetime
+
+
+
+**References**
+
+- object lifetime is not bound to reference (like pointer): Reference will become invalid (undefined behavior) if object is destructed
+- `const &` to temporary: Lifetime of temporary is extended to reference 
+
+
+
 ## Dynamic Memory
 
 ### Vector

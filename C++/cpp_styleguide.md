@@ -174,6 +174,10 @@ Animal my_animal = dog;				// NOT scoped
 
 - Shared pointers usually have a somewhat large penalty when being copied and deallocated.
 
+**Lambas**
+
+- If nothing captured: use free function
+
 -----------
 
 ## Efficient Coding

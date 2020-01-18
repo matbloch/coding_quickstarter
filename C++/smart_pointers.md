@@ -227,6 +227,16 @@ TODO
 
 
 
+## Passing Smart Pointers
+
+https://www.modernescpp.com/index.php/c-core-guidelines-passing-smart-pointer
+
+
+
+
+
+
+
 ## Common Mistakes
 
 
