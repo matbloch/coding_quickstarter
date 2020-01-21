@@ -1,5 +1,14 @@
 # Docker Container Entry Points
 
+https://docs.docker.com/engine/reference/builder/#entrypoint
+
+-  `ENTRYPOINT`  
+- needed to propagate Unix signals, e.g. `SIGTERM` from `docker stop <container>`
+
+
+
+
+
 - used to initialize container at runtime
 
 ```bash

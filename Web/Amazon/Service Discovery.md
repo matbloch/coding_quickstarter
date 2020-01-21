@@ -56,6 +56,10 @@ proxy_pass http://$backend:5000;
 
 
 
+- Service discovery covers the whole vpc!!
+
+
+
 
 
 ## Implementation
