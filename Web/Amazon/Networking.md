@@ -1,5 +1,13 @@
 # AWS Networking Basics
 
+
+
+
+
+## VPCs and Subnets
+
+
+
 - **VPC:** Virtual Private Coud, dedicated to your AWS account
   - On creation: Specify range of IPv4 addresses using a "Classless Inter-Domain Routing" (CIDR) block, e.g. `10.0.0.0/16`
   - Spans all availability zones in the region
@@ -7,28 +15,40 @@
   - On creation: Specify IP range using a CIDR block that is a subset of the VPC CIDR block.
   - Subnets cannot span multiple availability zones
   - launch instances in separate availability zone to protect from failure of a single location
-  - public/private subnets: Subnet is public if traffic is routed to an internet gateway
+  - public/private subnets: Subnet is **public** if traffic is routed to an **Internet gateway**
 - **Routes and Route Tables:**
 - **Internet Gateway:** Allows communication between 
 - **NAT Gateway:**
+- **AWS Private Link:** Allows connections to AWS services (e.g. for fetching docker images from ECR)
 
 
 
 #### Routes and Route Tables
 
-Route tables gather together a set of routes. A route describes where do  packets need to go based on rules. You can for instance send any packets with destination address starting with 10.0.4.x to a NAT while others  with destination address 10.0.5.x to another NAT or internet gateway (I  cannot find a proper example, I apologise). You can describe both in and outbound routes.
+- Route tables gather together a set of routes. A route describes where do packets need to go based on rules. You can for instance send any packets with destination address starting with 10.0.4.x to a NAT while others with destination address 10.0.5.x to another NAT or internet gateway. You can describe both in and outbound routes.
 
-The way we associate a route table with a subnet is by using *Subnet Route Table Association* resources, pretty descriptive.
-
-#### Internet Gateway
-
-Allows communication between the containers  and the internet. All the outbound traffic goes through it. In AWS it  must get attached to a VPC.
-
-All requests from a instances running  on the public subnet must be routed to the internet gateway. This is  done by defining routes laid down on route tables.
+- The way we associate a route table with a subnet is by using *Subnet Route Table Association* resources.
 
 
 
+- What does 0.0 0.0 0 mean in a routing table?
 
+  **0.0.0.0/0** represents all possible IP addresses. In the context of the way **routing tables** get set up by default on AWS, **0.0.0.0/0 is** effectively "all non local addresses". This **is** because another **route** presumably exists in the **routing table** to **route** the VPC subnet to the local network on the VPC.
+
+
+
+**VPC Routing**
+
+- When you associate a CIDR block with your VPC, a route (the main route table) is automatically added to your VPC route tables to enable routing within the VPC (the destination is the CIDR block and the target is `local`)
+- Main route table allows communication inside the VPC
+
+![vpc-main-route-table](img/vpc-main-route-table.PNG)
+
+
+
+**Subnet Routing**
+
+- Each subnet must be associated with a route table, which specifies the allowed routes for outbound traffic leaving the subnet
 
 ### Examples
 
@@ -65,7 +85,21 @@ All requests from a instances running  on the public subnet must be routed to th
 - Navigate to the ["CloudFormation" console](https://us-east-2.console.aws.amazon.com/cloudformation)
 - Select your cluster
 - Select "Resources"
-- The VPC allocated with this cluster is denoted under the "Vpc" id
+- The VPC allocated with this cluster is denoted under the "VPC" id
+
+
+
+
+
+#### Internet Gateway
+
+Allows communication between the containers  and the internet. All the outbound traffic goes through it. In AWS it  must get attached to a VPC.
+
+All requests from a instances running  on the public subnet must be routed to the internet gateway. This is  done by defining routes laid down on route tables.
+
+
+
+
 
 
 
@@ -85,7 +119,27 @@ All requests from a instances running  on the public subnet must be routed to th
 
 
 
-#### Example Configurations
+#### Example: Controlling Traffic
+
+**Chaining security groups**
+
+- Inbound traffic can be limited to sources that have a specific security group assigned
+- In this examples:
+  - **The ALB** receives traffic from all IPs on port 80 and forwards it to Service 1
+  - **Service 1** only allows traffic from the security group A and forwards it to Service 2
+  - **Service 2** only allows traffic from security group B
+
+![chaining-security-groups](img/chaining-security-groups.PNG)
+
+**Limiting traffic to a subnet**
+
+- Inbound traffic can be limited to a subnet by specifying the subnet's IP/CIDR as source
+
+![restricting-traffic-to-subnet](img/restricting-traffic-to-subnet.PNG)
+
+
+
+#### Sample Configurations
 
 **Allow connections between instances within the same security group**
 
@@ -99,9 +153,26 @@ All requests from a instances running  on the public subnet must be routed to th
 | ------------- | ----------- | ----- |
 | tcp           | 10.0.0.0/16 | 80    |
 
+**Allow connections from within a Subnet**
+
+| Protocol type | Source   | Ports |
+| ------------- | -------- | ----- |
+| tcp           | 10.0.1.0 | 80    |
 
 
 
+
+
+## AWS PrivateLink
+
+- before PrivateLink, EC2 instances had to use an internet gateway to download docker images stored in ECR or to communicate with the ECS control plane. Instances in public subnet used the internet gateway directly. Instances in private subnet used a network address translation (NAT) gateway hosted in a public subnet.
+- Now that AWS PrivateLink support has been added, instances in both  public and private subnets can use it to get private connectivity to  download images from Amazon ECR. Instances can also communicate with the ECS control plane via AWS PrivateLink endpoints without needing an  internet gateway or NAT gateway.
+
+https://aws.amazon.com/de/blogs/compute/setting-up-aws-privatelink-for-amazon-ecs-and-amazon-ecr/
+
+
+
+https://docs.aws.amazon.com/AmazonECR/latest/userguide/vpc-endpoints.html
 
 
 
@@ -115,8 +186,8 @@ The Load Balancer should be your gateway to the cluster. When running a  web ser
 
 - can be in public or private subnets
 - can be in multiple subnets (e.g. across availability zones)
-- public: connect service to internet
-- private: routing e.g. between web and app tier
+- **public**: connect service to internet
+- **private**: routing e.g. between web and app tier (note that you get charged for an ELB)
 
 
 
@@ -130,17 +201,19 @@ This target group will be managed by Fargate and every time a new instance of ng
 
 
 
-
-
 ### External Traffic Routing
 
-
+[TODO:  image]
 
 
 
 ### Internal Routing
 
 - e.g. as alternative to service discovery
+
+
+
+[TODO: Image]
 
 
 
@@ -160,6 +233,8 @@ This target group will be managed by Fargate and every time a new instance of ng
   - or create a new one
 
 - Select the created target group (the service you want to expose to the internet)
+
+  - Note: You have to assign your ECS instances to this target group so that they receive the traffic
 
 - Verify that your service is accessible:
 
@@ -210,9 +285,9 @@ https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html
 
 **Subnet Setup Best practice**
 
-- use public subnets for external resources and private subnets for internal ressources
+- use public subnets for external resources and private subnets for internal resources
 - different routing tables for private and public subnets
-- public subnets share a single routing table; the only route they use is to the internet-gateway to communictate with the internet
+- public subnets share a single routing table; the only route they use is to the Internet-gateway to communicate with the Internet
 
 
 
