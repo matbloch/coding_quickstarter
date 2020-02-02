@@ -1,28 +1,19 @@
-
 # Docker-Compose
 
-**Host Services at**: [Docker Cloud](https://cloud.docker.com/)
-
-- Tool to define and run mutli-container docker applications (e.g. webapp + sql server)
-- Integrated in DockerToolbox for Windows
-- Additional `docker-compose.yml` for service configration
 
 
-## 0. Deployment - DockerCloud
-- Executes services hosted on different linked Providers (e.g. Amazon etc.)
-- Can be used to host webservice
 
-**HowTo**
-- Create Stack (bundle of services) at [Docker Cloud](https://cloud.docker.com/)
-
-
-## 1. Commands
+## Commands
 To execute docker-compose commands, `cd` to compose file in Shell/Windows Console.
 
 - `docker-compose --help`: Show commands
 
+**Building the services**
+
+- `docker-compose build`
 
 **Init services**
+
 - `docker-compose up --build` build and start
 - `docker-compose up -d --no-recreate`: Start services in background , container only created once
 
@@ -35,64 +26,107 @@ To execute docker-compose commands, `cd` to compose file in Shell/Windows Consol
 - `docker-compose stop data`: Stop specific "data" container
 - `docker-compose start` Restart stopped containers
 
+**Inspecting containers**
+
+- `docker-compose ps` List the services
+
+- ``docker exec -ti SERVICENAME bash`` Launch bash inside a container
+
 **Stop and remove containers**
+
 - `docker-compose down` Stops containers and removes containers, networks, volumes, and images created by up.
 
 
 
-## 2. Quickstart
-
-1. Create `docker-compose.yaml`
-1.1 Pull corresponding docker images `docker pull my_img`
-1.2 Or... Build composition with: `docker-compose build`
-2. Start console in directory `docker-compose.yaml` is located
-3. List current services: `$ docker-compose ps`
-4. Start services `$ docker-compose up`
+## Defining Services - Yaml config
 
 
-### 2.1 Build Images with `docker-compose`
 
-1. Configure shell for docker
-2. head to `docker-compose.yml` file
-3. `docker-compose build`: Builds all images (if `build` parameter specified)
+**Basic Structure**
 
-### 2.2 Examples
 
-**Wordpress & SQL container**
-```bash
-version: '2'
-services:
 
-  wordpress_container:
-    image: wordpress
-    # Expose ports. HOST:CONTAINER
-    ports:
-      - 8080:80
-    # Link to containers in another service. SERVICE:ALIAS
-    links:
-      - mysql_container
-    depends_on:
-      - mysql_container
-    # env variable for wordpress image
-    environment:
-       WORDPRESS_DB_PASSWORD: abc123
 
-  mysql_container:
-    image: mysql:latest
-    # add environment password
-    environment:
-       MYSQL_ROOT_PASSWORD: abc123
+
+**Overriding configurations**
+
+
+
+### 
+
+### Extension Fields
+
+- Start with `x-`
+- Ignored by Compose
+- Can be used in other part of the YAML (using YAML anchors)
+
+```yaml
+version: '3.4'
+
+# Custom settings structure that is ignored by Compose
+x-custom:
+  items:
+    - a
+    - b
+  options:
+    max-size: '12m'
+  name: "custom"
 ```
 
-## Communicate with Containers
-**Access shell**
-- `docker-compose exec SERVICENAME sh`
-- `docker exec -i -t FOLDERNAME_SERVICENAME_1 bash`
-
-Type `docker-compose ps` to list the full names of the services.
 
 
-## 3. Data Persistency
+**Example**: Extending fields
+
+```yaml
+version: '3.4'
+# logging settings
+x-logging:
+  &default-logging
+  options:
+    max-size: '12m'
+# re-use the settings in the service definition
+services:
+  web:
+    image: myapp/web:latest
+    logging: *default-logging
+  db:
+    image: mysql:latest
+    logging: *default-logging
+```
+
+**Example:** Merging fields
+
+```yaml
+version: '3.4'
+x-volumes:
+  &default-volume
+  driver: foobar-storage
+  
+services:
+  web:
+    image: myapp/web:latest
+    volumes: ["vol1", "vol2", "vol3"]
+volumes:
+  vol1: *default-volume
+  vol2:
+    << : *default-volume
+    name: volume02
+  vol3:
+    << : *default-volume
+    driver: default
+    name: volume-local
+```
+
+
+
+
+
+
+
+
+
+
+## Data Persistency
 **NOTE**: In DockerToolbox for Windows, folders of the host will only be shared if somewhere below C:/User, e.g. on Desktop.
 
 **Share other folders:**
@@ -154,9 +188,10 @@ volumes:
 ```
 
 
-## 4. Push Images to Remote Host (Dockerhub)
 
+## Image Registries
 
+### Dockerhub
 
 - Create repository on dockerhub
 - Configure build folder and image destination in `docker-compose.yml` (see example)
@@ -176,45 +211,23 @@ services:
     image: youruser/yourimage  # goes to youruser DockerHub registry
 ```
 
-## Examples
-
-
-### Persistent MySQL + Export
+### Amazon Elastic Container Registry
 
 
 
 
-```bash
-version: '2'
-services:
-# mysql service
-db:
-image: mysql:5.7
-restart: always
-volumes:
-   - db_data:/var/lib/mysql
-environment:
-  MYSQL_ROOT_PASSWORD: p4ssw0rd! # TODO: Change root password
-  MYSQL_USER: 'test'	# create new user
-  MYSQL_PASS: 'pass'	# create new user password
-  MYSQL_DATABASE: wordpress  # create new db on startup
-networks:
-  - back
-volumes:
-  # share mysql folder with host
-  - ./db-data:/var/lib/mysql
 
-# phpmyadmin service
-phpmyadmin:
-depends_on:
-  - db
-image: phpmyadmin/phpmyadmin
-restart: always
-ports:
-  - 8080:80
-environment:
-  PMA_HOST: db # link to database service
-networks:
-  - back
-```
 
+
+
+
+## Deployment
+
+### DockerCloud
+
+- Executes services hosted on different linked Providers (e.g. Amazon etc.)
+- Can be used to host webservice
+
+**HowTo**
+
+- Create Stack (bundle of services) at [Docker Cloud](https://cloud.docker.com/)
