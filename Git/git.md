@@ -71,3 +71,33 @@ A --- B --- C --- D <-- master
 ```
 
 ## File Permissions in Git
+
+
+
+## Submodules
+
+
+
+**Adding Submodules**
+
+
+
+
+
+**Initialization**
+
+`git submodule update --init --recursive`
+
+
+
+**Update**
+
+- Automatically: `git submodule update --remote --merge`
+
+- Manually:
+  1. `cd` to sub-repository
+  2. `git pull origin master`
+  3. `cd ..` and commit
+
+
+
