@@ -52,6 +52,22 @@ To execute docker-compose commands, `cd` to compose file in Shell/Windows Consol
 
 
 
+### Tags
+
+
+
+**Environment Variables**
+
+```yaml
+web:
+  environment:
+    - DEBUG=1
+```
+
+
+
+
+
 ### 
 
 ### Extension Fields
