@@ -189,6 +189,10 @@ https://stackoverflow.com/questions/45459205/keras-predict-not-returning-inside-
 
 
 
+--------------
+
+
+
 ## Task Definition
 
 http://docs.celeryproject.org/en/master/userguide/canvas.html#the-primitives
@@ -266,10 +270,6 @@ def add(first_arg, *argv, **kwargs):
     for key, value in kwargs.items(): 
         print ("%s == %s" %(key, value)) 
 ```
-
-
-
-
 
 
 
@@ -470,6 +470,10 @@ c1 = (add.s(4) | mul.s(8))
 
 
 
+------
+
+
+
 ## Task Execution
 
 http://docs.celeryproject.org/en/master/userguide/calling.html#guide-calling
@@ -569,11 +573,13 @@ final_result = r.get(on_message=on_raw_message, propagate=False)
 
 
 
+
+
+----------
+
+
+
 ## The Request Object
-
-
-
-
 
 ```python
 @app.task(bind=True)
@@ -586,9 +592,7 @@ def dump_context(self, x, y):
 
 
 
-
-
-
+----------
 
 
 
@@ -745,6 +749,8 @@ rehydrated_res = result_from_tuple(json.loads(serialized)
 
 
 
+-----------
+
 
 
 ## Task Scheduling
@@ -789,12 +795,6 @@ app.send_task("remote.processing", link=success_callback.s())
 
 
 
-## Task Monitoring
-
-
-
-flower
-
 
 
 
@@ -815,8 +815,6 @@ flower
 
 
 ## Celery and Flask
-
-
 
 - Flask application factory pattern delays configuration until WSGI server is started (secure, dynamic configuration files)
 
