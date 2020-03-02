@@ -10,9 +10,17 @@
 
 ## PEP 8 and Naming
 
-Project Structure and Imports
+- Project Structure and Imports
 
-`from .game_round_settings import GameRoundSettings`
+  `from .game_round_settings import GameRoundSettings`
+
+- argument names: `lower_case`
+
+
+
+
+
+
 
 
 
@@ -250,15 +258,99 @@ for random_number in lottery():
 
 
 
+## Multi-Processing
+
+
+
+
+
+
+
+## Subprocesses
+
+
+
+
+
 ## Decorators
 
 https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html
 
 
 
+## Misc / Unsorted
 
 
-## *args and **kwargs
+
+#### Argparse
+
+
+
+
+
+#### Json
+
+Loading
+
+```python
+import json
+jsonString = "{'a':'b'}"
+jsonData = json.loads(jsonString)
+```
+
+Storing
+
+```python
+import json
+json_string: str = json.dumps({'test': 'abc'})
+```
+
+Loading from file
+
+```python
+with open('data.txt') as json_file:
+    data = json.load(json_file)
+```
+
+Storing to file
+
+**TODO**
+
+
+
+#### OS Path API
+
+- `os.path.exists`
+- `os.path.isfile`
+- `os.path.isdir`
+
+
+
+#### Enums
+
+```python
+from enum import Enum
+class Color(Enum):
+  RED = 1
+  GREEN = 2
+  BLUE = 3
+```
+
+```python
+my_color = Color.RED
+my_color.name # 'RED'
+my_color.value # 1
+```
+
+```python
+Color(1) # RED
+```
+
+
+
+
+
+#### *args and **kwargs
 
 ***args**
 
@@ -285,7 +377,7 @@ def greet_me(**kwargs):
 
 
 
-### Unpacking Arguments
+#### Unpacking Arguments
 
 ```python
 def test_args_kwargs(arg1, arg2, arg3):
