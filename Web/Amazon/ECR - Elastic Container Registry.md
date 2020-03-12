@@ -25,7 +25,11 @@
 
 **2. Authenticate With Repository**
 
-- Retrieve the Docker login command to authenticate Docker client with container registry: `aws ecr get-login --region us-east-2 --no-include-email`
+- Retrieve the Docker login command to authenticate Docker client with container registry:
+  - CLI V1: `aws ecr get-login --region us-east-2 --no-include-email`
+  - CLI V2:
+    - `aws ecr get-login-password`
+    - `docker login -u AWS -p <password> -e none https://<aws_account_id>.dkr.ecr.<region>.amazonaws.com`
 - Post the command
 
 **3. Pushing the Docker Image to ECR**
