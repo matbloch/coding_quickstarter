@@ -2,11 +2,7 @@
 
 
 
-
-
-## VPCs and Subnets
-
-
+#### Networking Components
 
 - **VPC:** Virtual Private Coud, dedicated to your AWS account
   - On creation: Specify range of IPv4 addresses using a "Classless Inter-Domain Routing" (CIDR) block, e.g. `10.0.0.0/16`
@@ -16,39 +12,20 @@
   - Subnets cannot span multiple availability zones
   - launch instances in separate availability zone to protect from failure of a single location
   - public/private subnets: Subnet is **public** if traffic is routed to an **Internet gateway**
-- **Routes and Route Tables:**
+- **Route Tables:**
 - **Internet Gateway:** Allows communication between 
 - **NAT Gateway:**
-- **AWS Private Link:** Allows connections to AWS services (e.g. for fetching docker images from ECR)
+- **AWS Private Link:** Allows connections to AWS services (e.g. for fetching docker images from ECR). Alternative to linking the private subnet to a NAT Gateway.
 
 
 
-#### Routes and Route Tables
+## VPCs and Subnets
 
-- Route tables gather together a set of routes. A route describes where do packets need to go based on rules. You can for instance send any packets with destination address starting with 10.0.4.x to a NAT while others with destination address 10.0.5.x to another NAT or internet gateway. You can describe both in and outbound routes.
-
-- The way we associate a route table with a subnet is by using *Subnet Route Table Association* resources.
+TBD
 
 
 
-- What does 0.0 0.0 0 mean in a routing table?
 
-  **0.0.0.0/0** represents all possible IP addresses. In the context of the way **routing tables** get set up by default on AWS, **0.0.0.0/0 is** effectively "all non local addresses". This **is** because another **route** presumably exists in the **routing table** to **route** the VPC subnet to the local network on the VPC.
-
-
-
-**VPC Routing**
-
-- When you associate a CIDR block with your VPC, a route (the main route table) is automatically added to your VPC route tables to enable routing within the VPC (the destination is the CIDR block and the target is `local`)
-- Main route table allows communication inside the VPC
-
-![vpc-main-route-table](img/vpc-main-route-table.PNG)
-
-
-
-**Subnet Routing**
-
-- Each subnet must be associated with a route table, which specifies the allowed routes for outbound traffic leaving the subnet
 
 ### Examples
 
@@ -91,9 +68,40 @@
 
 
 
-#### Internet Gateway
 
-Allows communication between the containers  and the internet. All the outbound traffic goes through it. In AWS it  must get attached to a VPC.
+
+
+
+## Route Tables
+
+#### Routes and Route Tables
+
+- Route tables gather together a set of routes. A route describes where do packets need to go based on rules. You can for instance send any packets with destination address starting with 10.0.4.x to a NAT while others with destination address 10.0.5.x to another NAT or internet gateway. You can describe both in and outbound routes.
+
+- The way we associate a route table with a subnet is by using *Subnet Route Table Association* resources.
+
+
+
+- What does 0.0 0.0 0 mean in a routing table?
+
+  **0.0.0.0/0** represents all possible IP addresses. In the context of the way **routing tables** get set up by default on AWS, **0.0.0.0/0 is** effectively "all non local addresses". This **is** because another **route** presumably exists in the **routing table** to **route** the VPC subnet to the local network on the VPC.
+
+**VPC Routing**
+
+- When you associate a CIDR block with your VPC, a route (the main route table) is automatically added to your VPC route tables to enable routing within the VPC (the destination is the CIDR block and the target is `local`)
+- Main route table allows communication inside the VPC
+
+![vpc-main-route-table](img/vpc-main-route-table.PNG)
+
+**Subnet Routing**
+
+- Each subnet must be associated with a route table, which specifies the allowed routes for outbound traffic leaving the subnet
+
+
+
+## Internet Gateway
+
+Allows communication between the containers  and the internet. All the outbound traffic goes through it. In AWS it must get attached to a VPC.
 
 All requests from a instances running  on the public subnet must be routed to the internet gateway. This is  done by defining routes laid down on route tables.
 
@@ -101,25 +109,35 @@ All requests from a instances running  on the public subnet must be routed to th
 
 
 
+## Network Address Translation (NAT) Gateway
+
+You can use a network address translation (NAT) instance in a **public** subnet in your VPC to enable instances in the **private** subnet to initiate outbound IPv4 traffic to the Internet or other AWS services (e.g. to pull Docker images), but prevent the instances from receiving inbound traffic initiated by someone on the Internet.
+
+**NAT Gateway vs. NAT Instance**
+
+- NAT Gateway: Managed by AWS, less configuration options
+- NAT Instance: Managed by you, more configuration options (such as port forwarding) at the cost of higher maintenance
+- See also [Instance vs Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-comparison.html)
+
+#### Example: Creating a NAT Gateway
+
+1. Head to the AWS VPC Console
+2. "NAT Gateways > Create NAT Gateway"
+3. Select public Subnet
+4. Assign or create a new Elastic IP
 
 
 
-
-## Network Security: Security Groups
+## Network Security / Security Groups
 
 - Security groups act as firewalls between inbound and outbound communications of the instances we run
 
 - Security group rules are implicit deny, which means all traffic is denied unless an inbound or outbound rule explicitly allows it.
 
-  
-
-#### Creating a Security Group
 
 
 
-
-
-#### Example: Controlling Traffic
+### Examples
 
 **Chaining security groups**
 
@@ -139,7 +157,7 @@ All requests from a instances running  on the public subnet must be routed to th
 
 
 
-#### Sample Configurations
+### Sample Configurations
 
 **Allow connections between instances within the same security group**
 
@@ -245,25 +263,6 @@ This target group will be managed by Fargate and every time a new instance of ng
     `celery-flask-8413341.us-east-2.elb.amazonaws.com`
 
 
-
-
-
-## Network Address Translation (NAT) Gateway
-
-You can use a network address translation (NAT) instance in a **public** subnet in your VPC to enable instances in the **private** subnet to initiate outbound IPv4 traffic to the Internet or other AWS services (e.g. to pull Docker images), but prevent the instances from receiving inbound traffic initiated by someone on the Internet.
-
-**NAT Gateway vs. NAT Instance**
-
-- NAT Gateway: Managed by AWS, less configuration options
-- NAT Instance: Managed by you, more configuration options (such as port forwarding) at the cost of higher maintenance
-- See also [Instance vs Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-comparison.html)
-
-#### Example: Creating a NAT Gateway
-
-1. Head to the AWS VPC Console
-2. "NAT Gateways > Create NAT Gateway"
-3. Select public Subnet
-4. Assign or create a new Elastic IP
 
 
 
