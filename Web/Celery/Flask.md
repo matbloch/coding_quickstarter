@@ -27,66 +27,83 @@
 
 
 
-
-
-
-
-
-
-
-
 ## Basic Setup and Configuration
 
-
-
-Project Setup:
+### Shared Codebase
 
 ```
 proj/__init__.py
-    /celery.py
-    /tasks.py
+    /scheduler.py
 ```
 
-### Instantiating Celery
-
-- `Celery`
-  - broker:
-  - backend:
-  - include: a list of modules to import when workers start
-
- `proj/celery.py`
+**scheduler.py**
 
 ```python
-from __future__ import absolute_import, unicode_literals
-from celery import Celery
+# Connect to the Celery instance
+MODULE_NAME = "tasks"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+celery = Celery(MODULE_NAME, 
+                backend=CELERY_RESULT_BACKEND, 
+                broker=CELERY_BROKER_URL)
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+@celery.task
+def hello():
+    return 'hello world'
 
-app = Celery('proj',
-             broker=CELERY_BROKER_URL,
-             backend=CELERY_RESULT_BACKEND,
-             include=['proj.tasks'])
-
-# Optional configuration, see the application user guide.
-app.conf.update(
-    result_expires=3600,
-)
+# submit a task
+signature("hello")
+signature.delay()
 ```
 
- `proj/tasks.py`
+
+
+### Separate Scheduler / Workers
+
+````
+project/
+	/workers
+		tasks.py
+	/scheduler
+		scheduler.py
+````
+
+**scheduler.py**
+
+> Schedules the tasks - adds it the worker queue
 
 ```python
-from .celery import app
+# Connect to the Celery instance
+MODULE_NAME = "tasks"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+celery = Celery(MODULE_NAME, backend=CELERY_RESULT_BACKEND, broker=CELERY_BROKER_URL)
 
-@app.task
-def add(x, y):
-    return x + y
+# submit a task
+signature("do_something", args=("my task input",))
+signature.delay()
+```
+
+**tasks.py**
+
+> Celery worker that consumes tasks in the queue
+
+```python
+# Connect to the Celery instance
+MODULE_NAME = "tasks"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+celery = Celery(MODULE_NAME, backend=CELERY_RESULT_BACKEND, broker=CELERY_BROKER_URL)
+
+# Define the tasks
+@celery.task(name="do_something")
+def do_something(task_input):
+    return task_input
 ```
 
 
 
-### Configuration
+## Configuration
 
 Celery config:
 
@@ -107,66 +124,9 @@ app.conf.update(
 
 
 
-### Task Queues
 
 
-
-**Change default Queue name**
-
-`app.conf.task_default_queue = 'default'`
-
-
-
-### Launching a Celery Worker
-
-- Celery worker controls multiple processes (configured through `--concurrency`)
-- Worker distributes tasks among it's controlled processes
-
-
-
-**From the command line**
-
-`celery -A my_application worker --loglevel=debug`
-
-- `-A`, `--app` application name
-- `-c` `--concurrency`  `<concurrency>`  Number of child processes processing the queue.  The default is the number of CPUs available on your system. 
-
-`my_application.py`
-
-```python
-celery = Celery(
-    MODULE_NAME,
-    backend=CELERY_RESULT_BACKEND,
-    broker=CELERY_BROKER_URL
-)
-@celery.task
-def task1(input):
-    time.sleep(1)
-    return input
-```
-
-**Through a script**
-
-```python
-app = Celery('proj',
-             broker=CELERY_BROKER_URL,
-             backend=CELERY_RESULT_BACKEND,
-             include=['proj.tasks'])
-if __name__ == '__main__':
-    app.start()
-```
-
-
-
-#### Running worker as daemon
-
-- see [daemonizing celery]("daemonizing celery.md")
-
-
-
-
-
-### Logging
+## Logging
 
 ```python
 from celery.utils.log import get_task_logger
@@ -573,6 +533,65 @@ final_result = r.get(on_message=on_raw_message, propagate=False)
 
 
 
+## Error Handling
+
+
+
+### Making a Task Fail
+
+**NOTE: ** The combination of `Ignore` and `update_state` does not seem to make the task fail, the overall status is still `PENDING`. In Redis, the state is updated correctly though.
+
+
+
+- set task state to `FAILURE`
+- raise `Ignore()` exception to ignore the results. Tasks that return a value count as successful.
+
+```python
+import traceback
+
+@app.task(bind=True)
+def task(self):
+    try:
+        raise ValueError('Some error')
+    except Exception as ex:
+        self.update_state(
+            state=states.FAILURE,
+            meta={
+                'exc_type': type(ex).__name__,
+                'exc_message': traceback.format_exc()
+                'custom': '...'
+            })
+        raise Ignore()
+
+```
+
+
+
+### Registering Failure Callbacks
+
+```python
+import celery
+from celery.task import task
+
+class MyBaseClassForTask(celery.Task):
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        # exc (Exception) - The exception raised by the task.
+        # args (Tuple) - Original arguments for the task that failed.
+        # kwargs (Dict) - Original keyword arguments for the task that failed.
+        print('{0!r} failed: {1!r}'.format(task_id, exc))
+
+@task(name="foo:my_task", base=MyBaseClassForTask)
+def add(x, y):
+    raise KeyError()
+```
+
+
+
+
+
+
+
 
 
 ----------
@@ -592,13 +611,58 @@ def dump_context(self, x, y):
 
 
 
-----------
+## Launching a Celery Worker
+
+- Celery worker controls multiple processes (configured through `--concurrency`)
+- Worker distributes tasks among it's controlled processes
+
+
+
+**From the command line**
+
+`celery -A my_application worker --loglevel=debug`
+
+- `-A`, `--app` application name
+- `-c` `--concurrency`  `<concurrency>`  Number of child processes processing the queue.  The default is the number of CPUs available on your system. 
+
+`my_application.py`
+
+```python
+celery = Celery(
+    MODULE_NAME,
+    backend=CELERY_RESULT_BACKEND,
+    broker=CELERY_BROKER_URL
+)
+@celery.task
+def task1(input):
+    time.sleep(1)
+    return input
+```
+
+**Through a script**
+
+```python
+app = Celery('proj',
+             broker=CELERY_BROKER_URL,
+             backend=CELERY_RESULT_BACKEND,
+             include=['proj.tasks'])
+if __name__ == '__main__':
+    app.start()
+```
+
+
+
+#### Running worker as daemon
+
+- see [daemonizing celery]("daemonizing celery.md")
+
+
+
+
 
 
 
 ## Result Querying
-
-
 
 ### Result Types
 
@@ -607,8 +671,6 @@ def dump_context(self, x, y):
   - use `children` to query sub-results
 - chain:  `AsyncResult` pointing to last task
   - use `parent` to work way up the chain
-
-
 
 ### Restoring `AsyncResult`
 
@@ -712,10 +774,6 @@ task.parent.children
 
 
 
-
-
-
-
 ### Serializing Result Definitions
 
 - `GroupResult.save()` stores definition in result back-end
@@ -779,10 +837,6 @@ app = Celery(MODULE_NAME, broker=BROKER_URL)
 app.send_task('tasks.add', (2,5))
 ```
 
-
-
-
-
 #### Examples
 
 ```python
@@ -792,10 +846,6 @@ def success_callback(response):
 
 app.send_task("remote.processing", link=success_callback.s())
 ```
-
-
-
-
 
 
 
@@ -814,10 +864,5 @@ app.send_task("remote.processing", link=success_callback.s())
 
 
 
-## Celery and Flask
-
-- Flask application factory pattern delays configuration until WSGI server is started (secure, dynamic configuration files)
 
 
-
-https://github.com/sdg32/flask-celery-boilerplate/blob/master/app/schedule/extension.py
