@@ -8,8 +8,12 @@
 
 ## Test Runners
 
-- unittest
-- pytest (recommended)
+- [unittest](testing-unittest.md)
+  - all tests into class methods
+  - use special asserts instead of built-in asserts
+- [pytest](testing-pytest.md)
+  - tests are free functions
+  - use regular asserts
 - Nose/nose2
 
 
