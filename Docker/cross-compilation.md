@@ -2,10 +2,6 @@
 
 
 
-
-
-
-
 ## Setup
 
 Source: [engineering.docker.com](https://engineering.docker.com/2019/04/multi-arch-images/)
@@ -17,20 +13,14 @@ Source: [engineering.docker.com](https://engineering.docker.com/2019/04/multi-ar
 
 ## Commands
 
-
-
 - `docker buildx ls` view supported build architectures
 - `docker image inspect  --format='{{.Architecture}}' my_image_name`
 
 
 
-
-
-
-
 ## Single-Arch Images
 
-
+`docker buildx build -f frontend/Dockerfile --platform linux/arm64`
 
 
 
@@ -40,13 +30,9 @@ Source: [engineering.docker.com](https://engineering.docker.com/2019/04/multi-ar
 
 
 
-
-
 ```
 docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t adamparco/demo:latest --push .
 ```
-
-
 
 - `--push` generates a multi-arch manifest and pushes all the images
 
