@@ -116,6 +116,7 @@ def test_get_json(mock_response):
 - use `pytest-mock` (a thin wrapper around the `mock` library in `unittest`)
 - introduces a fixture `mocker` that allows to mock structures
 - See also [testing-pytest.md](testing-pytest.md) for the documentation of `mock`
+- use `mocker.patch('your-function-name')`
 
 **Example**
 

@@ -113,7 +113,12 @@ import unittest
 
 
 
-### Assertions and Inspections
+### The Mock Class
+
+```python
+from unittest.mock import Mock
+json = Mock()
+```
 
 - `<Mock name='yourMock>'`
 
@@ -184,6 +189,35 @@ class TestCalendar(unittest.TestCase):
         with self.assertRaises(Timeout):
             get_holidays()
 ```
+
+
+
+### Patch()
+
+- looks up an object in a given module and replaces that object with a `Mock`
+
+
+
+**Mocking Classes**
+
+```python
+def some_function():
+    instance = module.Foo()
+    return instance.some_method()
+
+
+with patch('module.Foo') as mock:
+    instance = mock.return_value
+    # patch the return value of the "some_method" function
+    instance.some_method.return_value = 'the result'
+    # call the function with the mocked class
+    result = some_function()
+    assert result == 'the result'
+```
+
+
+
+
 
 ## Disabling Tests
 
