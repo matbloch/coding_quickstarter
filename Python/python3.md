@@ -258,18 +258,6 @@ for random_number in lottery():
 
 
 
-## Multi-Processing
-
-
-
-
-
-
-
-## Subprocesses
-
-
-
 
 
 ## Decorators
@@ -399,4 +387,5 @@ Order of declaration
 ```python
 some_func(fargs, *args, **kwargs)
 ```
+
 
