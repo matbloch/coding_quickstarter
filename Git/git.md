@@ -2,6 +2,12 @@
 
 
 
+**File Permissions**
+
+- also submitted
+
+
+
 ## Common Operations
 
 **Searching in files for string**
@@ -70,8 +76,6 @@ A --- B --- C --- D <-- master
                     \-- E' --- F' --- G' <-- b1
 ```
 
-## File Permissions in Git
-
 
 
 ## Submodules
@@ -79,8 +83,6 @@ A --- B --- C --- D <-- master
 
 
 **Adding Submodules**
-
-
 
 
 
@@ -98,6 +100,21 @@ A --- B --- C --- D <-- master
   1. `cd` to sub-repository
   2. `git pull origin master`
   3. `cd ..` and commit
+
+
+
+## Git LFS
+
+
+
+1. `git lfs install` Install git LFS for current user account
+2. `git lfs track "*.psd"` Start to track file
+   - Will add filter to `.gitattributes`
+3. `git add .gitattributes` track the filter with git
+   - ``git lfs install` Install git LFS for current user account
+4. `git add file.psd` track files the regular way
+
+
 
 
 
