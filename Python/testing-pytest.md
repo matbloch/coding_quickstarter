@@ -2,12 +2,9 @@
 
 [Tutorial](https://www.guru99.com/pytest-tutorial.html)
 
-- tests are free functions
-- test files start with `test_` prefix
-- pytest automatically discovers test by naming
+- tests can be free functions
+- `pytest ` automatically discovers test by naming  (see "Test Discovery")
 - regular asserts can be use
-
-
 
 **Minimal Test Setup**
 
@@ -26,6 +23,32 @@ def test_sum_tuple():
     ├── conftest.py
     ├── test_database.py
 ```
+
+
+
+## Test Discover and Import Mechanisms
+
+**Test Discover Rules**
+
+- Recurses through directories and finds `test_*.py` or `*_test.py` files. From those, the following methods are being executed:
+  - `test` prefixed methods outside of a class
+  - Methods of `Test` prefixed classes without an `__init__` method
+
+
+
+### Import Rules and Invoking Pytest
+
+**Calling pytest directly:**  `pytest [...]`
+
+1. Search for test files
+
+2. Include  path (added to `sys.path`) : Move up the directory tree and stop at the last folder containing a `__init__.py` file
+
+   > **NOTE:** The test directory **should NOT** have same names as imported packages. This will lead to conflicts (everything is imported into the global namespace).
+
+**Calling pytest as a module:** `python -m pytest [...]`
+
+- Same as running `pytest` directy but current path will be added to `sys.path`
 
 
 
@@ -146,11 +169,4 @@ def test_unix_fs(mocker):
 
 
 
-
-
-
-
-
-
-## Testing Flask Applications
 

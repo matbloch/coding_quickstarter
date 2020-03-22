@@ -93,7 +93,7 @@ setup(name='package_name',
 
 #### Non-Python Files
 
-- By default only .py files get copied when installing the package
+- By default only .py and predefined files (e.g. `README.md`) get copied when installing the package.
 - Specify additional files in``MANIFEST.in`` ( root directory)
 
 Example content:

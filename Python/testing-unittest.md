@@ -162,7 +162,7 @@ do_something.return_value = 123
 assert do_something()
 ```
 
-**Side Effects**
+**Triggering Side Effects / Exceptions**
 
 - function called when mock is called or iterable or exception
 
