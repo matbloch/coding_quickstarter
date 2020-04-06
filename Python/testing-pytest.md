@@ -169,4 +169,38 @@ def test_unix_fs(mocker):
 
 
 
+## Configuration Files
+
+- `pytest.ini` primary pytest configuration file. Allows to change default behaviour.
+- `conftest.py` local plugin to define hooks, fixtures in specific test (sub-)directories
+- `__ini__.py`
+
+
+
+
+
+
+
+## 3rd Party: Code Coverage
+
+- `pytest-conv`
+
+**Measuring Coverage**
+
+`pytest --cov /tests/`
+
+
+
+**Configuration File**
+
+- `.coveragerc`
+
+```ini
+[run]
+omit = venv/*
+```
+
+
+
+
 
