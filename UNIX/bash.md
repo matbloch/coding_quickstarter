@@ -4,8 +4,6 @@
 
 
 
-
-
 ## Users
 
 
@@ -13,8 +11,6 @@
 **Changing a password**
 
 `passwd username`
-
-
 
 
 
@@ -46,6 +42,12 @@
 - `r` recursive
 
 
+
+**Copy** from **local** to **remote**
+
+```bash
+rsync -avzh /from/local /to/local
+```
 
 **copy FROM remote**
 
