@@ -21,5 +21,10 @@
 
 
 
-- function/variable names: `lower_case`
-- `single_trailing_underscore_` : used by convention to avoid conflicts  with Python keyword, e.g. `id_`
+- function/variable: `lower_case`
+
+  -  `single_trailing_underscore_` for reserved variable names  to avoid conflicts  with Python keyword, e.g. `id_`
+
+- classes: `CamelCase`
+
+  

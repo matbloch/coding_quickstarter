@@ -147,6 +147,27 @@ python setup.py sdist bdist_wheel
 
 
 
+## Requirement Files
+
+- `pip install -r requirements.txt`
+
+
+
+#### Packages on Github
+
+Specific branch
+
+- `git+git://github.com/path/to/<package-name>@master#egg=<package-name>`
+
+- Specific commit
+  - `git+git://github.com/path/to/<package-name>@41b95ec#egg=<package-name>`
+- Specific tag
+  - `git+git://github.com/path/to/<package-name>@0.1#egg=<package-name>`
+- Specific release
+  - `git+git://github.com/path/to/<package-name>@releases/tag/v3.7.1#egg=<package-name>`
+
+
+
 
 
 
