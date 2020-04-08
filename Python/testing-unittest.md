@@ -190,6 +190,12 @@ class TestCalendar(unittest.TestCase):
             get_holidays()
 ```
 
+**Resetting a Mock**
+
+```python
+mock.reset_mock()
+```
+
 
 
 ### Patch()

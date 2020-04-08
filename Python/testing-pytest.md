@@ -52,6 +52,19 @@ def test_sum_tuple():
 
 
 
+### Shared Test Functionality/Data
+
+**conftest.py**
+
+- `conftest.py` is automatically imported. Data can e.g. be shared through fixtures.
+- can be local per directory
+
+**Sharing test data**
+
+- Plugins: `pytest-datadir`, `pytest-datafiles`
+
+
+
 ## Fixtures
 
 conftest.py
@@ -198,6 +211,100 @@ def test_unix_fs(mocker):
 ```ini
 [run]
 omit = venv/*
+```
+
+
+
+
+
+
+
+
+
+
+## Pytest Configuration File
+
+- `pytest.ini`
+- Allows to specify default command line arguments when running `pytest`
+
+
+
+```python
+[pytest]
+addopts = -ra -q
+```
+
+
+
+## Test Marking
+
+**Declare markers in `pytest.ini`**
+
+```ini
+[pytest]
+markers =
+    slow: marks tests as slow (deselect with '-m "not slow"')
+```
+
+**Use `@pytest.mark` Decorator**
+
+```python
+@pytest.mark.slow
+def test_something_very_slow():
+    # Do a very long test
+    pass
+```
+
+
+
+
+
+
+
+
+
+## Testing with Specific Libraries
+
+
+
+### pytest-flask
+
+- define fixture that returns instance of app
+- pass fixture as function argument `client` to test
+
+
+
+Route definition
+
+```python
+@app.route('/user/<username>')
+def show_user_profile(username):
+    # show the user profile for that user
+    return 'User %s' % escape(username)
+```
+
+Testing
+
+```python
+import pytest
+from example_app import create_app
+
+@pytest.fixture
+def app():
+    app = create_app()
+    return app
+
+# testing through application test client
+def test_request(client):
+    response = client.get("/user/MyName")
+    assert response.status_code == 200
+   
+
+def test_request_method(client):
+    response = show_user_profile("myUsername")
+    
+    
+
 ```
 
 
