@@ -1,4 +1,21 @@
-# Access Control and Authentication
+# Authentication and Access Control
+
+- **Authentication**: Ensuring a given user is who they claim to be
+- **Authorization**: Ensuring a given user has permission to access a particular web page/area of a web product
+
+**MUST READ**
+
+https://learning.postman.com/docs/postman/sending-api-requests/authorization/
+
+https://www.okta.com/security-blog/2019/02/the-ultimate-authentication-playbook/
+
+https://swagger.io/docs/specification/authentication/
+
+
+
+https://auth0.com/learn/token-based-authentication-made-easy/
+
+
 
 ### Method Overview
 
@@ -52,7 +69,7 @@
 
 **Header Signature**
 `Authorization: Bearer <token>`
-![json_token_auth.png](/Users/matthias/dev/coding_quickstarter/Web/Authentication/./img/json_token_auth.png)
+![json_token_auth.png](img/json_token_auth.png)
 
 **Authentication Process**
 
@@ -62,7 +79,7 @@
 4. Subsequent requests to the server will be sent with the token as authentication header
 5. Server verifies token and returns requested data
 6. Token is destroyed in client on logout
-  ![jwt-diagram.png](.\img\jwt-diagram.png)
+    ![jwt-diagram.png](.\img\jwt-diagram.png)
 
 **Advantages**
 
@@ -92,8 +109,8 @@
 
 **Disadvantages**
 - stateful: authentication records need to be stored both client and server side
-- Extra efford to protect against CSRF attacks
-- Incompatiblye with REST (stateless protocol)
+- Extra effort to protect against CSRF attacks
+- Incompatible with REST (stateless protocol)
 
 ### 2. Signatures
 
@@ -126,7 +143,45 @@
 
 ### 4. Public Key Authentication
 
-### 5. Kerberos
+### 
+
+## Authentication Protocols
+
+
+
+### Kerberos
+
+
+
+### SSL/TLS
+
+
+
+
+
+## Ungrouped
+
+
+
+- API Keys
+
+The API key is a secret that the API generates and gives to a developer. It is generally a long, unguessable string like: `3580944e0b742e664d10a5ed75f0bdbe`.
+Contrary to *basic authentication*, there's no standard on the API Key. The most common pattern is to pass it alongside the Authorization header:
+
+```
+curl "https://example.com/" \   
+  -H "Authorization: 3580944e0b742e664d10a5ed75f0bdbe"
+```
+
+
+
+
+
+- 0Auth, Oauth2.0
+
+
+
+
 
 
 
