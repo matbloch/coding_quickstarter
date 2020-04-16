@@ -113,7 +113,7 @@ response = cloudwatch.put_metric_data(
 
 
 
-**Upload**
+**Upload file**
 
 ```python
 import boto3
@@ -127,13 +127,7 @@ with open('filename', 'rb') as data:
     )
 ```
 
-
-
-
-
-
-
-**Download**
+**Download as file**
 
 ```python
 s3_resource.Object(first_bucket_name, first_file_name).download_file(
@@ -164,15 +158,33 @@ def download_from_s3(self, s3_file):
 **Load file in-memory**
 
 ```python
+import boto3
 s3 = boto3.resource('s3')
-bucket = s3.Bucket('test-bucket')
-# Iterates through all the objects, doing the pagination for you. Each obj
-# is an ObjectSummary, so it doesn't contain the body. You'll need to call
-# get to get the whole body.
-for obj in bucket.objects.all():
-    key = obj.key
-    body = obj.get()['Body'].read()
+print s3.Object('mybucket', 'beer').get()['Body'].read()
 ```
+
+
+
+**Upload from memory**
+
+```python
+def upload(self, file_like_object: BinaryIO, filename: str):
+    assert self.s3
+    assert self.bucket_name
+    try:
+        response = self.s3.put_object(
+            Body=file_like_object,
+            Bucket=self.bucket_name,
+            Key=filename,
+            ServerSideEncryption="AES256",
+        )
+        except ClientError as e:
+            logging.error(e)
+            return False
+        return True
+```
+
+
 
 
 

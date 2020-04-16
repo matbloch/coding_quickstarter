@@ -16,6 +16,8 @@
 - **Internet Gateway:** Allows communication between 
 - **NAT Gateway:**
 - **AWS Private Link:** Allows connections to AWS services (e.g. for fetching docker images from ECR). Alternative to linking the private subnet to a NAT Gateway.
+- **Gateway Endpoints**:
+  - https://docs.aws.amazon.com/vpc/latest/userguide/vpc-endpoints-s3.html
 
 
 
@@ -101,9 +103,9 @@ TBD
 
 ## Internet Gateway
 
-Allows communication between the containers  and the internet. All the outbound traffic goes through it. In AWS it must get attached to a VPC.
+Allows communication between the containers  and the Internet. All the outbound traffic goes through it. In AWS it must get attached to a VPC.
 
-All requests from a instances running  on the public subnet must be routed to the internet gateway. This is  done by defining routes laid down on route tables.
+All requests from a instances running  on the public subnet must be routed to the Internet gateway. This is  done by defining routes laid down on route tables.
 
 
 

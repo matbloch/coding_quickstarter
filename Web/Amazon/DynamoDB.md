@@ -186,9 +186,21 @@ https://www.dynamodbguide.com/expression-basics
 
 
 
+### 
 
 
-## Data Modeling
+
+
+
+
+
+## Data Modeling / Table Design
+
+
+
+
+
+
 
 
 
@@ -199,6 +211,11 @@ https://www.dynamodbguide.com/expression-basics
 - `TableName` 
 
   - The name of the table
+
+- `ProvisionedThroughput`
+
+  - Represents the provisioned throughput settings for a specified table or index
+  - If you set BillingMode as `PROVISIONED` , you must specify this property. If you set BillingMode as `PAY_PER_REQUEST` , you cannot specify this property.
 
 - `KeySchema` 
 
@@ -227,6 +244,7 @@ https://www.dynamodbguide.com/expression-basics
 ```json
 {
     "TableName": "Items",
+    "ProvisionedThroughput": {"WriteCapacityUnits": 5, "ReadCapacityUnits": 5},
     "KeySchema": [{"KeyType": "HASH", "AttributeName": "Id"}],
     "AttributeDefinitions": [
         {"AttributeName": "Deleted", "AttributeType": "S"},
@@ -237,13 +255,27 @@ https://www.dynamodbguide.com/expression-basics
 
 
 
+**Example:** Create a table with the AWS CLI
+
+> **NOTE:** We use the profile "testing" here
+
+```bash
+aws --profile=testing dynamodb create-table --cli-input-json file://Items.json
+```
+
+
+
 **Example:** Creating a table in BOTO3
 
 
 
 
 
+## Identity and Access Management
 
+
+
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/authentication-and-access-control.html
 
 
 
@@ -252,10 +284,6 @@ https://www.dynamodbguide.com/expression-basics
 
 
 ## Boto3 Integration
-
-
-
-
 
 ### Insert
 
@@ -278,25 +306,6 @@ client.put_item(
         "StateCityPostcode": {"S": range_key },
     },
 )
-```
-
-
-
-**Conditional Insert**
-
-```
-$ aws dynamodb put-item \
-    --table-name UsersTable \
-    --item '{
-      "Username": {"S": "yosemitesam"},
-      "Name": {"S": "Yosemite Sam"},
-      "Age": {"N": "73"}
-    }' \
-    --condition-expression "attribute_not_exists(#u)" \
-    --expression-attribute-names '{
-      "#u": "Username"
-    }' \
-    $LOCAL
 ```
 
 
@@ -349,9 +358,123 @@ resp = client.query(
 
 
 
+
+
+## AWS CLI
+
+
+
+https://docs.aws.amazon.com/cli/latest/userguide/cli-services-dynamodb.html
+
+
+
+
+
+
+
+**Conditional Insert**
+
+```
+$ aws dynamodb put-item \
+    --table-name UsersTable \
+    --item '{
+      "Username": {"S": "yosemitesam"},
+      "Name": {"S": "Yosemite Sam"},
+      "Age": {"N": "73"}
+    }' \
+    --condition-expression "attribute_not_exists(#u)" \
+    --expression-attribute-names '{
+      "#u": "Username"
+    }' \
+    $LOCAL
+```
+
+
+
+
+
 ## Local Development
 
-https://github.com/aws-samples/aws-sam-java-rest
 
 
+### CLI Configuration for Testing
+
+**Testing Credentials**
+
+> The down-loadable DynamoDB requires **any** password. For testing you should use fake credentials. 
+
+```
+AWS Access Key ID: "fakeMyKeyId"
+AWS Secret Access Key: "fakeSecretAccessKey"
+```
+
+**Custom Testing Profile**
+
+- Open `~/.aws/config` and add a new profile `testing`
+- **Alternative:** Use the AWS CLI
+  - `aws configure --profile testing`
+
+```ini
+[default]
+region = us-east-1 # Or your preferred default region
+
+[profile testing]
+aws_access_key_id = AnyKeyID
+aws_secret_access_key = AnySecretAccessKey
+```
+
+**Using Custom Profiles in the CLI**
+
+- use `--profile=testing` to select a specific profile when using the `aws` cli
+
+Example:
+
+```bash
+aws --profile=testing dynamodb describe-table --table-name=MyTable
+```
+
+
+
+
+
+
+
+### Examples
+
+
+
+**Example:** Table Creation from CLI
+
+```bash
+aws dynamodb create-table \
+  --table-name TableName  \
+  --attribute-definitions \
+    AttributeName=id,AttributeType=S --key-schema \
+    AttributeName=id,KeyType=HASH \
+  --provisioned-throughput ReadCapacityUnits=2,WriteCapacityUnits=2 \
+  --endpoint-url http://localhost:8000
+```
+
+
+
+**Example:** Loading a database definition on startup
+
+```
+version: '2'
+services:
+    dynamodb:
+        container_name: dynamodb
+        image: amazon/dynamodb-local:latest
+        entrypoint: java
+        command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /data"
+        restart: always
+        volumes:
+          - dynamodb-data:/data
+        ports:
+          - "8000:8000"
+ 
+volumes:
+    dynamodb-data:
+        external: true
+```
 

@@ -51,11 +51,11 @@ https://medium.com/@anilkumarmaurya/deploying-service-based-architecture-on-amaz
 
 
 
-Fargate:
+**Fargate**
 
 AWS Fargate is a compute engine for Amazon ECS that allows you to run [containers](http://aws.amazon.com/what-are-containers) without having to manage servers or clusters. With AWS Fargate, you no  longer have to provision, configure, and scale clusters of virtual  machines to run containers. All you have to do is package your  application in containers, specify the CPU and memory requirements,  define networking and IAM policies, and launch the application
 
-EC2:
+**EC2**
 
 EC2 launch type allows you to have server-level, more granular control over the infrastructure that runs your container applications. Amazon ECS  keeps track of all the CPU, memory and other resources in your cluster,  and also finds the best server for a container to run on based on your  specified resource requirements. You are responsible for provisioning,  patching, and scaling clusters of servers. You can decide which type of  server to use, which applications and how many containers to run in a  cluster to optimize utilization.
 
@@ -99,8 +99,6 @@ EC2 launch type allows you to have server-level, more granular control over the 
 
 
 #### Communication inside Task
-
-
 
 ```json
  {

@@ -16,8 +16,6 @@ https://aws.amazon.com/de/getting-started/projects/break-monolith-app-microservi
 
 
 
-
-
 ### 1. Build the Docker Images
 
 - Keep in mind: Some AWS instances run on ARM, you might have to cross-compile your images (see cross-compilation documentation for Docker)
