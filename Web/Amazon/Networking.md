@@ -12,6 +12,8 @@
   - Subnets cannot span multiple availability zones
   - launch instances in separate availability zone to protect from failure of a single location
   - public/private subnets: Subnet is **public** if traffic is routed to an **Internet gateway**
+- **Availability Zone**: AWS regions support local zones, the availability zones. 
+  - Availability Zones are distinct locations that are engineered to be isolated from failures in other Availability Zones
 - **Route Tables:** Contains a set of routes that define where packets will be redirected to
 - **Internet Gateway:** Allows communication between 
 - **NAT Gateway:** Allow instances in the private subnet to make outbound connections to the internet
@@ -27,8 +29,9 @@
 >
 
 - All availability zones inside the selected AWS region
-- Must specify the range of IPv4 addresses through a CIDR block, e.g. `10.0.0.0/16`
-- When you associate a CIDR block with your VPC, a route (the main route table) is automatically added to your VPC route tables to enable routing within the VPC (the destination is the CIDR block and the target is `local`). See also section *Rout Tables*.
+- Range of IPv4 addresses must be specified through a CIDR block, e.g. `10.0.0.0/16`
+  - **NOTE:** Private address ranges should be used, see section "Network Classes". Publicly routable addresses can cause issues.
+- When you associate a CIDR block with your VPC, a route (the main route table) is automatically added to your VPC route tables to enable routing within the VPC (the destination is the CIDR block and the target is `local`). See also section *Route Tables*.
 
 
 
@@ -38,7 +41,8 @@
 
 ### Subnets
 
-- When you create a subnet, you specify the CIDR block for the subnet, which is a subset of the VPC CIDR block. Each subnet must reside entirely within one Availability Zone and cannot span zones. Availability Zones are distinct locations that are engineered to be isolated from failures in other Availability Zones
+- When you create a subnet, you specify the CIDR block for the subnet, **which is a subset of the VPC CIDR block**. 
+- Each subnet must reside entirely within one Availability Zone and cannot span zones. 
 
 
 
@@ -49,7 +53,11 @@
 
 
 
+**Subnet Security**
 
+AWS provides two features that you can use to increase security in your VPC: *security groups* and                                    			*network ACLs*. Security groups control inbound and outbound traffic for your                                    			instances, and network ACLs control inbound and outbound traffic for your subnets.                                    			In most cases, security groups can meet your needs; however, you can also use network                                    ACLs if you want an additional layer of security for your VPC. For more information,                                    see                                     			[Internetwork Traffic Privacy in Amazon VPC](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Security.html).                                  
+
+By design, each subnet must be associated with a network ACL. Every                                    subnet that you create is automatically associated with the VPC's default                                    network ACL. You can change the association, and you can change the                                    contents of the default network ACL. For more information, see [Network ACLs](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html).                                 
 
 ### Examples
 
@@ -72,7 +80,7 @@
 2. For **Name tag**, enter a name for your subnet, such as **Public subnet**.                         
 3. For **VPC**, choose the VPC that you created earlier.                         
 4. For **Availability Zone**, choose the same Availability Zone as the additional private subnet that you created in the previous procedure.                         
-5. For **IPv4 CIDR block**, enter a valid CIDR block. For example, the wizard creates CIDR blocks in 10.0.0.0/24 and 10.0.1.0/24 by default. You could use **10.0.2.0/24** for your second public                            subnet.
+5. For **IPv4 CIDR block**, enter a valid CIDR block. For example, the wizard creates CIDR blocks in 10.0.0.0/24 and 10.0.1.0/24 by default. You could use **10.0.2.0/24** for your second public                            subnet (/24 allows for 256 ip addresses in the subnet).
 6. Choose **Yes, Create**.                         
 7. Select the public subnet that you just created and choose **Route Table**, **Edit**.                         
 8. By default, the private route table is selected. Choose the other available route table so that the **0.0.0.0/0** destination is routed to the internet gateway (**igw-xxxxxxxx**) and choose **Save**.                         
@@ -92,40 +100,153 @@
 
 
 
-
-
-
-
 ## Route Tables
 
-#### Routes and Route Tables
+> Route tables gather together a set of routes. A route describes where do packets need to go based on rules. You can for instance send any packets with destination address starting with 10.0.4.x to a NAT while others with destination address 10.0.5.x to another NAT or internet gateway. You can describe both in and outbound routes.
 
-- Route tables gather together a set of routes. A route describes where do packets need to go based on rules. You can for instance send any packets with destination address starting with 10.0.4.x to a NAT while others with destination address 10.0.5.x to another NAT or internet gateway. You can describe both in and outbound routes.
+- Each route in the table defines a **destination** and a **target**
+- The most specific route that matches the traffic (longest prefix match) determines how to route
 
-- The way we associate a route table with a subnet is by using *Subnet Route Table Association* resources.
+
+
+
+
+
+
+
+
+
+
+- **Destinations**
+  - CIDR block for the that specifies a range of destination addresses of requests
+  - `0.0.0.0/0` (`::/0` for IPV6)represents all IPv4 addresses. In the context of the way routing tables get set up by default on AWS, **0.0.0.0/0 is** effectively "all non local addresses". This is because another route presumably exists in the routing table to route the VPC subnet to the local network on the VPC (with target `local`).
+- **Targets**
+  - `local` address space of the VPC. Routing to `local` allows resources to talk to others inside the VPC
+
+
+
+Example: Routing traffic to an internet gateway
+
+| Destination | Target                |
+| ----------- | --------------------- |
+| 0.0.0.0/0   | igw-12345678901234567 |
+
+
+
+
+
+
 
 - What does 0.0 0.0 0 mean in a routing table?
 
-  **0.0.0.0/0** represents all possible IP addresses. In the context of the way **routing tables** get set up by default on AWS, **0.0.0.0/0 is** effectively "all non local addresses". This **is** because another **route** presumably exists in the **routing table** to **route** the VPC subnet to the local network on the VPC.
+  **0.0.0.0/0** represents all possible IP addresses. 
 
 **VPC Routing**
 
 - When you associate a CIDR block with your VPC, a route (the main route table) is automatically added to your VPC route tables to enable routing within the VPC (the destination is the CIDR block and the target is `local`)
-- Main route table allows communication inside the VPC
+- Main route
+-  table allows communication inside the VPC
+
+
+
+**Route Tables**
+
+- router of VPC uses route tables to control where network traffic is directed
+- Each subnet in the VPC must be associated with route table
+  - If no explicite table is associated, the main route table is selected
+
+
+
+**Main Route Table**
+
+- Controls routing for subnets that are not explicitly associated with any other route table
+- By default: Contains 
+
+
+
+**Routes**
+
+- Each route in the table defines a **destination** and a **target**
+- 
+- 
+
+| Destination | Target                |
+| ----------- | --------------------- |
+| 0.0.0.0/0   | igw-12345678901234567 |
+
+
+
+
+
+If your route table has multiple routes, we use the most specific route that                                    matches the traffic (longest prefix match) to determine how to route the                                    traffic.                                 
+
+
+
+### Examples
+
+**Example:** Main VPC route table
+
+| Destination   | Target | Purpose                                                      |
+| ------------- | ------ | ------------------------------------------------------------ |
+| `10.0.0.0/16` | local  | Default entry for local routing. Enables instances in the VPC to communicate with each other. |
 
 ![vpc-main-route-table](img/vpc-main-route-table.PNG)
 
-**Subnet Routing**
+**Example:** Route Tables of subnets
 
 - Each subnet must be associated with a route table, which specifies the allowed routes for outbound traffic leaving the subnet
 
+| Destination   | Target | Purpose                                                      |
+| ------------- | ------ | ------------------------------------------------------------ |
+| `10.0.0.0/16` | local  | Default entry for local routing. Enables instances in the VPC to communicate with each other. |
+
+
+
+![aws-subnet-route-tables](img/aws-subnet-route-tables.png)
+
+**Routing through Internet Gateway**
 
 
 
 
-### Network Classes and Classless Inter-Domain Routing (CIDR)
 
-> Classless Inter-Domain Routing (CIDR) blocks define specific ranges of IPv4 addresses
+
+
+
+
+
+
+**Routing**
+
+Main Route Table
+
+| Destination   | Target             | Purpose                                                      |
+| ------------- | ------------------ | ------------------------------------------------------------ |
+| `10.0.0.0/16` | local              | Default entry for local routing. Enables instances in the VPC to communicate with each other. |
+| `0.0.0.0/0`   | <*nat-gateway-id*> | Sends all other subnet traffic to the NAT gateway.           |
+
+Custom Route Table
+
+| Destination   | Target     | Purpose                                                      |
+| ------------- | ---------- | ------------------------------------------------------------ |
+| `10.0.0.0/16` | local      | Default entry for local routing.                             |
+| `0.0.0.0/0`   | <*igw-id*> | Routes all other subnet traffic to the Internet over the Internet gateway. |
+
+
+
+
+
+
+
+
+
+
+
+
+
+## IPv4 Network Classes
+
+> The IPv4 address space is partitioned into different classes. The Classless Inter-Domain Routing (CIDR) blocks define specific ranges of IPv4 addresses.
 
 
 
@@ -211,11 +332,18 @@ The IPv4 space is distributed into 3 blocks:
 
 
 
-**Examples**
+- CIDR suffix tells how many bits from beginning of the address belongs to the network
+  - Examples IPv4:
+    - `172.16.0.1/16`  - network bits: `172.16.`, possible hosts in this network: 2^16 = 65536
+    - `172.16.0.1/24` - network bits: `172.16.0.`, possible hosts in this network: 2^8 = 256
 
-255.255.255.0 ≙ 11111111 11111111 11111111 00000000 /24 (first 24 bits)
+
 
 **Subnet Masks**
+
+> Same principle as CIDR blocks but expressed in decimal representation instead
+
+- 255.255.255.0 ≙ 11111111 11111111 11111111 00000000 /24 (first 24 bits)
 
 - Class A: 255.0.0.0
 - Class B: 255.255.0.0
@@ -415,6 +543,12 @@ https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html
 
 https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html
 
+
+
+
+
+
+
 **Routing**
 
 Main Route Table
@@ -430,6 +564,12 @@ Custom Route Table
 | ------------- | -------- | ------------- |
 | `10.0.0.0/16` | local| Default entry for local routing. |
 | `0.0.0.0/0`   | <*igw-id*> | Routes all other subnet traffic to the Internet over the Internet gateway. |
+
+
+
+
+
+
 
 **Security**
 
