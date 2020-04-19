@@ -104,81 +104,42 @@ By design, each subnet must be associated with a network ACL. Every             
 
 > Route tables gather together a set of routes. A route describes where do packets need to go based on rules. You can for instance send any packets with destination address starting with 10.0.4.x to a NAT while others with destination address 10.0.5.x to another NAT or internet gateway. You can describe both in and outbound routes.
 
-- Each route in the table defines a **destination** and a **target**
-- The most specific route that matches the traffic (longest prefix match) determines how to route
-
-
-
-
-
-
-
-
-
-
-
-- **Destinations**
-  - CIDR block for the that specifies a range of destination addresses of requests
-  - `0.0.0.0/0` (`::/0` for IPV6)represents all IPv4 addresses. In the context of the way routing tables get set up by default on AWS, **0.0.0.0/0 is** effectively "all non local addresses". This is because another route presumably exists in the routing table to route the VPC subnet to the local network on the VPC (with target `local`).
-- **Targets**
-  - `local` address space of the VPC. Routing to `local` allows resources to talk to others inside the VPC
-
-
-
-Example: Routing traffic to an internet gateway
-
-| Destination | Target                |
-| ----------- | --------------------- |
-| 0.0.0.0/0   | igw-12345678901234567 |
-
-
-
-
-
-
-
-- What does 0.0 0.0 0 mean in a routing table?
-
-  **0.0.0.0/0** represents all possible IP addresses. 
-
-**VPC Routing**
-
-- When you associate a CIDR block with your VPC, a route (the main route table) is automatically added to your VPC route tables to enable routing within the VPC (the destination is the CIDR block and the target is `local`)
-- Main route
--  table allows communication inside the VPC
-
 
 
 **Route Tables**
 
-- router of VPC uses route tables to control where network traffic is directed
-- Each subnet in the VPC must be associated with route table
-  - If no explicite table is associated, the main route table is selected
+- Router of VPC uses route tables to control where network traffic is directed
 
+- When you associate a CIDR block with your VPC, a route (**the main route table**) is automatically added to your VPC route tables to enable routing within the VPC (the destination is the CIDR block and the target is `local`)
 
+  - allows communication inside the VPC
 
-**Main Route Table**
+  - Controls routing for subnets that are not explicitly associated with any other route table
 
-- Controls routing for subnets that are not explicitly associated with any other route table
-- By default: Contains 
-
-
+    
 
 **Routes**
 
 - Each route in the table defines a **destination** and a **target**
-- 
-- 
+- The most specific route that matches the traffic (longest prefix match) determines how to route
+
+- **Destinations**
+
+  > CIDR block for the that specifies a range of destination addresses of requests
+
+  - `0.0.0.0/0` (`::/0` for IPV6) represents all IPv4 addresses. In the context of the way routing tables get set up by default on AWS, **0.0.0.0/0 is** effectively "all non local addresses". This is because another route presumably exists in the routing table to route the VPC subnet to the local network on the VPC (with target `local`).
+
+- **Targets**
+
+  > The target through which to send the destination traffic; for example, an internet gateway.                                          
+
+  - `local` address space of the VPC. Routing to `local` allows resources to talk to others inside the VPC
+
+**Example**: Routing traffic to an internet gateway
 
 | Destination | Target                |
 | ----------- | --------------------- |
 | 0.0.0.0/0   | igw-12345678901234567 |
-
-
-
-
-
-If your route table has multiple routes, we use the most specific route that                                    matches the traffic (longest prefix match) to determine how to route the                                    traffic.                                 
 
 
 
@@ -204,28 +165,12 @@ If your route table has multiple routes, we use the most specific route that    
 
 ![aws-subnet-route-tables](img/aws-subnet-route-tables.png)
 
-**Routing through Internet Gateway**
+**Example**: Routing through Internet Gateway
 
+- **Public Subnet A:** External traffic `0.0.0.0/0` is routed through the Internet Gateway
+- **Private Subnet B:** Fall-back to main route table which only allows internal traffic
 
-
-
-
-
-
-
-
-
-
-**Routing**
-
-Main Route Table
-
-| Destination   | Target             | Purpose                                                      |
-| ------------- | ------------------ | ------------------------------------------------------------ |
-| `10.0.0.0/16` | local              | Default entry for local routing. Enables instances in the VPC to communicate with each other. |
-| `0.0.0.0/0`   | <*nat-gateway-id*> | Sends all other subnet traffic to the NAT gateway.           |
-
-Custom Route Table
+![aws-public-private-subnet-route-table](img/aws-public-private-subnet-route-table.png)
 
 | Destination   | Target     | Purpose                                                      |
 | ------------- | ---------- | ------------------------------------------------------------ |
@@ -234,13 +179,12 @@ Custom Route Table
 
 
 
+**Example:** Routing through NAT Gateway
 
-
-
-
-
-
-
+| Destination   | Target             | Purpose                                                      |
+| ------------- | ------------------ | ------------------------------------------------------------ |
+| `10.0.0.0/16` | local              | Default entry for local routing. Enables instances in the VPC to communicate with each other. |
+| `0.0.0.0/0`   | <*nat-gateway-id*> | Sends all other subnet traffic to the NAT gateway.           |
 
 
 
@@ -564,10 +508,6 @@ Custom Route Table
 | ------------- | -------- | ------------- |
 | `10.0.0.0/16` | local| Default entry for local routing. |
 | `0.0.0.0/0`   | <*igw-id*> | Routes all other subnet traffic to the Internet over the Internet gateway. |
-
-
-
-
 
 
 
