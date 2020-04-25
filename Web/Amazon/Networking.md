@@ -387,35 +387,12 @@ You can use a network address translation (NAT) instance in a **public** subnet 
 
 **Endpoint Policies**
 
+> Used together with security groups to secure access to VPC endpoints
+
 - attach a policy to the endpoint to control access to it
 - by default: full access
 
 
-
-
-
-### Interface Endpoint
-
-> Interface endpoints are powered by AWS PrivateLink and enable you to privately access services by using private IP addresses - no need for an internet gateway or NAT.
-
-
-
-**Example:** Supported services
-
-- AWS CodeBuild
-- AWS EC2
-- AWS CoudWatch
-- AWS SQS
-- ECR
-- ...
-
-
-
-
-
-**Security Groups**
-
-When you create an interface endpoint, you can associate security groups with the endpoint network interface that is created in your VPC. If you do not specify a security group, the default security group for your VPC is automatically associated with the endpoint network interface. You must ensure that the rules for the security group allow communication between the endpoint network interface and the resources in your VPC that communicate with the service.                                 
 
 
 
@@ -454,38 +431,56 @@ If your security group's outbound rules are restricted, you must add a rule that
 
 
 
+### Interface Endpoint
 
-
--------------
-
-
-
-
-
-- before PrivateLink, EC2 instances had to use an internet gateway to download docker images stored in ECR or to communicate with the ECS control plane. Instances in public subnet used the internet gateway directly. Instances in private subnet used a network address translation (NAT) gateway hosted in a public subnet.
-- Now that AWS PrivateLink support has been added, instances in both  public and private subnets can use it to get private connectivity to  download images from Amazon ECR. Instances can also communicate with the ECS control plane via AWS PrivateLink endpoints without needing an  internet gateway or NAT gateway.
-
-https://aws.amazon.com/de/blogs/compute/setting-up-aws-privatelink-for-amazon-ecs-and-amazon-ecr/
+> Interface endpoints are powered by AWS PrivateLink and enable you to privately access services by using private IP addresses - no need for an internet gateway or NAT.
 
 
 
-https://docs.aws.amazon.com/AmazonECR/latest/userguide/vpc-endpoints.html
+**Example:** Supported services
+
+- AWS CodeBuild
+- AWS EC2
+- AWS CoudWatch
+- AWS SQS
+- ECR
+- ...
 
 
 
+**Security Groups**
+
+When you create an interface endpoint, you can associate security groups with the endpoint network interface that is created in your VPC. If you do not specify a security group, the default security group for your VPC is automatically associated with the endpoint network interface. You must ensure that the rules for the security group allow communication between the endpoint network interface and the resources in your VPC that communicate with the service.                                 
 
 
 
+**DNS Entries**
+
+- Added on endpoint creation: Record for default DNS name of the service (e.g. `ec2.us-east-1.amazonaws.com`)  that resolves to the private IP addresses of the endpoint network interfaces in your VPC
+- Enables to make requests to the service using its default DNS hostname instead of the endpoint-specific DNS hostnames (existing applications can make requests to AWS services like before but traffic is routed through the interface entpoint)
 
 
 
+**Example:** Public and private subnets
 
 
 
+![vpc-endpoint-kinesis-diagram](img/vpc-endpoint-kinesis-diagram.png)
 
 
 
+| **Subnet 1**    |                       |
+| --------------- | --------------------- |
+| **Destination** | **Target**            |
+| 10.0.0.0/16     | Local                 |
+| 0.0.0.0/0       | *internet-gateway-id* |
 
+
+
+| **Subnet 2**    |            |
+| --------------- | ---------- |
+| **Destination** | **Target** |
+| 10.0.0.0/16     | Local      |
 
 
 
