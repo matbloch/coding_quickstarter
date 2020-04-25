@@ -17,7 +17,7 @@
 - **Route Tables:** Contains a set of routes that define where packets will be redirected to
 - **Internet Gateway:** Allows communication between 
 - **NAT Gateway:** Allow instances in the private subnet to make outbound connections to the internet
-- **AWS Private Link:** Allows connections to AWS services (e.g. for fetching docker images from ECR). Alternative to linking the private subnet to a NAT Gateway.
+- **VPC Endpoints / AWS Private Link:** Allows private connections to AWS services (e.g. for fetching docker images from ECR). Alternative to linking the private subnet to a NAT Gateway.
 - **Gateway Endpoints**:
   - https://docs.aws.amazon.com/vpc/latest/userguide/vpc-endpoints-s3.html
 
@@ -127,7 +127,7 @@ By design, each subnet must be associated with a network ACL. Every             
 
   > CIDR block for the that specifies a range of destination addresses of requests
 
-  - `0.0.0.0/0` (`::/0` for IPV6) represents all IPv4 addresses. In the context of the way routing tables get set up by default on AWS, **0.0.0.0/0 is** effectively "all non local addresses". This is because another route presumably exists in the routing table to route the VPC subnet to the local network on the VPC (with target `local`).
+  - `0.0.0.0/0` (`::/0` for IPv6) represents all IPv4 addresses. In the context of the way routing tables get set up by default on AWS, **0.0.0.0/0 is** effectively "all non local addresses". This is because another route presumably exists in the routing table to route the VPC subnet to the local network on the VPC (with target `local`).
 
 - **Targets**
 
@@ -225,14 +225,10 @@ The IPv4 space is distributed into 3 blocks:
 
 #### Dedicated / Reserved IP Ranges
 
-
-
 **Diagnostic / Loopback Ranges**
 
 - **Class A**: 127.0.0.0 to 127.255.255.255 cannot be used and is reserved for loopback and diagnostic functions.
   - **Example:** 127.0.0.1 is used for loopback to local machine
-
-
 
 **Private IP Address Ranges**
 
@@ -244,8 +240,6 @@ The IPv4 space is distributed into 3 blocks:
 
 - **Class C**: `192.168.0.0`     -   `192.168.255.255` (192.168/16 prefix)  255.255.0.0
 
-
-
 **Dedicated Host IP Addresses**
 
 - `*.*.*.0` Network address
@@ -254,8 +248,6 @@ The IPv4 space is distributed into 3 blocks:
 - `*.*.*.1` Router
   - Second address of class
   - **Example, Class C**: 192.168.0.1
-
-
 
 **Reserved IP Adresses on AWS**
 
@@ -376,7 +368,99 @@ You can use a network address translation (NAT) instance in a **public** subnet 
 
 
 
-## AWS PrivateLink
+## VPC Endpoints / AWS PrivateLink
+
+> A *VPC endpoint* enables you to privately connect your VPC to supported AWS services and VPC endpoint services powered by **PrivateLink** without requiring an internet gateway, NAT device, VPN connection, or AWS Direct Connect connection.        
+
+- Instances in your VPC do not require public IP addresses to communicate with resources in the service
+- Traffic between your VPC and the other service does not leave the Amazon network.          
+
+
+
+**Concepts**
+
+- Endpoint service: Your own application in the VPC. Other AWS services can create a connection from their VPC to the endpoint service.
+- Gateway endpoint: A gateway that you specify as a target for a rout in your route table for traffic destined to a supported AWS service
+- Interface endpoint: Elastic network interface with a private IP address (in range of subnet) that serves as an entry point for traffic destined to a supported service
+
+
+
+**Endpoint Policies**
+
+- attach a policy to the endpoint to control access to it
+- by default: full access
+
+
+
+
+
+### Interface Endpoint
+
+> Interface endpoints are powered by AWS PrivateLink and enable you to privately access services by using private IP addresses - no need for an internet gateway or NAT.
+
+
+
+**Example:** Supported services
+
+- AWS CodeBuild
+- AWS EC2
+- AWS CoudWatch
+- AWS SQS
+- ECR
+- ...
+
+
+
+
+
+**Security Groups**
+
+When you create an interface endpoint, you can associate security groups with the endpoint network interface that is created in your VPC. If you do not specify a security group, the default security group for your VPC is automatically associated with the endpoint network interface. You must ensure that the rules for the security group allow communication between the endpoint network interface and the resources in your VPC that communicate with the service.                                 
+
+
+
+### Gateway Endpoints
+
+> Gateway that you specify as a target for a route in your route table for traffic destined to a supported AWS service.
+
+
+
+**Supported services**
+
+- Amazon S3
+- DynamoDB
+
+
+
+**Security Groups**
+
+If your security group's outbound rules are restricted, you must add a rule that allows outbound traffic from your VPC to the service that's specified in your endpoint (use the service's **prefix list ID** as the destination in the outbound rule).
+
+
+
+**Route Table Entry**
+
+> Allows to route traffic through the endpoint to the AWS service
+
+- **Destination**: The prefix list ID of the service, `pl-xxxxxxx`
+- **Target**: The endpoint ID, `vpce-xxxxx`
+
+| Destination | Target        |
+| ----------- | ------------- |
+| 10.0.0.0/16 | Local         |
+| pl-1a2b3c4d | vpce-11bb22cc |
+
+![gateway-endpoint](img/gateway-endpoint.png)
+
+
+
+
+
+-------------
+
+
+
+
 
 - before PrivateLink, EC2 instances had to use an internet gateway to download docker images stored in ECR or to communicate with the ECS control plane. Instances in public subnet used the internet gateway directly. Instances in private subnet used a network address translation (NAT) gateway hosted in a public subnet.
 - Now that AWS PrivateLink support has been added, instances in both  public and private subnets can use it to get private connectivity to  download images from Amazon ECR. Instances can also communicate with the ECS control plane via AWS PrivateLink endpoints without needing an  internet gateway or NAT gateway.
@@ -386,6 +470,22 @@ https://aws.amazon.com/de/blogs/compute/setting-up-aws-privatelink-for-amazon-ec
 
 
 https://docs.aws.amazon.com/AmazonECR/latest/userguide/vpc-endpoints.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -463,6 +563,14 @@ This target group will be managed by Fargate and every time a new instance of ng
 
 
 
+## Example: VPC Architecting
+
+
+
+Excellent article: https://aws.amazon.com/de/blogs/architecture/one-to-many-evolving-vpc-design/
+
+
+
 
 
 ## Example: VPC with a Single Public Subnet
@@ -486,28 +594,6 @@ https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html
 
 
 https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html
-
-
-
-
-
-
-
-**Routing**
-
-Main Route Table
-
-| Destination   | Target             | Purpose                                                      |
-| ------------- | ------------------ | ------------------------------------------------------------ |
-| `10.0.0.0/16` | local              | Default entry for local routing. Enables instances in the VPC to communicate with each other. |
-| `0.0.0.0/0`   | <*nat-gateway-id*> | Sends all other subnet traffic to the NAT gateway.           |
-
-Custom Route Table
-
-| Destination   | Target   | Purpose |
-| ------------- | -------- | ------------- |
-| `10.0.0.0/16` | local| Default entry for local routing. |
-| `0.0.0.0/0`   | <*igw-id*> | Routes all other subnet traffic to the Internet over the Internet gateway. |
 
 
 
