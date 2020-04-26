@@ -318,10 +318,9 @@ You can use a network address translation (NAT) instance in a **public** subnet 
 ## Network Security / Security Groups
 
 - Security groups act as firewalls between inbound and outbound communications of the instances we run
-
 - Security group rules are implicit deny, which means all traffic is denied unless an inbound or outbound rule explicitly allows it.
-
-
+- Unspecified side (in inbound > ? or ? > outbound) is the instance to which the security group is applied
+  - inbound rules sum up and outbound rules sum up, there is **no** inbound <> outbound rule
 
 
 ### Examples
@@ -399,6 +398,8 @@ You can use a network address translation (NAT) instance in a **public** subnet 
 ### Gateway Endpoints
 
 > Gateway that you specify as a target for a route in your route table for traffic destined to a supported AWS service.
+
+- you can create multiple gateway endpoints, e.g. to attach multiple services to different subnets
 
 
 
