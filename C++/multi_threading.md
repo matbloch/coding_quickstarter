@@ -2,13 +2,23 @@
 
 
 
+**MUST SUMMARIZE:** https://www.bogotobogo.com/cplusplus/multithreaded.php
+
+
+
+
+
+
+
+
+
+
+
 **Examples**
 
 - [Singleton](http://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton)
 
 - [Thread-Safe Initialization of Data](http://www.modernescpp.com/index.php/thread-safe-initialization-of-data)
-
-
 
 - Difficulties
 
@@ -21,11 +31,40 @@
 
 
 
+
+
+
+
+
+
+## Concepts and Terminology
+
+**MUST SUMMARIZE:** https://www.bogotobogo.com/cplusplus/multithreaded.php
+
+
+
+![multi-threading-resource-sharing](img/multi-threading-resource-sharing.png)
+
+
+
+**Multiprocessing vs Multithreading**
+
+1. Multiprocessing
+   1. A process is the unit of resource allocation & protection.
+   2. A process manages certain resources, e.g., virtual memory, I/O handlers, and signal handlers.
+   3. **Pros**: Process is protected from other processes via an MMU.
+   4. **Cons**: IPC between processes can be complicated and inefficient.
+2. Multithreading
+   1. A thread is the unit of computation that runs in the context of a process.
+   2. A thread manages certain resources, e.g., stack, registers, signal masks, priorities, and thread-specific data
+   3. **Pros**: IPC between threads is more efficient that IPC between processes.
+   4. **Cons**: Threads can interfere with each other.
+
+
+
+
+
 ## Measuring Performance
-
-
-
-## The C++ Memory Model
 
 
 

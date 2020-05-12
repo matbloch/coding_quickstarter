@@ -4,9 +4,33 @@
 
 
 
+**Concurrency vs Parallelism**
+
+- **Concurrency**: run code independently of other code - when code is blocked in script 1, script 2 is executed
+  - Useful to break things apart. Schedule and manage different parts
+  - Greenlets perform scheduling of calls that would block the current thread
+  - Performs especially well in I/O, networking apps with waiting time
+- **Parallelism**: Execution of concurrent code simultaneously
+  - Useful to do a lot of resource intensive work
+  - Threads: Expensive in terms of virtual memory and kernel overhead
 
 
-**Multi-processing tools in Python**
+
+**Sync vs Async vs Parallel Execution**
+
+
+
+![async-programming](img/async-programming.png)
+
+
+
+**Synchronous** or Asynchronous both can be multithreaded . **Synchronous** – In this this, A **thread** is assigned to one task and starts working on it. ... Asynchronous – In contrary to **Synchronous** , here a **thread** once start executing a task it can hold it in mid, save the current state and start executing another task
+
+
+
+
+
+### Multi-processing tools in Python
 
 - `threading` The operating system knows about each thread and can interrupt it at any time to start running a different thread
 - `asyncio` The tasks must cooperate by announcing when they are ready to be  switched out. That means that the code in the task has to change  slightly to make this happen.
@@ -22,15 +46,15 @@
 
 
 
-**concurrency vs parallelism**
+## Multithreading
 
-- **Concurrency**: run code independently of other code - when code is blocked in script 1, script 2 is executed
-  - Useful to break things apart. Schedule and manage different parts
-  - Greenlets perform scheduling of calls that would block the current thread
-  - Performs especially well in I/O, networking apps with waiting time
-- **Parallelism**: Execution of concurrent code simultaneously
-  - Useful to do a lot of resource intensive work
-  - Threads: Expensive in terms of virtual memory and kernel overhead
+> Processor is physically divided into multiple cores. Within these cores we can  create logical cores (threads). At the end, operating system sees it as  if there are multiple processors within every single core. These threads are being managed by kernel of operating system.
+
+
+
+
+
+
 
 
 
@@ -115,13 +139,40 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
 
 
 
+**Example:** Logging output
+
+```python
+import subprocess as sp
+from concurrent.futures import ThreadPoolExecutor
+
+
+def log_popen_pipe(p, pipe_name):
+
+    while p.poll() is None:
+        line = getattr(p, pipe_name).readline()
+        log_file.write(line)
+
+
+with sp.Popen(my_cmd, stdout=sp.PIPE, stderr=sp.PIPE, text=True) as p:
+
+    with ThreadPoolExecutor(2) as pool:
+        r1 = pool.submit(log_popen_pipe, p, 'stdout')
+        r2 = pool.submit(log_popen_pipe, p, 'stderr')
+        r1.result()
+        r2.result()
+```
+
+
+
+
+
 
 
 ### Locks
 
 - `threading.Lock`
 
-  
+  > 
 
 ```python
 class FakeDatabase:
@@ -150,16 +201,118 @@ class FakeDatabase:
 
 ## Subprocess
 
+> Executes a child program in a new process
 
+**Configurations**
+
+- `shell=True` : command string is interpreted as raw shell command
+  - may expose you to code injection
+- `universal_newlines=True` : converts the output to a string instead of a byte array
+
+
+
+### subprocess.Popen
+
+- **does not block** main process
+
+  
+
+**Blocking Communication:**  `communicate()`, `wait()`
+
+- `wait()` : block main process till subprocess has terminated
+- `communicate()` : to pass and receive data to the process. Reads output and calls `wait()`
 
 ```python
 from subprocess import Popen, PIPE
 
-process = Popen(['swfdump', '/tmp/filename.swf', '-d'], stdout=PIPE, stderr=PIPE)
-stdout, stderr = process.communicate()
-
+process = Popen(['docker', 'ps', '-a'], 
+                stdout=PIPE, stderr=PIPE, # send output to subprocess.PIPE
+                universal_newlines=True	  # store output as string
+               )
+output, errors = p.communicate()
 print("retcode =", process.returncode)
 ```
+
+
+
+**Aysnchronous Communication:** `asyncio.create_subprocess_exec`
+
+
+
+
+
+
+
+
+
+**Pipe commands together**
+
+```python
+# this is equivalent to ls -lha | grep "foo bar"
+p1 = Popen(["ls","-lha"], stdout=PIPE)
+# the output of p1 feeds into p2
+p2 = Popen(["grep", "foo bar"], stdin=p1.stdout, stdout=PIPE)
+p1.stdout.close()
+
+output = p2.communicate()[0]
+```
+
+
+
+
+
+**Polling process output**
+
+```python
+# invoke process
+process = subprocess.Popen(shlex.split(command),shell=False,stdout=process.PIPE)
+
+# Poll process.stdout to show stdout live
+while True:
+  output = process.stdout.readline()
+  if process.poll() is not None:
+    break
+  if output:
+    print output.strip()
+rc = process.poll()
+```
+
+
+
+
+
+
+
+### subprocess.run
+
+- **blocks** till process is finished
+
+- simplification of `subproces.Popen`
+- (should be used instead of `subprocess.run` for Python 3.5+)
+
+**Shell vs Structured call**
+
+```python
+return_code = subprocess.call(["ls", "-lha"])
+return_code = subprocess.call("ls -lha", shell=True)
+```
+
+**Capturing output and error messages**
+
+```python
+completed_process = subprocess.run("docker ps -a", 
+                                   shell=True, # direct shell interpretation of command
+                                   universal_newlines=True,	# store output as string
+                                   stdout=subprocess.PIPE, 	# store output
+                                   stderr=subprocess.PIPE	# store error
+                                  )
+
+completed_process.stdout     # '....  the '		
+completed_process.stderr     # '' (empty string)
+completed_process.returncode # 0
+```
+
+
 
 
 
