@@ -47,7 +47,7 @@ assert all(mylist)
 - **Dynamic Typing:** Type only checked at runtime
 - **Static Typing:** Type checking at compile time
   - Python will remain dynamically typed language but type hints have been introduced
-- **Duck Typing:** Focussing on how object behaves, rather than its type/class *"If it talks and walks like a duck, then it is a duck"*
+- **Duck-Typing:** Focussing on how object behaves, rather than its type/class *"If it talks and walks like a duck, then it is a duck"*.  By emphasizing interfaces rather than specific types, well-designed code improves its flexibility by allowing polymorphic substitution.
 
 ### Type Hints and Annotations
 

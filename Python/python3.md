@@ -149,7 +149,7 @@ class Derived(Base):
         return 1
 ```
 
-**Abstract Methods**
+#### Abstract Methods
 
 ```python
 from abc import abstractmethod
@@ -193,6 +193,8 @@ class B(A):
 
 ## Generators
 
+> An expression that returns an iterator and can e.g. be consumed in a `for` loop
+
 - using `yield`
 
 ```python
@@ -206,13 +208,21 @@ for random_number in lottery():
 
 
 
-
-
 ## Decorators
 
 https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html
 
+- overloading methods by argument type
 
+https://docs.python.org/3/library/typing.html#typing.overload
+
+
+
+
+
+## Context Manager
+
+An object which controls the environment seen in a [`with`](https://docs.python.org/3/reference/compound_stmts.html#with) statement by defining [`__enter__()`](https://docs.python.org/3/reference/datamodel.html#object.__enter__) and [`__exit__()`](https://docs.python.org/3/reference/datamodel.html#object.__exit__) methods.
 
 
 
