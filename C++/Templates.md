@@ -399,4 +399,94 @@ public:
 
 
 
+## Template Metaprogramming
+
+
+
+
+
+
+
+### Enable_if
+
+
+
+```cpp
+template<typename T>
+struct Point
+{
+  template<typename U = T>
+  typename std::enable_if<std::is_same<U, int>::value>::type
+    MyFunction()
+  {
+    std::cout << "T is int." << std::endl;
+  }
+
+  template<typename U = T>
+  typename std::enable_if<std::is_same<U, float>::value>::type
+    MyFunction()
+  {
+    std::cout << "T is not int." << std::endl;
+  }
+};
+```
+
+
+
+**Conditional Method definition**
+
+
+
+#### Conditional Method Compilation
+
+**Overload by return type**
+
+```cpp
+
+template<typename T>
+class MyClass {
+  using MyTypeToEnableMethod = float;
+  
+  public:
+    template<typename U = T>	// template alias
+    static                              // keyword
+    // the return type
+    typename std::enable_if<
+                  std::is_same<U, MyTypeToEnableMethod>::value, // the condition 
+                                                                // to enable the fn
+                  MyCustomReturnType // the return type if the condition is true
+             >::type	               // select the type of the std::enable_if
+    my_method(int abc) {
+        // ...
+    }
+}
+
+
+```
+
+```cpp
+template<class T>
+struct is_bar
+{
+    template<class Q = T>
+    typename std::enable_if<std::is_same<Q, bar>::value, bool>::type check()
+    {
+        return true;
+    }
+
+    template<class Q = T>
+    typename std::enable_if<!std::is_same<Q, bar>::value, bool>::type check()
+    {
+        return false;
+    }
+};
+```
+
+
+
+**Void type methods**
+
+```cpp
+
+```
 

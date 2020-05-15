@@ -154,3 +154,24 @@ https://medium.com/@gx578007/searching-vector-set-and-unordered-set-6649d1aa7752
 Types defined in the std header:
 
 https://en.cppreference.com/w/cpp/header/cstdint
+
+
+
+
+
+
+
+
+
+## Memory Layout of Primitive Data Types
+
+
+
+
+
+**Structs**
+
+- The compiler is free to insert padding after any structure member 
+- must not reorder the members
+- It must also not insert padding before the first member.
+
