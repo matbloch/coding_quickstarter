@@ -199,6 +199,31 @@ class FakeDatabase:
 
 
 
+```python
+import multiprocessing
+
+def worker(num):
+    """thread worker function"""
+    print 'Worker:', num
+    return
+
+  
+jobs = []
+# schedule the jobs
+for i in range(5):
+  p = multiprocessing.Process(target=worker, args=(i,))
+  jobs.append(p)
+  p.start()
+  
+# sync again - block till all processes terminated
+for j in jobs:
+  j.join()
+```
+
+
+
+
+
 ## Subprocess
 
 > Executes a child program in a new process
