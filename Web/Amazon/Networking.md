@@ -378,15 +378,15 @@ You can use a network address translation (NAT) instance in a **public** subnet 
 
 **Concepts**
 
-- Endpoint service: Your own application in the VPC. Other AWS services can create a connection from their VPC to the endpoint service.
-- Gateway endpoint: A gateway that you specify as a target for a rout in your route table for traffic destined to a supported AWS service
-- Interface endpoint: Elastic network interface with a private IP address (in range of subnet) that serves as an entry point for traffic destined to a supported service
+- **Endpoint service**: Your own application in the VPC. Other AWS services can create a connection from their VPC to the endpoint service.
+- **Gateway endpoint**: A gateway that you specify as a target for a rout in your route table for traffic destined to a supported AWS service
+- **Interface endpoint**: Elastic network interface with a private IP address (in range of subnet) that serves as an entry point for traffic destined to a supported service
 
 
 
 **Endpoint Policies**
 
-> Used together with security groups to secure access to VPC endpoints
+> Used together with security groups to secure access to VPC endpoints (both interface- and gateway endpoints)
 
 - attach a policy to the endpoint to control access to it
 - by default: full access

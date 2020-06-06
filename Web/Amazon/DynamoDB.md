@@ -21,15 +21,24 @@ https://www.dynamodbguide.com/anatomy-of-an-item#attributes
 
 ### Primary Key Types
 
-- **simple primary key**: Similar to key-value stores
+- **simple primary key**
+  - single partition/hash key
 - **composite primary key**: 
-  - partition key: Additional grouping
-  - sort key: For sorting items with the same partition
+  - partition/hash key: Additional grouping
+  - sort/range key: For sorting items with the same partition
   - **Example**: Customer orders. Partition key would be CustomerId and sort key would be OrderID
 
 
 
 ### Secondary Indexes
+
+Allows to query data in table using an alternate key in addition to the primary key.
+
+Not required but will make queries easier
+
+
+
+
 
 
 
@@ -81,7 +90,7 @@ https://www.dynamodbguide.com/anatomy-of-an-item#attributes
             }
         }
     }
-     ```
+    ```
 
 - **String Set**: `SS`
   - unique set of strings
@@ -186,10 +195,6 @@ https://www.dynamodbguide.com/expression-basics
 
 
 
-### 
-
-
-
 
 
 
@@ -235,6 +240,7 @@ https://www.dynamodbguide.com/expression-basics
       - `RANGE` known as sort key
 
 - `AttributeDefinitions` 
+  
   - An array of attributes that describe the key schema for the table and indexes.
 
 
