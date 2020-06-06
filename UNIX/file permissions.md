@@ -1,12 +1,12 @@
-# UNIX
+# File Permissions
 
 
 
-## File Permissions
 
 
 
-![linux-file-permissions](/Users/matthias/dev/coding_quickstarter/UNIX/img/linux-file-permissions.jpg)
+
+![linux-file-permissions](img/linux-file-permissions.jpg)
 
 This example:
 
