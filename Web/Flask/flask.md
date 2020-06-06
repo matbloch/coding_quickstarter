@@ -434,3 +434,54 @@ def create_app(config_object_name) -> Flask:
         return app
 ```
 
+
+
+## Requests Types
+
+
+
+**Query Parameters**
+
+```python
+@app.route('/data')
+def data():
+    # here we want to get the value of user (i.e. ?user=some-value)
+    user = request.args.get('user')
+    return request.query_string
+```
+
+
+
+**Files**
+
+```python
+
+```
+
+
+
+**Form Data**
+
+```python
+
+```
+
+
+
+## Response Format
+
+
+
+
+
+
+
+
+
+
+
+## Error Handling
+
+
+
+https://flask.palletsprojects.com/en/1.1.x/patterns/apierrors/
