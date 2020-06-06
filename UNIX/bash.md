@@ -6,11 +6,55 @@
 
 ## Users
 
-
-
 **Changing a password**
 
 `passwd username`
+
+
+
+
+
+## Output Piping
+
+https://wiki.ubuntuusers.de/Shell/Umleitungen/
+
+
+
+### Redirection `>`
+
+- allows to redirect stdout, e.g. into a file
+
+
+
+### Pipe Operator `|`
+
+- Data flows from left to right
+- Syntax: `command_1 | command_2 | command_3 | .... | command_N `
+- Can be used to redirect `stdout` to `stdin` of other command
+
+
+
+
+
+
+
+```
+command1 | xargs -I{} command2 {}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21,8 +65,6 @@
 
 - display the file permissions:
   -  `ls -l`
-
-
 
 
 
