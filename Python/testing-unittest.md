@@ -154,13 +154,27 @@ json.loads.call_args_list
 json.method_calls
 ```
 
-**Controlling return values**
+
+
+**Mocking Methods**
 
 ```python
 do_something = Mock()
 do_something.return_value = 123
 assert do_something()
 ```
+
+**Mocking Properties**
+
+```python
+wrapper = Mock()
+wrapper.return_value.a = 123
+wrapper.return_value.b = 456
+```
+
+
+
+
 
 **Triggering Side Effects / Exceptions**
 
@@ -189,6 +203,8 @@ class TestCalendar(unittest.TestCase):
         with self.assertRaises(Timeout):
             get_holidays()
 ```
+
+
 
 **Resetting a Mock**
 
@@ -220,6 +236,23 @@ with patch('module.Foo') as mock:
     result = some_function()
     assert result == 'the result'
 ```
+
+
+
+**Mocking properties**
+
+```python
+# The function to test
+p = subprocess.Popen(...)
+if p.returncode is 0:
+   pass # do something
+
+# the mock
+mock = patch('subprocess.Popen')
+mock.return_value.returncode = 0
+```
+
+
 
 
 

@@ -6,13 +6,17 @@
 
 
 
-## Series
+## 01. Series
 
 - see [introduction](https://www.geeksforgeeks.org/python-pandas-series/)
 
 ![pandas_series](/Users/matthias/dev/coding_quickstarter/Python/img/pandas_series.png)
 
+
+
 ### Initialization
+
+**From Array**
 
 ```python
 data = np.array(['g','e','e','k','s'])
@@ -20,29 +24,33 @@ data = ['g', 'e', 'e', 'k', 's']
 series = pd.Series(data)
 ```
 
+**With Indices**
+
+```python
+data = np.array(['g','e','e','k','s','f', 'o','r','g','e','e','k','s'])
+series = pd.Series(data,index=[10,11,12,13,14,15,16,17,18,19,20,21,22])
+```
+
+
+
 ### Accessing Data
 
 ```python
 series[:5]
 ```
 
-### Labeling Data
-
-```python
-data = np.array(['g','e','e','k','s','f', 'o','r','g','e','e','k','s'])
-ser = pd.Series(data,index=[10,11,12,13,14,15,16,17,18,19,20,21,22])
-# accessing a element using index element
-print(ser[16])
-```
-
 ### Naming
 
 ```python
-In [1]: my_series.name
-In [2]: my_series.rename("new_name")
+my_series.name
+my_series.rename("new_name")
 ```
 
-**`Dataframe` from Dict with `Series`**
+
+
+****
+
+**Dataframe` from Dict with `Series`**
 
 ```python
 In [1]: s1 = pd.Series([1, 2], index=['A', 'B'], name='s1')
@@ -62,7 +70,9 @@ In [1]: my_series.tolist()
 
 
 
-## Dataframe
+
+
+## 02. Dataframe
 
 ### Initialization
 
@@ -86,16 +96,12 @@ df = pd.DataFrame(data)
 
 
 
-
-
 ### Indexing
 
 - **`Dataframe.[ ]`**This function also known as indexing operator
 - **`Dataframe.loc[ ]`** for labels
 - **`Dataframe.iloc[ ]`** for positions or integer based
 - **`Dataframe.ix[]`**  for both label and integer based
-
-
 
 ##### **[]** Indexer Operator
 
@@ -247,6 +253,10 @@ df.sort_index(axis = 0)
 d1 = {'col1': [1, 2], 'col2': [3, 4]}
 d2 = d1.transpose()
 ```
+
+
+
+**Renaming Columns/Rows**
 
 
 

@@ -107,6 +107,68 @@ def test_case(session):
 
 
 
+#### Modularizing Fixtures
+
+**tests/fixtures/add.py**
+
+- define fixture in separate file
+
+```python
+import pytest
+
+@pytest.fixture
+def add(x, y):
+    x + y
+```
+
+**tests/conftest.py**
+
+- import in conftest
+
+```python
+import pytest
+from fixtures.add import add
+```
+
+**tests/adding_test.py**
+
+```python
+import pytest
+
+@pytest.mark.usefixtures("add")
+def test_adding(add):
+    assert add(2, 3) == 5
+```
+
+
+
+#### Fixture Scopes
+
+- `module` All methods in same file receive the same object instance
+
+
+
+```python
+@pytest.fixture(scope="module")
+def smtp():
+    # the returned fixture instance will only be shared for tests
+    # inside a single module/file
+  
+  
+@pytest.fixture(scope="session")
+def smtp(...):
+    # the returned fixture value will be shared for
+    # all tests needing it
+```
+
+
+
+
+
+
+
+
+
 ## Monkey Patching
 
 > Replacing / injecting custom functionality for testing purposes
