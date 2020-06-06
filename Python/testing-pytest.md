@@ -107,6 +107,49 @@ def test_case(session):
 
 
 
+#### Parametrized Fixtures
+
+
+
+**Single Parameter**
+
+Fixture definition:
+
+```python
+@pytest.fixture()
+def resource(resource_name):
+    return {"name": resource_name}
+```
+
+Usage:
+
+```python
+@pytest.mark.parametrize("resource_name", ["My Custom Resource"])
+def test_this(resource, resource_name):
+    print(resource_name)
+```
+
+**Multiple Parameters**
+
+```python
+@pytest.fixture()
+def resource(resource_name, resource_value):
+    return {"name": resource_name, "value": resource_value}
+```
+
+**NOTE:** Multiple parameters have do be declared inside a comma separated string
+
+```python
+@pytest.mark.parametrize(
+    "resource_name, resource_value", [("ResName1", "ResVal1"), ("ResName2", "ResVal2")]
+)
+def test_this(resource, resource_name, resource_value):
+    print(resource_name)
+    print(resource_value)
+```
+
+
+
 #### Modularizing Fixtures
 
 **tests/fixtures/add.py**
@@ -292,7 +335,7 @@ addopts = -ra -q
 
 
 
-## Test Marking
+## Marks: Categorizing Tests
 
 **Declare markers in `pytest.ini`**
 
@@ -310,6 +353,44 @@ def test_something_very_slow():
     # Do a very long test
     pass
 ```
+
+#### Predefined Marks
+
+- `skip` skips a test unconditionally
+- `skipif`  conditional skipping
+- `xfail` indicates that a test is expected to fail
+- `parametrize` create multiple variants of a test with different arguments (see section "Test Parametrization")
+
+
+
+## Parametrization: Combining Tests
+
+- `@pytest.mark.parametrize` to execute single test with a set of parameters
+
+Desired test structure:
+
+```python
+def test_is_palindrome_<in some situation>():
+    assert is_palindrome("<some string>")
+```
+
+**Example**: Parametrizing input data
+
+```python
+@pytest.mark.parametrize("palindrome", [
+    "",
+    "a",
+    "Bob",
+    "Never odd or even",
+    "Do geese see God?",
+])
+def test_is_palindrome(palindrome):
+    assert is_palindrome(palindrome)
+```
+
+
+
+
 
 
 
@@ -352,10 +433,41 @@ def test_request(client):
 
 def test_request_method(client):
     response = show_user_profile("myUsername")
-    
-    
 
 ```
+
+
+
+
+
+### moto
+
+- mocking of AWS services connected through boto3
+- Multiple ways to mock services:
+  - decorator: Automatic scoped mocking using the `@mock_<service>` decorator
+  - context manager: Scoped mocking inside a context opened through `with` 
+  - raw use: Manually instantiate and start the mock
+
+
+
+**Example**: S3 bucket fixture
+
+- context manager automatically calls `start` and `stop` on the moto service mock
+
+```python
+@pytest.fixture()
+def moto_boto():
+    with mock_s3():
+        res = boto3.resource('s3')
+        res.create_bucket(Bucket="my_bucket")
+        yield
+
+def test_with_fixture(moto_boto):
+    client = boto3.client('s3')
+    client.list_objects(Bucket=BUCKET)
+```
+
+
 
 
 
