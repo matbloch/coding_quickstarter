@@ -10,7 +10,7 @@
 
 - see [introduction](https://www.geeksforgeeks.org/python-pandas-series/)
 
-![pandas_series](/Users/matthias/dev/coding_quickstarter/Python/img/pandas_series.png)
+![pandas_series](img/pandas_series.png)
 
 
 
@@ -125,6 +125,29 @@ df = pd.DataFrame(data)
 ### Misc Methods
 
 - `df.empty`
+
+
+
+
+
+### Grouping
+
+
+
+```python
+df = pd.DataFrame({'Animal': ['Falcon', 'Falcon','Parrot', 'Parrot'],
+                   'Max Speed': [380., 370., 24., 26.]})
+grouped: pd.DataFrameGroupBy = df.groupby(['Animal'])
+
+# get a specific group
+grouped.get_group('Falcon')
+
+
+df_list  = map(lambda df_i: grouped.get_group(df_i), sampled_df_i)
+sampled_df = pd.concat(df_list, axis=0, join='outer')
+```
+
+
 
 
 
@@ -254,9 +277,17 @@ d1 = {'col1': [1, 2], 'col2': [3, 4]}
 d2 = d1.transpose()
 ```
 
-
-
 **Renaming Columns/Rows**
+
+
+
+
+
+**Set column as Row index**
+
+```python
+df = df.set_index('YourColumnName') 
+```
 
 
 
