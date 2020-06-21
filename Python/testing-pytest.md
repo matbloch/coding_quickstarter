@@ -109,8 +109,6 @@ def test_case(session):
 
 #### Parametrized Fixtures
 
-
-
 **Single Parameter**
 
 Fixture definition:
@@ -206,12 +204,6 @@ def smtp(...):
 
 
 
-
-
-
-
-
-
 ## Monkey Patching
 
 > Replacing / injecting custom functionality for testing purposes
@@ -292,8 +284,6 @@ def test_unix_fs(mocker):
 - `pytest.ini` primary pytest configuration file. Allows to change default behaviour.
 - `conftest.py` local plugin to define hooks, fixtures in specific test (sub-)directories
 - `__ini__.py`
-
-
 
 
 

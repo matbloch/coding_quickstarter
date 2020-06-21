@@ -154,8 +154,6 @@ json.loads.call_args_list
 json.method_calls
 ```
 
-
-
 **Mocking Methods**
 
 ```python
@@ -217,6 +215,7 @@ mock.reset_mock()
 ### Patch()
 
 - looks up an object in a given module and replaces that object with a `Mock`
+- `from unittest.mock import patch`
 
 
 
@@ -253,6 +252,25 @@ mock.return_value.returncode = 0
 ```
 
 
+
+**Patching through the context manager**
+
+```python
+with patch('module.Foo') as mock:
+    pass
+```
+
+
+
+**Patching through fixtures**
+
+```python
+@patch('os.path')
+@patch('my_custom_module.fetch')
+def test_single_model_prediction(mocked_fetch, _):
+    mocked_fetch().return_value = True
+    assert mocked_fetch()
+```
 
 
 
