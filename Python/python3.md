@@ -222,15 +222,53 @@ https://docs.python.org/3/library/typing.html#typing.overload
 
 ## Context Manager
 
-An object which controls the environment seen in a [`with`](https://docs.python.org/3/reference/compound_stmts.html#with) statement by defining [`__enter__()`](https://docs.python.org/3/reference/datamodel.html#object.__enter__) and [`__exit__()`](https://docs.python.org/3/reference/datamodel.html#object.__exit__) methods.
+- allow to control allocation and release of resources
+- `with` is most common usecase
 
 
 
+**Context Manager as a Class**
 
+- `__enter__` returned by `with()` statement 
+- `__exit__` cleanup/release method
 
+```python
+class File(object):
+    def __init__(self, file_name, method):
+        self.file_obj = open(file_name, method)
+    def __enter__(self):
+        return self.file_obj
+    def __exit__(self, type, value, traceback):
+        self.file_obj.close()
+```
 
+Usage:
 
+```python
+with File(path) as f:
+    f.wite('hola')
+```
 
+**Context Manager as a Generator**
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def open_file(name):
+    f = open(name, 'w')
+    try:
+        yield f
+    finally:
+        f.close()
+```
+
+Usage:
+
+```python
+with open_file('some_file') as f:
+    f.write('hola!')
+```
 
 
 
