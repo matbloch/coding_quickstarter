@@ -226,6 +226,24 @@ class B : public A<T> {
 }
 ```
 
+**Initializing templated base class**
+
+```cpp
+Bar (const foo_arg_t bar_arg, const a_arg_t a_arg)
+: Foo<T>(bar_arg)   // base-class initializer
+{
+
+}
+```
+
+**Overloading templated base class methods**
+
+```cpp
+
+```
+
+
+
 
 
 ### Parametrized Inheritance

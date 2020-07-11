@@ -128,3 +128,11 @@ rsync -avz --exclude=.git --exclude=_build --exclude=.idea /my/local/path user@r
 `grep MySearchString`
 
 `grep "and$"`
+
+**Delete folder with certain name**
+
+`find /tmp -type d -name 'graphene-80*' -delete`
+
+or
+
+`sudo rm -rf ./2020-06-*`

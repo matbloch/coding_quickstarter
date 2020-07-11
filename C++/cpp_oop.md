@@ -19,6 +19,30 @@ void Line::setLength(double len) { length_ = len; }
 double Line::getLength(double len) const { return length_; }
 ```
 
+
+
+#### Forward Declaration
+
+- Include/definition order: compiler needs to know class memory layout
+- Benefits
+  - Speed up build time
+  - Dependency breaking
+- Downsides
+  - Google style gide recommends againt using forward declarations
+  - Forward declaration can easily become redundant wen api changes
+
+
+
+**Nested Forward Declaration**
+
+- not possible
+- workarounds:
+  - make class non-nested
+  - create common base class
+  - ...
+
+
+
 ## Member Initialization
 
 
