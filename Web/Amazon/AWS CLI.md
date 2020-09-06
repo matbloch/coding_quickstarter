@@ -24,32 +24,90 @@
 
 ## Setup
 
-1. Download the AWS CLI
+**Install the Command Line Interface**
 
-2. Create an AWS user through the AWS management console that has API access
+1. Download the [AWS CLI](https://aws.amazon.com/de/cli/)
+
+**Create an AWS user and get an API access key**
+
+1. Create an AWS user through the AWS management console that has API access
 
    - Go to the AWS [IAM](https://console.aws.amazon.com/iam/)
    - Create a user
-
-3. Configure the AWS CLI Profile locally (will show dialog to enter the configured user credentials)
-
-   `aws configure`
-
-4. On the AWS management console navigate to the new user and choose the "Security credentials"
-
-5. Use the displayed "Access Key ID" and "Secret access key" for the cli configuration
+2. On the AWS management console navigate to the new user and choose the "Security credentials"
+3. Use the displayed "Access Key ID" and "Secret access key" for the cli configuration
 
    - Create a new one if you forgot the secret key, by clicking on "Create access key"
 
-6. Select the default region you operate ECS in, e.g. `us-east-2`
+**Configuring the CLI**
 
-7. Information will be stored in a **profile** that is used every time AWS CLI prompts are executed
+1. Configure the AWS CLI Profile locally (will show dialog to enter the configured user credentials)
 
-8. Display your profiles:
+   `aws configure`
+
+2. Select the default region you operate ECS in, e.g. `us-east-1`
+
+3. Information will be stored in a **profile** that is used every time AWS CLI prompts are executed
+
+4. Display your profiles:
 
    `cat %USERPROFILE%\.aws\credentials`  (Windows) or `~/.aws/credentials` (Linux & Mac)
 
+## Configuring Multiple Profiles
 
+### Through the CLI
+
+- `aws configure --profile dev`
+- `aws configure --profile prod`
+
+### Manual Inspection
+
+**Config paths**
+
+- Unix: `~/.aws/credentials`
+- Windows: `%UserProfile%\.aws\credentials`
+
+**Defining Credentials**
+
+`~/.aws/credentials`
+
+```
+[default]
+aws_access_key_id=...
+aws_secret_access_key=...
+
+[user2]
+aws_access_key_id=...
+aws_secret_access_key=...
+```
+
+**Defining settings per account**
+
+`~/.aws/config`
+
+```
+[default]
+region=us-west-2
+output=json
+
+[profile user2]
+region=us-east-1
+output=text
+```
+
+
+
+## Switching Between AWS Profiles
+
+- UNIX:
+  - set:  `export AWS_PROFILE=user2`
+  - display: `printenv | grep AWS_PROFILE`
+- Windows:
+  - set:  `setx AWS_PROFILE user2	`
+  - display: `echo %AWS_PROFILE%`
+
+- List current user profile: `aws configure list`
+- List all profiles: `aws configure list-profiles`
 
 
 

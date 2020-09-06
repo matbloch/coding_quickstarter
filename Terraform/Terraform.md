@@ -52,10 +52,6 @@
 
 ## Providers
 
-
-
-
-
 ### Docker
 
 **Windows**
@@ -70,15 +66,7 @@ provider "docker" {
 }
 ```
 
-
-
 ### AWS
-
-
-
-## Workspaces
-
-
 
 
 
@@ -86,20 +74,12 @@ provider "docker" {
 
 ## Filesystem Functions
 
-
-
 - `templatefile`
   - used to generate code from contents of a file
 
 
 
-
-
 ## Scripting
-
-
-
-
 
 **for_each**
 
@@ -146,12 +126,6 @@ locals {
 
 
 ## Input Variables
-
-
-
-
-
-
 
 
 
@@ -204,8 +178,6 @@ See https://learn.hashicorp.com/terraform/getting-started/variables
 
 
 
-
-
 ### Assigning Variables
 
 #### From the CLI
@@ -233,6 +205,16 @@ Terraform loads variables in the following order, with later sources taking prec
 
 
 
+
+
+
+## State Backends
+
+https://www.padok.fr/en/blog/terraform-s3-bucket-aws
+
+
+
+![tf-remote-state](img/tf-remote-state.png)
 
 ## Examples
 
