@@ -388,10 +388,9 @@ def test_is_palindrome(palindrome):
 
 
 
-### pytest-flask
 
-- define fixture that returns instance of app
-- pass fixture as function argument `client` to test
+
+### Flask
 
 
 
@@ -410,12 +409,22 @@ Testing
 import pytest
 from example_app import create_app
 
+# define application in fixture
 @pytest.fixture
 def app():
-    app = create_app()
-    return app
+    yield flask_app
 
-# testing through application test client
+@pytest.fixture
+def client(app):
+    return app.test_client()
+
+def test_index(app, client):
+    res = client.get('/')
+    assert res.status_code == 200
+    expected = {'hello': 'world'}
+    assert expected == json.loads(res.get_data(as_text=True))
+
+# testing through application test client which is passed as "client"
 def test_request(client):
     response = client.get("/user/MyName")
     assert response.status_code == 200
@@ -425,6 +434,25 @@ def test_request_method(client):
     response = show_user_profile("myUsername")
 
 ```
+
+
+
+**Headers**
+
+```python
+client.get('/auth/status', headers=dict(Authorization='Bearer abc'))
+```
+
+**Content**
+
+```python
+client.post(
+    data=json.dumps(dict(email="joe@gmail.com", password="123456")),
+    content_type="application/json",
+)
+```
+
+
 
 
 
@@ -460,6 +488,50 @@ def test_with_fixture(moto_boto):
 
 
 
+
+### SQLAlchemy
+
+conftest.py
+
+````python
+import pytest
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
+
+test_db_url = "sqlite://"  # use in-memory database for tests
+
+
+@pytest.fixture(scope="session")
+def engine():
+    return create_engine(test_db_url)
+
+
+# 'dbsession' fixture: Each test runs in a separate transaction with automatic cleanup
+@pytest.fixture
+def dbsession(engine):
+    """Returns an sqlalchemy session, and after the test tears down everything properly."""
+    connection = engine.connect()
+    # begin the nested transaction
+    transaction = connection.begin()
+    # use the connection with the already started transaction
+    session = Session(bind=connection)
+
+    yield session
+
+    session.close()
+    # roll back the broader transaction
+    transaction.rollback()
+    # put back the connection to the connection pool
+    connection.close()
+````
+
+Using the fixture:
+
+```python
+def test_database_connection(dbsession):
+    # ...
+    pass
+```
 
 
 
