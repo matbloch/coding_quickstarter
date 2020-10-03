@@ -1,4 +1,4 @@
-# Grapheme
+# Graphene
 
 Python and JavaScript library for a GraphQL server.
 
@@ -174,12 +174,20 @@ mutation myFirstMutation {
 - Defines relationship between **fields in the GraphQL schema** and how data is retrieved
 - Each attribute represents a `Field`
 - Each `Field` has a resolve method
+- **Any type** can be mounted as a Field:
+  - Object Type
+  - Scalar Type
+  - Enum
+  - Interface
+  - Union
+- All class attributes of a `graphene.ObjectType` are implicitly mounted as a Field
 
 **Basic Example**
 
 ```python
 class Person(graphene.ObjectType):
     name = graphene.String()
+    
 # Is equivalent to:
 class Person(graphene.ObjectType):
     name = graphene.Field(graphene.String)
@@ -189,7 +197,7 @@ class Person(graphene.ObjectType):
 
 
 
-**graphene.Field**
+**Implicit vs Explicit mounting**
 
 ```python
 class Person(ObjectType):
@@ -197,16 +205,20 @@ class Person(ObjectType):
     last_name = graphene.Field(String, description='Surname')  # explicitly mounted as Field
 ```
 
+
+
+## Input Object Types
+
+- collection of fields which may be supplied to a field argument
+- use `graphene.NonNull` or `required` to make fields required
+- all attributes of `InputObjectType` are mounted as `InputField`
+
 **graphene.InputField**
 
 - can't have arguments `args` on their input fields, unlike regular `graphene.Field`
 - nested input fields: use subfields
 
 **graphene.InputObjectType**
-
-- collection of fields which may be supplied to a field argument
-- use `graphene.NonNull` or `required` to make fields required
-- all attributes of `InputObjectType` are mounted as `InputField`
 
 ```python
 class Person(InputObjectType):
@@ -218,7 +230,11 @@ class Person(InputObjectType):
 
 
 
-### Resolvers
+
+
+
+
+## Resolvers
 
 - Methods to fetch data for a schema field
 
