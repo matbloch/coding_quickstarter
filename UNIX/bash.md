@@ -46,13 +46,20 @@ command1 | xargs -I{} command2 {}
 
 
 
+## Scripting
 
 
 
+**Create a script**
 
+```bash
+#!/bin/bash
+echo "Well, hello there!"
+```
 
+**Make it executable**
 
-
+`chmod -x my_script.sh`
 
 
 

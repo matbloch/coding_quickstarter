@@ -215,9 +215,40 @@ class Bar : public Foo {
 
 
 
-
-
 ### Calling `virtual` Method in Constructor
+
+Calling virtual functions from a constructor or destructor is dangerous  and should be avoided whenever possible.  All C++ implementations should call the version of the function defined at the level of the hierarchy  in the current constructor and no further.
+
+The reason is that C++ objects are constructed like onions, from the  inside out. Base classes are constructed before derived classes. So,  before a B can be made, an A must be made. When A's constructor is  called, it's not a B yet, so the virtual function table still has the  entry for A's copy of fn().
+
+
+
+**Workaround:** Factory
+
+```cpp
+class Object {
+public:
+  virtual void afterConstruction() {}
+};
+
+template<class C>
+C* ObjectFactory() {
+  C* pObject = new C();
+  pObject->afterConstruction();
+  return pObject;
+}
+```
+
+Usage
+
+```cpp
+class MyClass : public Object {
+public:
+  virtual void afterConstruction() {}
+};
+
+auto obj = ObjectFactory<MyClass>();
+```
 
 
 

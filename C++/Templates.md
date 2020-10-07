@@ -308,6 +308,18 @@ int myfunction(Args & ... args) {
 }
 ```
 
+**Iterating over packet arguments**
+
+```cpp
+template<typename ...Args>
+void foo(int first, Args... more) {
+   foo(first);
+   for (auto&& x : { more... }) {
+		  std::cout << x << std::endl;
+	 }
+}
+```
+
 
 
 ### Non-type Template parameters
@@ -340,7 +352,17 @@ class Bar : public Foo <BETA> {
 }
 ```
 
-## 
+**Variadic non-type templates**
+
+```cpp
+template <int N, int... Rest>
+int max() {
+    int tmp = max<Rest...>();
+    return N < tmp ? tmp : N;
+}
+```
+
+
 
 
 
@@ -421,13 +443,7 @@ public:
 
 
 
-
-
-
-
 ### Enable_if
-
-
 
 ```cpp
 template<typename T>

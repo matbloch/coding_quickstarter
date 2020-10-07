@@ -30,3 +30,14 @@ This example:
 
 ### Permission Numbers
 
+
+
+drwxr-xr-x 2 root   root        4096 Sep  8 18:13 ad-hoc
+
+drwxr-xr-x 4 gitlab gitlab 4096 Sep 21 15:35 ad-hoc
+
+
+
+-rwxr-xr-x  1 matthias  staff  11169 Sep 22 10:55 nightly_sot.py
+
+-rw-r--r--   1 matthias  staff  15929 Sep 22 14:48 compare_two_nightly_detection_databases.py
