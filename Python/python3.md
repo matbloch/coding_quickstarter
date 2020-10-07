@@ -10,7 +10,7 @@
 
 
 
-## PEP 8 and Naming
+## PEP 8 and Naming Conventions
 
 - Project Structure and Imports
 
@@ -57,7 +57,7 @@ for key, item in my_dict.items():
 
 `mystr.endswith("abc")`
 
-``mystr.split(";")`
+`mystr.split(";")`
 
 ```
 name = "Emil"
@@ -81,6 +81,40 @@ word_lengths = [len(word) for word in words if word != "the"]
 
 ```python
 (_, abc) = myTuple
+```
+
+#### Enums
+
+```python
+from enum import Enum
+class Color(Enum):
+  RED = 1
+  GREEN = 2
+  BLUE = 3
+```
+
+```python
+my_color = Color.RED
+my_color.name # 'RED'
+my_color.value # 1
+```
+
+**from value**
+
+```python
+Color(1) # RED
+```
+
+**from name**
+
+```python
+>>> from enum import Enum
+>>> class Build(Enum):
+...   debug = 200
+...   build = 400
+... 
+>>> Build['debug']
+<Build.debug: 200>
 ```
 
 
@@ -220,6 +254,12 @@ https://docs.python.org/3/library/typing.html#typing.overload
 
 
 
+
+
+
+
+
+
 ## Context Manager
 
 - allow to control allocation and release of resources
@@ -275,6 +315,66 @@ with open_file('some_file') as f:
 ## Misc / Unsorted
 
 
+
+#### Data Classes
+
+- Auto-generated constructor
+- Alternative to Tuple or Dict
+- `@dataclass` decorator
+
+
+
+**Definition**
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class PlayingCard:
+    rank: str
+    suit: str
+    cost: float = 0.0. # default value
+      
+@dataclass
+class Deck:
+    cards: List[PlayingCard]
+```
+
+**Usage**
+
+```python
+card = PlayingCard('Q', 'Hearts')
+card.rank
+```
+
+**Advanced default values**
+
+```python
+from dataclasses import dataclass, field
+from typing import List
+
+RANKS = '2 3 4 5 6 7 8 9 10 J Q K A'.split()
+SUITS = '♣ ♢ ♡ ♠'.split()
+
+def make_french_deck():
+    return [PlayingCard(r, s) for s in SUITS for r in RANKS]
+
+@dataclass
+class Deck:
+    cards: List[PlayingCard] = field(default_factory=make_french_deck)
+```
+
+**Immutable Data Classes**
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Position:
+    name: str
+    lon: float = 0.0
+    lat: float = 0.0
+```
 
 
 
@@ -337,44 +437,6 @@ Storing to file
 - `os.path.exists`
 - `os.path.isfile`
 - `os.path.isdir`
-
-
-
-#### Enums
-
-```python
-from enum import Enum
-class Color(Enum):
-  RED = 1
-  GREEN = 2
-  BLUE = 3
-```
-
-```python
-my_color = Color.RED
-my_color.name # 'RED'
-my_color.value # 1
-```
-
-**from value**
-
-```python
-Color(1) # RED
-```
-
-
-
-**from name**
-
-```python
->>> from enum import Enum
->>> class Build(Enum):
-...   debug = 200
-...   build = 400
-... 
->>> Build['debug']
-<Build.debug: 200>
-```
 
 
 
