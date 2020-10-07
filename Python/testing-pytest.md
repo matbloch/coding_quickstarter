@@ -65,6 +65,67 @@ def test_sum_tuple():
 
 
 
+## Temporary Files and Folders
+
+#### Temporary Files
+
+```python
+fp = tempfile.TemporaryFile()
+fp.write(b'Hello world!')
+# closing the file will remove it
+fp.close()
+```
+
+**Using a context manager**
+
+```python
+with tempfile.TemporaryFile() as fp:
+  	fp.write(b'Hello world!')
+```
+
+**Named files**
+
+```python
+with tempfile.NamedTemporaryFile() as fp:
+  print(f"File name: {fp.name}")
+```
+
+
+
+**Example:** Dumping content to temporary files
+
+```python
+@contextmanager
+def dump_to_json(data: dict) -> ContextManager[str]:
+    """
+    Dumps provided data dictionary to a temporary json file
+    :param data: The data to serialize as json
+    :return: The absolute path to the temporary json file
+    """
+    fp = tempfile.NamedTemporaryFile(mode='w+')
+    json.dump(data, fp)
+    fp.seek(0)
+    assert os.stat(fp.name).st_size > 0
+    try:
+        yield fp.name
+    finally:
+        fp.close()
+        
+with dump_to_json({"key": 123}) as abs_file_path:
+    do_something(abs_file_path)
+```
+
+
+
+#### Temporary Folders
+
+```python
+with tempfile.TemporaryDirectory() as tmpdirname:
+		print('created temporary directory', tmpdirname)
+```
+
+
+
 ## Fixtures
 
 conftest.py
