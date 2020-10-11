@@ -4,10 +4,6 @@
 
 
 
-
-
-
-
 **ORM Integration**
 
 Integration with Object Relational Mapping tools is provided through specific `factory.Factory` sublasses:

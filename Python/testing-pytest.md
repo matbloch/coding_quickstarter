@@ -449,11 +449,7 @@ def test_is_palindrome(palindrome):
 
 
 
-
-
 ### Flask
-
-
 
 Route definition
 
@@ -473,7 +469,7 @@ from example_app import create_app
 # define application in fixture
 @pytest.fixture
 def app():
-    yield flask_app
+    yield create_app("config.ProductionConfig")
 
 @pytest.fixture
 def client(app):
