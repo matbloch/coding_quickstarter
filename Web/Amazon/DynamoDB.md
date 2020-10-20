@@ -1,4 +1,4 @@
-# DynamoDB on AWS
+# DynamoDB
 
 > **DynamoDB** is a fully managed NoSQL key/value and document database.
 >
@@ -17,6 +17,8 @@ https://www.dynamodbguide.com/anatomy-of-an-item#attributes
 
 ## Key Concepts
 
+> DynamoDB tables can have a single primary key, or a key composed of two attributes which allows to formulate more specific queries (e.g. search for items starting with a certain value).
+
 
 
 ### Primary Key Types
@@ -26,7 +28,9 @@ https://www.dynamodbguide.com/anatomy-of-an-item#attributes
 - **composite primary key**: 
   - partition/hash key: Additional grouping
   - sort/range key: For sorting items with the same partition
-  - **Example**: Customer orders. Partition key would be CustomerId and sort key would be OrderID
+  - **Example**: Customer orders
+    - Hash key: CustomerId
+    - Range key: OrderID (for sorting)
 
 
 
@@ -38,11 +42,63 @@ Not required but will make queries easier
 
 
 
+## Table Definition
+
+- `TableName` 
+
+  - The name of the table
+
+- `ProvisionedThroughput`
+
+  - Represents the provisioned throughput settings for a specified table or index
+  - If you set BillingMode as `PROVISIONED` , you must specify this property. If you set BillingMode as `PAY_PER_REQUEST` , you cannot specify this property.
+
+- `KeySchema` 
+
+  - Specifies the attributes that make up the primary key
+
+  - Used attributes must be defined in `AttributeDefinitions`
+
+  - Each `KeySchemaElement` in the array is composed of:
+
+    - `AttributeName` - The name of this key attribute.
+
+    - `KeyType ` 
+
+      > DynamoDB stores items with same partition key physically close together, in sorted order by the sort key value
+
+      - `HASH`  known as partition key
+      - `RANGE` known as sort key
+
+- `AttributeDefinitions` 
+
+  - An array of attributes that describe the key schema for the table and indexes.
 
 
 
+**Example:** JSON table definition
 
+```json
+{
+    "TableName": "Items",
+    "ProvisionedThroughput": {"WriteCapacityUnits": 5, "ReadCapacityUnits": 5},
+    "KeySchema": [{"KeyType": "HASH", "AttributeName": "Id"}],
+    "AttributeDefinitions": [
+        {"AttributeName": "Deleted", "AttributeType": "S"},
+        {"AttributeName": "Id", "AttributeType": "S"},
+    ]
+}
+```
 
+**Example:** Create a table with the AWS CLI
+
+> **NOTE:** We use the profile "testing" here
+
+```bash
+aws --profile=testing dynamodb create-table --cli-input-json file://Items.json
+```
+
+**Example:** Creating a table in BOTO3
 
 
 
@@ -64,11 +120,11 @@ Not required but will make queries easier
 - (**Null type**: `NULL`)
   - `"OrderId": { "NULL": "true" }`
 
+
+
 ### Collections
 
 > DynamoDB "Expressions" allow to directly operate on individual collection items
-
-
 
 - **List**: `L`
 
@@ -114,11 +170,13 @@ Not required but will make queries easier
 
 
 
-## Expressions
+## Performing Operations
 
 > Expressions are logical comparators used in queries
 
 https://www.dynamodbguide.com/expression-basics
+
+
 
 ### Formulating the Query / Expression
 
@@ -179,13 +237,56 @@ https://www.dynamodbguide.com/expression-basics
     }
 ```
 
+**Query similar partition keys**
+
+- Use `begins_with` and `contains` only with a range key after specifying an EQ condition for the primary key. Alternative is `scan` bit it's costly.
+
+```python
+response = dynamodb_client.query(
+    TableName=TABLE_NAME,
+    KeyConditionExpression='artist = :artist AND begins_with ( song , :song )',
+    ExpressionAttributeValues={
+        ':artist': {'S': 'Arturus Ardvarkian'},
+        ':song': {'S': 'C'}
+    }
+)
+```
+
+**Append item to list**
+
+- use `list_append`
+- use `if_not_exists` to initialize the list if no item is present
+
+```python
+result = dynamodb_client.update_item(
+    TableName=TABLE_NAME,
+    # select the item to update
+    Key={
+        'hash_key_name': {'S': 'abc'},
+        'range_key_name': {'S': 'def'},
+    },
+    UpdateExpression="SET my_list = list_append(if_not_exists(my_list, :empty_list), :my_value)",
+    ExpressionAttributeValues={
+        ":empty_list": {"L": []},
+        ":my_value": {
+            "L": [
+                {'S': 'Arturus Ardvarkian'}
+            ]
+        },
+    },
+    ReturnValues="UPDATED_NEW",
+)
+```
+
+
+
+
+
 
 
 ### Expression Placeholders
 
 > DynamoDB has reserved names. Define placeholders for expressions to avoid clashes.
-
-
 
 ```
  --expression-attribute-names '{
@@ -205,81 +306,7 @@ https://www.dynamodbguide.com/expression-basics
 
 
 
-
-
-
-
-
-
-## Table Definition
-
-- `TableName` 
-
-  - The name of the table
-
-- `ProvisionedThroughput`
-
-  - Represents the provisioned throughput settings for a specified table or index
-  - If you set BillingMode as `PROVISIONED` , you must specify this property. If you set BillingMode as `PAY_PER_REQUEST` , you cannot specify this property.
-
-- `KeySchema` 
-
-  - Specifies the attributes that make up the primary key
-
-  - Used attributes must be defined in `AttributeDefinitions`
-
-  - Each `KeySchemaElement` in the array is composed of:
-
-    - `AttributeName` - The name of this key attribute.
-
-    - `KeyType ` 
-
-      > DynamoDB stores items with same partition key physically close together, in sorted order by the sort key value
-
-      - `HASH`  known as partition key
-      - `RANGE` known as sort key
-
-- `AttributeDefinitions` 
-  
-  - An array of attributes that describe the key schema for the table and indexes.
-
-
-
-**Example:** JSON table definition
-
-```json
-{
-    "TableName": "Items",
-    "ProvisionedThroughput": {"WriteCapacityUnits": 5, "ReadCapacityUnits": 5},
-    "KeySchema": [{"KeyType": "HASH", "AttributeName": "Id"}],
-    "AttributeDefinitions": [
-        {"AttributeName": "Deleted", "AttributeType": "S"},
-        {"AttributeName": "Id", "AttributeType": "S"},
-    ]
-}
-```
-
-
-
-**Example:** Create a table with the AWS CLI
-
-> **NOTE:** We use the profile "testing" here
-
-```bash
-aws --profile=testing dynamodb create-table --cli-input-json file://Items.json
-```
-
-
-
-**Example:** Creating a table in BOTO3
-
-
-
-
-
 ## Identity and Access Management
-
-
 
 https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/authentication-and-access-control.html
 
@@ -313,8 +340,6 @@ client.put_item(
     },
 )
 ```
-
-
 
 
 
