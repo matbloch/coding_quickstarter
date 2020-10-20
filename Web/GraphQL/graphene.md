@@ -280,16 +280,6 @@ class Query(ObjectType):
 
 
 
-
-
-
-
-
-
-
-
-
-
 ## Interfaces
 
 - Base class that define certain set of fields
@@ -342,6 +332,8 @@ class Query(graphene.ObjectType):
 schema = graphene.Schema(query=Query)
 ```
 
+
+
 ### Auto-generated Schemes
 
 #### SQLAlchemy Auto-Generated
@@ -393,6 +385,7 @@ class Query(graphene.ObjectType):
 
 - define query object type with SQLAlchemy model and attribute `interfaces = (graphene.relay.Node,)`
 - add `node = graphene.relay.Node.Field()` to `Query`
+  - As is required in the [Relay specification](https://facebook.github.io/relay/docs/graphql-relay-specification.html), the server must implement a root field called `node` that returns a `Node` Interface.
 - use `graphene.relay.Node.Field` as type for single object query
 - use `SQLAlchemyConnectionField` as type for multi object query
 
@@ -412,7 +405,17 @@ class Query(graphene.ObjectType):
     users = SQLAlchemyConnectionField(User)
 ```
 
-**Example Query**
+**Example:** Single Object Query
+
+```
+query {
+  student(id: "123123") {
+    id
+  }
+}
+```
+
+**Example:** Multi-Object Relay Query
 
 ```json
 query {
