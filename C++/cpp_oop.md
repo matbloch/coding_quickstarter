@@ -2,6 +2,18 @@
 
 ## Class Definition
 
+
+
+#### Forward Declaration
+
+- Include/definition order: compiler needs to know class memory layout
+- Benefits
+  - Speed up build time
+  - Dependency breaking
+- Downsides
+  - Google style gide recommends againt using forward declarations
+  - Forward declaration can easily become redundant wen api changes
+
 ```cpp
 // forward declaration
 class Line {
@@ -21,18 +33,6 @@ double Line::getLength(double len) const { return length_; }
 
 
 
-#### Forward Declaration
-
-- Include/definition order: compiler needs to know class memory layout
-- Benefits
-  - Speed up build time
-  - Dependency breaking
-- Downsides
-  - Google style gide recommends againt using forward declarations
-  - Forward declaration can easily become redundant wen api changes
-
-
-
 **Nested Forward Declaration**
 
 - not possible
@@ -45,14 +45,26 @@ double Line::getLength(double len) const { return length_; }
 
 ## Member Initialization
 
-
-
 **Initialization Order**
 
 1. `virtual` base classes
-2. direct base classes
-3. nonstatic data members, in order of class definition
+2. direct base classes (depth-first)
+3. nonstatic data members, in order of declaration in the class definition
+   - also applies to initializer list
 4. body of constructor
+
+
+
+#### Pittfalls
+
+```cpp
+class A : public B {
+  public:
+  // base classes are initialized before members - "a_member" is not initialized
+  A(): B(a_member), a_member(123) {}
+  int a_member;
+}
+```
 
 
 
@@ -64,13 +76,11 @@ double Line::getLength(double len) const { return length_; }
 
 
 
+##### Method 1: Class constructor
 
+##### Method 2: Initialization list
 
-#### Method 1: Class constructor
-
-#### Method 2: Initialization list
-
-- If a member class does not have a default constructor: It MUST be initialized wth an initialization list
+- If a member class does not have a default constructor: It **MUST** be initialized wth an initialization list
 
 ```cpp
 class A
@@ -90,7 +100,7 @@ class B
 };
 ```
 
-#### Method 3: Assignment
+##### Method 3: Assignment
 
 ### 
 
@@ -104,23 +114,9 @@ class B
 
 
 
-
-
-
-
-
-
 ## Constructors
 
 ### Copy constructors
-
-```cpp
-MyClass( MyClass* other );
-MyClass( const MyClass* other );
-
-// leads to infinite loop!
-MyClass( MyClass other );
-```
 
 **Compiler provided copy constructor**
 
@@ -133,31 +129,25 @@ class MyClass {
 ```
 ```cpp
 MyClass::MyClass( const MyClass& other ) :
- x( other.x ), c( other.c ), s( other.s )
-{}
+   x( other.x ), c( other.c ), s( other.s ) {}
 ```
 
-### Overloads for `const &` members
+**Explicit auto-generation**
+
+```cpp
+MyClass(MyClass const&) = default;
+```
+
+**Manual Implementation**
+
+```cpp
+MyClass::MyClass( const MyClass& other ) :
+   x( other.x ), c( other.c ), s( other.s ) {}
+```
+
+**Overloads for `const &` members**
 
 - simple solution: if needs to support assignment, use ptr instead of references (can create pointer from reference)
-
-
-
-**Copy Constructor**
-
-Let compiler generate it:
-```cpp
-ModelRecorder(const ModelRecorder&) = default;
-```
-Own implementation:
-```cpp
-ModelRecorder(const ModelRecorder& arg)
-    :CompositionalModel{arg}, modelRef_{arg.modelRef_} {}
-```
-
-**Assignment Operator**
-
-
 
 
 
