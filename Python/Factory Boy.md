@@ -187,7 +187,7 @@ class PersonFactory(SQLAlchemyModelFactory):
 
 
 
-## Modeling Relationship
+## Modeling Relationships
 
 **From populated tables**
 
@@ -204,7 +204,7 @@ class UserFactory(SQLAlchemyModelFactory):
     language = factory.Iterator(models.Language.query.all())
 ```
 
-### Dependent Content
+### Dependent Content (ForeignKeys)
 
 **ForeignKey**
 
@@ -229,6 +229,7 @@ class UserFactory(SQLAlchemyModelFactory):
 
 **Reverse ForeignKey**
 
+- if a related object should be created upon object creation
 - generated **after** base factory
 
 Database model:
@@ -247,8 +248,12 @@ Factory:
 class UserFactory(SQLAlchemyModelFactory):
     class Meta:
         model = models.User
-
-    log = factory.RelatedFactory(UserLogFactory, 'user', action=models.UserLog.ACTION_CREATE)
+	# will create a "UserLog" each time a user is created
+    log = factory.RelatedFactory(
+        UserLogFactory,
+        factory_related_name='user', # link to the created user
+        action=models.UserLog.ACTION_CREATE,
+    )
 ```
 
 ### Many-to-Many Relationship
@@ -281,6 +286,7 @@ class UserFactory(SQLAlchemyModelFactory):
     class Meta:
         model = UserModel
 
+    # factory method to attach related objects that are passed in as argument
     @factory.post_generation
     def groups(self, create, extracted, **kwargs):
         if not create:
@@ -306,7 +312,7 @@ class PersonFactory(factory.alchemy.SQLAlchemyFactory):
         model = Person
 
     @factory.post_generation
-    def addresses(obj, create, extracted, **kwargs):
+    def addresses(self, create, extracted, **kwargs):
         if not create:
             return
 
@@ -319,6 +325,46 @@ Usage
 
 - `PersonFactory(addresses=4)` Create person with 4 addresses
 - `PersonFactory(addresses=2, addresses__city='London')` Create person with 2 addresses, set `city` field of address to "London"
+
+
+
+**Many-to-Many with `RelatedFactory`**
+
+- use `RelatedFactory` per link
+
+Models
+
+```python
+class User(models.Model):
+    name = models.CharField()
+
+class Group(models.Model):
+    name = models.CharField()
+    members = models.ManyToManyField(User, through='GroupLevel')
+```
+
+Factories
+
+```python
+class UserWithGroupFactory(UserFactory):
+    membership = factory.RelatedFactory(
+        GroupLevelFactory,
+        factory_related_name='user',
+    )
+class UserWith2GroupsFactory(UserFactory):
+    membership1 = factory.RelatedFactory(
+        GroupLevelFactory,
+        factory_related_name='user',
+        group__name='Group1',
+    )
+    membership2 = factory.RelatedFactory(
+        GroupLevelFactory,
+        factory_related_name='user',
+        group__name='Group2',
+    )
+```
+
+
 
 
 
