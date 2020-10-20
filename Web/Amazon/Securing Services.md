@@ -7,20 +7,31 @@
 ### Security
 
 - Networking: all services except api that schedules tasks in public subnet, rest in private subnet. Access to ECR through AWS private link
-- Security groups: limit traffic to private network if possible, block out traffic
-- S3: 
-  - encryption
-  - restrict policy
-- DynamoDB? AWS Key Management Service (KMS)
-- SSL
-- ECS
-  - private link
-- In general: Speak to S3 etc through VPC endpoint
-  - VPC entpoint
 
+- Security groups: limit traffic to private network if possible, block out traffic
+
+  
+
+- DynamoDB?
+
+-  AWS Key Management Service (KMS)
+
+- SSL
+
+- ECS
+  
+  - private link
+  
+- In general: Speak to S3 etc through VPC endpoint
+  
+- VPC entpoint
+  
 - only load balancer in public subnets
+
 - do catch any logs as possible, in S3
+
 - structure AWS accounts
+
 - with growth:
   - web application firewall on load balancer
   - e.g. CloudFront
@@ -36,7 +47,13 @@
 
 *network access control list (ACL)* is an optional layer of security  for your VPC that acts as a firewall for controlling traffic in and out of one or  more subnets.
 
-
+- Multiple AWS accounts
+- Multiple VPCs
+- Tiers of Subnets layered on top of each other
+- Layering Security Groups with network ACLS
+- Redundant clusters
+- Load Balancers
+- Etc.
 
 
 
@@ -45,8 +62,6 @@
 
 
 https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/access-control-overview.html
-
-
 
 - Identiy-based Policies (IAM policies)
 - Resource-Based Policies
@@ -78,29 +93,42 @@ https://aws.amazon.com/de/blogs/security/iam-policies-and-bucket-policies-and-ac
 
 
 
+**IAM policies vs. S3 policies**
+
+Use IAM policies if:
+
+- You need to control access to AWS services other than S3.  IAM policies will be easier to manage since you can centrally manage all of your permissions in IAM, instead of spreading them between IAM and  S3.
+-  You have numerous S3 buckets each with different  permissions requirements. IAM policies will be easier to manage since  you don’t have to define a large number of S3 bucket policies and can  instead rely on fewer, more detailed IAM policies.
+- You prefer to keep access control policies in the IAM environment.
+
+Use S3 bucket policies if:
+
+- You want a simple way to grant [cross-account access](http://docs.aws.amazon.com/AmazonS3/latest/dev/AccessPolicyLanguage_UseCases_s3_a.html) to your S3 environment, without using [IAM roles](http://docs.aws.amazon.com/IAM/latest/UserGuide/cross-acct-access-walkthrough.html).
+- Your IAM policies bump up against the size limit (up to 2 kb for users, 5 kb for groups, and 10 kb for roles). S3 supports bucket  policies of up 20 kb.
+- You prefer to keep access control policies in the S3 environment.
 
 
 
 
-
-
-## Identity and Access Management
-
-**AWS identities**
-
-- **AWS account root user:** Should only be used to perform emergency tasks. Best practice is to use the root only to create first IAM user [see docs](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#create-iam-users).
-- **IAM user:** Identity created within AWS account that has specific custom permissions.
-- **IAM role:** Has assigned policies that grant access to resources. Can be assigned to users.
-
-
-
-
-
-You can have valid credentials to authenticate your requests, but unless you have                                    permissions you cannot create or access Amazon DynamoDB resources. For example, you                                    must have permissions to create an Amazon DynamoDB table.                                 
 
 
 
 ## Best Practices per Service
+
+
+
+### Networking
+
+
+
+
+
+### S3
+
+- encryption
+- restrict policy
+- use "least privilege" IAM policies
+  - e.g. only allow reads: `s3:read`
 
 
 
