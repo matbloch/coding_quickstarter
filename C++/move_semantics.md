@@ -12,13 +12,7 @@
 
 
 
-## Rvalue References
-
-**Reads**
-
-- [Returning R-val-references](https://stackoverflow.com/questions/4986673/how-to-return-an-object-from-a-function-considering-c11-rvalues-and-move-seman/4986802#4986802)
-
-**rvalues vs lvalues**
+## R- and L-Values
 
 - `lvalues`:
   - refers to an object that persists beyond a single expression
@@ -35,6 +29,155 @@
 int x = 3 + 4;	// x: lvalue, (3+4): rvalue
 cout << x << endl;
 ```
+
+
+
+## Lifetime of a Temporary
+
+- temporary bound to a `return` value of a function is not extended: It is destroyed immediately at the end of the return expression.
+- temporary bound to a reference member in a constructor initializer list persists only until the constructor exits, not as long as the object exists
+- temporary bound to a reference parameter in a function call exists until the end of the full expressions containing that function call
+  - if function returns a reference which outlives the full expression, it becomes a dangling reference
+
+
+
+### Const References to Temporary Objects
+
+- The C++ standard *guarantees* that binding a temporary to a `const` reference on the stack, extends the lifetime of the temporary to the lifetime of the const reference.
+- only `direct` reference to temporary objects, not reference obtained via member function (can e.g. be modified by constructor, i.e. not save)
+
+```cpp
+int GetInt() {
+    int x = 1;
+    return x;
+}
+
+const int& x = GetInt();
+```
+
+
+
+## Copy Elision
+
+> Copy elision is an optimization implemented by most compilers to prevent extra (potentially expensive) copies in certain situations. It makes  returning by value or pass-by-value feasible in practice (restrictions  apply).
+
+- Copiler constructs objects already in reserved future memory location ("in-place-construction")
+- With each copy elision, one construction and one matching destruction of the copy are omitted, thus saving CPU time, and one object is not  created, thus saving space on the stack frame.
+
+
+
+### Common Forms of Copy Elision
+
+**Named Return Value Optimization (NRVO)**
+
+- if named non-`const` object with automatic storage duration is returned
+- copy/move is elided: compiler generates `a` already in the place that is reserved for the return value
+- `std::move` can make things worse
+
+```cpp
+A foo() {
+  A a=...;
+  ...
+  return a;
+}
+```
+
+**Return Value Optimization (RVO)**
+
+- when a temporary is returned
+
+```cpp
+A foo() {
+  return A();
+}
+```
+
+**Temporary passed by value**
+
+```cpp
+foo(A());
+```
+
+
+
+### Mandatory and non-mandatory Copy Elision
+
+- Copy/move-constructors are not called consistently
+- No critical logic inside copy/move-constructors or destructors
+
+
+
+#### Mandatory copy/move elision (since C++17)
+
+- In a return statement where the operand is an `rvalue` of the same class type as the function return type
+
+```cpp
+T f() {
+    return T();
+}
+f(); // only one call to default constructor of T
+```
+
+#### Non-mandatory elision of copy/move
+
+```cpp
+struct C {
+  C() {}
+  C(const C&) { std::cout << "A copy was made.\n"; }
+};
+ 
+C f() {
+  return C();
+}
+```
+
+
+
+```cpp
+C obj = f();
+```
+
+
+
+Possible outputs (dependent on compiler):
+
+
+- <nothing>
+  
+  - both copy operations elided
+- ```cpp
+  "A copy was made"
+  ```
+  - one copy is optimised/elided (propbably the `return` copy)
+- ```cpp
+  "A copy was made"
+  "A copy was made"
+  ```
+  - copy 1: return to a temp
+  - copy 2: from temp to object
+
+
+
+
+
+
+
+
+## Rvalue References
+
+
+
+### Lifetime
+
+
+
+### Non-const References
+
+
+
+**Reads**
+
+- [Returning R-val-references](https://stackoverflow.com/questions/4986673/how-to-return-an-object-from-a-function-considering-c11-rvalues-and-move-seman/4986802#4986802)
 
 **Rvalue References: &&**
 Used for:
@@ -59,6 +202,10 @@ foo(foobar()); // argument is rvalue: calls foo(X&&)
 - Hence, usually people choose `const auto &` instead of `const auto &&` as it is more concise and 'const auto &&' does not really offer any advantage over 'const auto &&'.
 
 - Wouldn't you always use `auto&&` whenever you want to bind something to a mutable reference? `auto&` only binds lvalue types, hence `auto&&` would be more concise for this case as it allows to bind both `rvalue` and `lvalue` types.
+
+
+
+
 
 
 
@@ -92,6 +239,41 @@ Foo (vector<int> vec) : _member{std::move(vec)} {}
 > ```
 >
 > then any use of X’s copy constructor is ill-formed because of the ambiguity; no diagnostic is required.
+
+
+
+### Implicit Generation of Move Semantics
+
+Only generated if:
+
+- no user-declared copy constructor
+- no user-declared copy assignement operator
+- no user-declared move assignment operator
+- no user-declared destructur **and** no explicitly `deleted` move constructor
+
+```cpp
+class Lifetime {
+public:
+  Lifetime() { std::cout << "Constructor" << std::endl; }
+  Lifetime(const Lifetime &other) {
+    std::cout << "Copy Constructor" << std::endl;
+  }
+};
+```
+
+```cpp
+Lifetime temp;
+Lifetime x = std::move(temp);
+```
+
+**Output**:
+
+```cpp
+Constructor
+Copy Constructor
+```
+
+
 
 
 
@@ -229,6 +411,12 @@ class VertexShader : public Shader {
     }
 }
 ```
+
+
+
+## std::reference_wrapper
+
+
 
 
 
