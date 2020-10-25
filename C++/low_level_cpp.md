@@ -32,6 +32,78 @@
 
 
 
+
+### Program Memory
+
+- Most modern OS's use similar system
+- Memory segments are separated based on permission
+  - Code (text section) has execute permission, other segments don't
+
+
+
+#### Memory Sections
+
+![cpp-program-memory](img/cpp-program-memory.gif)
+
+
+
+**Stack**
+
+- runtime memory
+
+**Heap** (R/W, no execute)
+
+- dynamically allocated storage
+- allocated by `malloc` (C), `new`
+
+**Data**
+
+- statically allocated data, read from disk
+  - Read-only: string literals
+  - Read/write: global arrays and variables
+- initialized and uninitialized sections
+  - `static int;` vs `static int = 32;`
+
+**Text**
+
+- executable machine instructions
+- read-only
+- placed below stack/heap to prevent overflow from overwriting it
+
+
+
+#### Stack Buffer Overflows
+
+- when program writes to a memory address on the program's call stack outside of intended data structure - more data is written to a buffer than is actually allocated
+- can be exploited to take control of the process by injecting code into the executable memory section of the program 
+
+
+
+
+
+### Memory Layout of C++ Object
+
+https://dev.to/visheshpatel/memory-layout-of-c-object-1p17
+
+
+
+### Binary Machine Code / Assembly
+
+
+
+
+
+https://www.bogotobogo.com/cplusplus/assembly.php
+
+
+
+
+
+
+
+
+
+
 ### Memory Allocation
 
 ```cpp
@@ -59,6 +131,39 @@ As far as which one to use; you choose the method that works best for you, given
 - Some easy cases:
   - If you don't want to worry about calling delete, (and the potential to cause memory leaks) you shouldn't use new.
   - If you'd like to return a pointer to your object from a function, you **must** use new
+
+
+
+### Malloc vs New
+
+> Takeaway: **Always** use `new` in C++
+
+1. `new` is an **operator**, while `malloc()` is a **function**.
+2. `new` calls **constructors**, while `malloc()` does **not**.
+3. `new` returns **exact data type**, while `malloc()` returns **void***. 
+4. `new` never returns a **NULL** (will throw on failure) while `malloc()` returns NULL
+5. Reallocation of memory not handled by `new` while `malloc()` can
+
+**new**
+
+- ensure that **constructor** is called
+- returns 
+
+```cpp
+char *buffer = new char[1024];
+delete[] buffer;
+```
+
+**malloc**
+
+```cpp
+int *buffer = static_cast<int*>(malloc(sizeof(int)));
+free(buffer);
+```
+
+
+
+
 
 
 

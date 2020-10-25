@@ -15,11 +15,17 @@ This example:
 - Group: read
 - Others: read
 
+**Examples:**
+
+- drwxr-xr-x
+
 **Displaying Permissions**
 
 - `ls -l`
 
 **Changing Permissions**
+
+`chmod [permission] [file_name]`
 
 - `chmod +rwx filename` to add permissions.
 - `chmod -rwx directoryname` to remove permissions.
@@ -32,12 +38,18 @@ This example:
 
 
 
-drwxr-xr-x 2 root   root        4096 Sep  8 18:13 ad-hoc
-
-drwxr-xr-x 4 gitlab gitlab 4096 Sep 21 15:35 ad-hoc
 
 
+### Changing Ownershp
 
--rwxr-xr-x  1 matthias  staff  11169 Sep 22 10:55 nightly_sot.py
+Change file ownership:
 
--rw-r--r--   1 matthias  staff  15929 Sep 22 14:48 compare_two_nightly_detection_databases.py
+```output
+chown [user_name] [file_name]
+```
+
+Change group ownership:
+
+```output
+chgrp [group_name] [file_name]
+```
