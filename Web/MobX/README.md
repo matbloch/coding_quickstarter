@@ -13,11 +13,13 @@
 
 
 
-### A. `observable` Annotation
+### Make State Observable
+
+#### A. `observable` Annotation
 
 - `observable(source, overrides?, options?)`
 
-**Example**
+**Example:** Decorator
 
 ```javascript
 import { observable } from "mobx"
@@ -28,9 +30,18 @@ class Todo {
 }
 ```
 
-#### 
+**Example:** Method/function
 
-### B. makeObservable
+```javascript
+const peopleStore = observable([
+  { name: "Michel" },
+  { name: "Me" }
+]);
+```
+
+
+
+#### B. makeObservable
 
 - make **existing** object properties observable
 - typically used in constructor of class
@@ -64,7 +75,7 @@ class Doubler {
 
 
 
-### C. makeAutoObservable
+#### C. makeAutoObservable
 
 - like `makeObservable` but infers all properties
 - `false` can be used to exclude property/method
@@ -80,11 +91,35 @@ class Animal {
     constructor(name) {
         this.name = name
         this.energyLevel = 100
-        makeAutoObservable(this)
+        makeAutoObservable(
+            this, {
+                name: false // exclude property name
+            }
+        )
     }
     reduceEnergy() {this.energyLevel -= 10}
     get isHungry() {return this.energyLevel < 50}
 }
+```
+
+
+
+### State References
+
+- references between stores are automatically handled
+
+**Example**
+
+```javascript
+const peopleStore = observable([
+  { name: "Michel" },
+  { name: "Me" }
+]);
+observableTodoStore.todos[0].assignee = peopleStore[0];
+observableTodoStore.todos[1].assignee = peopleStore[1];
+
+// also updates observableTodoStore
+peopleStore[0].name = "Michel Weststrate";
 ```
 
 
@@ -103,7 +138,7 @@ class Animal {
 
 - `action` is annotation **and** function
 
-**Example**
+**Example**: click handler
 
 ```javascript
 const ResetButton = ({ formState }) => (
@@ -117,6 +152,16 @@ const ResetButton = ({ formState }) => (
     </button>
 )
 ```
+
+**Example: **Async Action
+
+```javascript
+setTimeout(action(() => {
+  observableTodoStore.addTodo('Random Todo ' + Math.random());
+}), 2000);
+```
+
+
 
 
 
@@ -159,21 +204,38 @@ class Store {
 
 
 
+## Derivatives / Computed Properties
+
+> Computed values can be used to derive information from other observables.
+
+- evaluated lazily, have output caching
+
+- declaration:
+  - use `makeObservable` to declare getter as computed
+  - (Deprecated) decorators
+
+**Example:** Decorator
+
+```javascript
+import { observable, computed } from "mobx"
+
+class OrderLine {
+    @observable price = 0
+    @observable amount = 
+    constructor(price) {
+        this.price = price
+    }
+    @computed get total() {
+        return this.price * this.amount
+    }
+}
+```
 
 
 
 
-## Derivatives
-
-### 
 
 
 
-### Computed Values
-
-### 
-
-
-
-
+## MobX and React
 
