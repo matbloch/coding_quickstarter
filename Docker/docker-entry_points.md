@@ -1,5 +1,11 @@
 # Docker Container Entry Points
 
+
+
+READ: https://aws.amazon.com/de/blogs/opensource/demystifying-entrypoint-cmd-docker/
+
+
+
 https://docs.docker.com/engine/reference/builder/#entrypoint
 
 -  `ENTRYPOINT`  
