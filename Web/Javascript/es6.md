@@ -3,7 +3,17 @@
 **ECMAScript 5**
 
 - 2009: Introduction of ECMAScript 5 (ES5), added new features to language and modified existing ones
-- To enable new features, add `"use strict"` at top of script
+
+- To enable new features, add `"use strict"` at top of script. Automatically added if classes/modules are used.
+
+  ```javascript
+  "use strict";
+  
+  // this code works the modern way
+  ...
+  ```
+
+  
 
 
 
@@ -20,13 +30,25 @@
 - case sensitive: Upper/lowercase
 
 
+
+
+
 # ECMA Script 6
+
+
+
+## Basics
+
+- `;` at end of line optional
+
+
 
 
 
 #### Destructuring
 
 **Arrays**
+
 ```javascript
 var a, b, rest;
 [a, b] = [10, 20];
@@ -49,7 +71,6 @@ let {a, b, ...rest} = {a: 10, b: 20, c: 30, d: 40}
 **From Function Arguments**
 
 ```javascript
-
 var user = {
   id: 42,
   displayName: 'jdoe',
@@ -65,12 +86,17 @@ function userId({id}) {
 function whois({displayName, fullName: {firstName: name}}) {
   console.log(displayName + ' is ' + name);
 }
-
 ```
 
 
 
-## Imports
+
+
+## JavaScript Fundamentals
+
+
+
+### Imports
 
 **Import default export**
 
@@ -86,14 +112,132 @@ import { destructuredModule } from 'module'
 
 
 
-## Variables
+### Variables and Scope
 
-- `let`
+
+
+- `let` 
+  - block scope (`{}`)
+  - access before assignment: throws `RefrenceError`
 - `const`
-- `var`
-  -  **old**, has **no block scope!** (variables only limited to functional scope)
-  - declaration at beginning of function start
-  - assignment at actual position
+  - block scope (`{}`)
+  - access before assignment: throws `RefrenceError`
+  - can't be reassigned (but not bit constess!)
+- `var` 
+  - function scope
+  - access before assignment: `undefined`
+
+
+
+### Data Types
+
+- `typeof()` derive object type
+- use `===` for strict evaluation (prevent type conversion)
+
+**Primitives**
+
+- `number` numbers of any kind (integer/float), limited to 64bit
+- `bigint` numbers of arbitrary size
+- `boolean`
+- `string` for strings
+  - including empty
+  - no special type for single characters
+
+**Object and Symbols**
+
+- `object` collection of data
+- `symbol` unique identifiers for objects
+
+**Special Values**
+
+- `null` 
+  - reference to non-existing object/null pointer
+  - represents "nothing"/"empty"/"unknown"
+- `undefined`
+  - "value is not assigned"
+  - use `null` to assign "unknown"
+- `NaN`
+  - `undefined` converted to number (e.g. in zero division)
+
+
+
+### Comparison and Assignment Operators
+
+**Nullish coalescing operator `??`**
+
+- conditional assignment with null check
+- `a` if not `null`/`undefined`, else `b`
+- returns first defined value
+
+```javascript
+result = a ?? b
+```
+
+
+
+### Control Structures
+
+
+
+**do ... while**
+
+```javascript
+do {
+  // loop body
+} while (condition);
+```
+
+**for**
+
+```javascript
+for (begin; condition; step) {
+  // ... loop body ...
+}
+```
+
+**switch**
+
+- type matters, equality check is always strict `===`
+
+```javascript
+switch(x) {
+  case 'value1':  // if (x === 'value1')
+    break;
+  case 'value2':  // grouping of cases
+  default:
+    // do something
+}
+```
+
+
+
+
+
+#### Loop Labels
+
+- break/continue to specific loop scope
+- `break <labelName>`
+
+```javascript
+labelName: for (...) {
+  ...
+}
+```
+
+**Example:**
+
+```javascript
+outer: for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    let input = prompt("Name?", '');
+    if (!input) break outer; // end both loops
+  }
+}
+```
+
+
+
+
 
 ## Data Types
 
@@ -129,7 +273,7 @@ const functionName = (params) => { }
 
 
 
-## Iteration
+### Iteration
 
 **For each** (Array)
 
@@ -149,9 +293,7 @@ for(let itemName of objectName) { }
 for(let key in objectName) { }
 ```
 
-
-
-## Array Manipulation
+### Array Manipulation
 
 **Filtering**
 
@@ -163,7 +305,6 @@ myArray.filter(word => word.length > 6);
 
 ```javascript
 const new_array = array1.map(x => x * 2);
-
 const new_array = todos.map((todo, index) => {});
 ```
 
