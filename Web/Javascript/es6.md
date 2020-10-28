@@ -17,31 +17,9 @@
 
 
 
-
-
-**Resources**
-
-- https://javascript.info/
-
-
-
-## Do's/Don'ts
-
-- case sensitive: Upper/lowercase
-
-
-
-
-
-# ECMA Script 6
-
-
-
 ## Basics
 
 - `;` at end of line optional
-
-
 
 
 
@@ -113,8 +91,6 @@ import { destructuredModule } from 'module'
 
 
 ### Variables and Scope
-
-
 
 - `let` 
   - block scope (`{}`)
@@ -259,16 +235,39 @@ let my var = `1 + 2 = ${sum(1, 2)}.`;  // 1 + 2 = 3.
 
 ## Functions
 
+- value representing action
+- can be assigned to variables
+
+```javascript
+// declaration
+function sayHi() {}
+// expression
+let sayHi = function() {};
+```
+
+**Default arguments**
+
+```javascript
+function sum(a=1, b=2) {}
+```
+
+**Arrow Functions**
+
+- `let func = (arg1, arg2, ...argN) => expression`
+
+```javascript
+// single line
+let sum = (a, b) => a + b;
+// multi-line
+let functionName = (params) => { };
+```
+
 **Anonymous Function**
+
+- e.g. used as callback/event handlers
 
 ```javascript
 (params) => { }
-```
-
-**Named Function**
-
-```javascript
-const functionName = (params) => { }
 ```
 
 
@@ -306,6 +305,139 @@ myArray.filter(word => word.length > 6);
 ```javascript
 const new_array = array1.map(x => x * 2);
 const new_array = todos.map((todo, index) => {});
+```
+
+
+
+## Objects
+
+- `const` objects **can** be changed!
+- property ordering:
+  - integers are sorted
+  - others: declaration order
+
+
+
+### Definition
+
+```javascript
+// "object constructor" syntax
+let user = new Object(); 
+// "object literal" syntax
+let user = {};
+// direct property assignment
+let user = {
+  name: "John",
+  age: 30
+};
+// shorthand initialization (in case property name == value)
+let user = {
+    name,  // same as name:name
+    age: 30
+}
+```
+
+### Property Access
+
+**Access**
+
+- `obj.property`.
+-  `obj["property"]`
+-  `obj[varWithKey]`
+
+**Delete Operator**
+
+```javascript
+delete user.name;
+```
+
+**Property Existence**
+
+- `if "key" in object`
+
+- `for (let prop in obj)`
+
+**Optional Chaining**
+
+- On property: `value?.prop`
+  - returns `prop` if value exists
+  - can be chained: `user?.address.street`
+
+- On method: `obj.method?.()`
+  - calls method if it exists, otherwise returns `undefined`
+
+
+
+### References and Copies
+
+- assignment **by reference**, not copy by default
+- use `===` to check for reference equality
+
+**Cloning**
+
+- `Object.assign(dest, [src1, src2, src3...])`
+- instead of copying attributes individually
+- overwrites if property exists
+- does not apply to **nested** objects (check type of each attribute)
+
+**Example:** Copy properties
+
+```javascript
+let user = { name: "John" };
+// copies all properties of "permissions" to user
+Object.assign(user, permissions);
+```
+
+**Example:** Clone object
+
+```javascript
+let clone = Object.assign({}, user);
+```
+
+
+
+### Object Methods
+
+- use `this` (evaluated at runtime) to access members
+
+**Declaration**
+
+```javascript
+user = {
+    name: "John"
+    // use 
+    sayHi() {
+        alert(this.name);
+    }
+}
+```
+
+
+
+### Symbols
+
+- Symbols are guaranteed to be unique
+- can be used as **property keys** (instead of strings)
+- are **skipped** in `for ...in` loops
+- to string: `id.toString()`
+
+```javascript
+let id1 = Symbol("description");
+let id2 = Symbol("description");
+
+let user = {
+  [id]: 123
+};
+```
+
+#### Global Symbols
+
+- global registry to store symbol by name
+
+**Lookup**
+
+```javascript
+let globalSymbol = Symbol.for("name");
 ```
 
 
