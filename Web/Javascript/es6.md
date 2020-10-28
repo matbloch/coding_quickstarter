@@ -233,6 +233,38 @@ let my var = `1 + 2 = ${sum(1, 2)}.`;  // 1 + 2 = 3.
 
 
 
+### Arrays
+
+
+
+```javascript
+let arr = new Array();
+let arr = [];
+```
+
+**Methods**
+
+- `push` / `pop` add/remove and return
+- `shift` / `unshift` remove from start/end
+- `slice(<start>, <end>)`
+- `concat`
+
+**Iteration**
+
+```javascript
+for (let i = 0; i < arr.length; i++)
+```
+
+```javascript
+for (let elem of arr)
+```
+
+
+
+
+
+
+
 ## Functions
 
 - value representing action
