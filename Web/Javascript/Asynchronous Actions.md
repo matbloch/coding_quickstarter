@@ -1,5 +1,7 @@
 # Asynchronous Actions
 
+https://javascript.info/async
+
 
 
 ## Promises
