@@ -3,6 +3,7 @@
 **Topics**
 
 - Obfuscation and compression
+  - tree shaking
 - Linting
 - Formatting
 - Bundling
