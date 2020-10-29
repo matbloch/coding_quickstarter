@@ -10,7 +10,7 @@
 - Optimization
 - Transpiling
 
-
+**Code Splitting**: Bundles can become too large. Extensions can split the code into multiple bundles for "lazy-loading"
 
 
 

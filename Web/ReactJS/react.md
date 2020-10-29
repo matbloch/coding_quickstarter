@@ -1,4 +1,4 @@
-# ReactJS
+# React
 
 
 - React is built with JSX, a mix of Javascript and HTML
@@ -28,32 +28,6 @@
 ```
 
 
-## Random ES6
-
-#### Exporting
-
-**Exporting Single Component**
-```javascript
-class MyClass extends Component {}
-export default MyClass;
-```
-**Exporting Multiple Components**
-```javascript
-export class MyClass1 extends Component {}
-export class MyClass2 extends Component {}
-```
-
-#### Importing
-
-**Single Component**
-```javascript
-import Login from './login/login';
-```
-**Multiple Components**
-```javascript
-import {MyClass1, MyClass2} from './MyClass.react';
-```
-
 
 ## Structuring a React Application
 
@@ -67,6 +41,7 @@ import {MyClass1, MyClass2} from './MyClass.react';
 - **Code Splitting**: Bundles can become too large. Extensions can split the code into multiple bundles for "lazy-loading"
 
 **App:**
+
 ```javascript
 import { add } from './math.js';
 console.log(add(16, 26)); // 42
@@ -78,31 +53,7 @@ export function add(a, b) {
 }
 ```
 
-## JSX
-- React is built with **JSX**, a mix of Javascript and HTML
-- Needs preprocessor (Babel) to compile JSX into JS
 
-**Example:** JSX Elements
-```javascript
-const title = <h1 id="title">my title</h1>;
-const multiline = (
-<div>
-	<a href="google.ch">link</a>
-</div>
-);
-```
-
-**JSX Elements**
-- can have *attributes*
-- can be multi-line: encapsulate in `()`
-- can be nested
-- must have **exactly one outermost** html element
-	- use `<React.Fragment>` to wrap
-	- or an array: `[<li>a</li>, <li>b</li>]`
-- can contain javascript code: wrapped in `{}`
-- returning strings: wrapp in `''`, no spans needed
-- Conditionals: ternary operator in javascript `<p>{is_big ? <MyComponent/> : <OtherComponent/>}</p>`
-- Short circuit evaluation: `<div>{showPopup && <Popup/>}</div>`
 
 
 ## React Components
@@ -152,11 +103,11 @@ class Toggle extends React.Component {
 }
 ```
 
-**Option 2:** Public Class Fields Syntax (experimental)
+**Option 2:** Arrow function syntax
+
 ```javascript
 class LoggingButton extends React.Component {
   // This syntax ensures `this` is bound within handleClick.
-  // Warning: this is *experimental* syntax.
   handleClick = () => {
     console.log('this is:', this);
   }
@@ -188,7 +139,7 @@ render: function() {
 
 ```js
 class AlertBox extends React.Component {
-  render () {
+  render = () => {
     return <div className='alert-box'>
       {this.props.children}
     </div>
@@ -221,7 +172,7 @@ class AlertBox extends React.Component {
 
 ```js
 var ButtonForm = React.createClass({
-    render: function(){
+    render = () => {
         return (
             <div>
                 <h3>{this.props.text}</h3>
@@ -327,9 +278,6 @@ Object.keys(vals).map((key, index) => (
 }}
 />
 ```
-
-
-##### Typechecking with Props
 
 **Default Props**
 ```javascript
@@ -541,9 +489,7 @@ ReactDOM.render(
 **Definition**
 ```javascript
 const todoItems = todos.map((todo) =>
-  <li key={todo.id}>
-    {todo.text}
-  </li>
+  <li key={todo.id}>{todo.text}</li>
 );
 ```
 
