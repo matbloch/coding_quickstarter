@@ -1,5 +1,61 @@
 # State Management with MobX
 
+<Benefits of using MobX>
+
+
+
+
+
+## Core Concepts
+
+**Observable**
+
+- when the data changes, the observable object notifies the observers
+- `@observable`
+
+```js
+class TodoStore {
+  @observable todos: Todo[]
+}
+```
+
+**Actions**
+
+- way to change observable (update the state)
+- `@action`
+
+```js
+@action toggleTodo = (todo: string) => {
+    this.todos.push_back(todo);
+};
+```
+
+**Computed**
+
+- derive values from existing state / other computed values
+- `@computed`
+
+```js
+@computed get isEmpty() {
+    this.todos.len == 0;
+}
+```
+
+**Reactions**
+
+- track observables from inside the store itself
+- trigger side effects
+
+```js
+class TodoStore {
+  constructor() {
+    reaction(
+      () => this.todos,
+      _ => console.log(this.todos.length)
+    );
+}
+```
+
 
 
 
@@ -11,11 +67,23 @@
 - needs to be annotated with `@observable`
 - supports objects, arrays, classes, references
 
+**Making State Observable**
+
+- `@observable` annotation 
+  - on individual properties
+- `makeObservable` 
+  - specify type of all methods in constructor
+- `makeAutoObservable`
+  - derive type of all methods during construction automatically
+- direct use of MobX observable datastructures
+  - `observable.array`, `observable.map`, ...
+  - `@observable` and `makeObservable` create a copy and then mount the data in containers
+
 
 
 ### Make State Observable
 
-#### A. `observable` Annotation
+#### A. `@observable` Annotation
 
 - `observable(source, overrides?, options?)`
 
@@ -39,9 +107,7 @@ const peopleStore = observable([
 ]);
 ```
 
-
-
-#### B. makeObservable
+#### B. `makeObservable`
 
 - make **existing** object properties observable
 - typically used in constructor of class
@@ -73,9 +139,7 @@ class Doubler {
 }
 ```
 
-
-
-#### C. makeAutoObservable
+#### C. `makeAutoObservable`
 
 - like `makeObservable` but infers all properties
 - `false` can be used to exclude property/method
@@ -102,8 +166,6 @@ class Animal {
 }
 ```
 
-
-
 ### State References
 
 - references between stores are automatically handled
@@ -124,6 +186,16 @@ peopleStore[0].name = "Michel Weststrate";
 
 
 
+### Custom Observable Stores
+
+
+
+
+
+
+
+
+
 ## Actions
 
 > Actions update the state. Actions run inside *transactions* - no observers are updated until outer-most action has finished.
@@ -132,7 +204,13 @@ peopleStore[0].name = "Michel Weststrate";
 - `makeAutoObservable` can automate annotation
 - only methods that **modify** the state should be marked as actions, **not** methods that perform filtering/calculations on the state
 
+### @action annotation
 
+```js
+@action setPredicate(store) {
+    store.some_property = 123;
+}
+```
 
 ### Wrapping functions using `action`
 
@@ -141,6 +219,7 @@ peopleStore[0].name = "Michel Weststrate";
 **Example**: click handler
 
 ```javascript
+import { action } from "mobx"
 const ResetButton = ({ formState }) => (
     <button
         onClick={action(e => {

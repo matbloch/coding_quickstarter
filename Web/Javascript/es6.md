@@ -235,8 +235,6 @@ let my var = `1 + 2 = ${sum(1, 2)}.`;  // 1 + 2 = 3.
 
 ### Arrays
 
-
-
 ```javascript
 let arr = new Array();
 let arr = [];
@@ -259,9 +257,13 @@ for (let i = 0; i < arr.length; i++)
 for (let elem of arr)
 ```
 
+**Spread/Rest Operator**
 
-
-
+```js
+function myFunction(x, y, z) { }
+var args = [0, 1, 2];
+myFunction(...args);
+```
 
 
 
@@ -426,8 +428,6 @@ Object.assign(user, permissions);
 let clone = Object.assign({}, user);
 ```
 
-
-
 ### Object Methods
 
 - use `this` (evaluated at runtime) to access members
@@ -442,6 +442,31 @@ user = {
         alert(this.name);
     }
 }
+```
+
+
+
+### Spread Properties
+
+**Shallow Copy**
+
+- spread operator is handy to get shallow copy
+
+```js
+let copy = { ...original };
+```
+
+**Merge Objects**
+
+```js
+let merged = { ...foo, ...bar, ...baz };
+```
+
+**Extend / Overwrite Object**
+
+```js
+let obj = { x: 1, y: "string" };
+var newObj = { ...obj, z: 3, y: 4 }; // { x: number, y: number, z: number }
 ```
 
 
