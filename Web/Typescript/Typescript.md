@@ -18,10 +18,17 @@
 
 
 
+## Project Setup
+
+Managing types:
+
+
+
+
+
 ## Type Annotation
 
 - use **lowercase** basic type names
-- 
 
 
 
@@ -35,11 +42,8 @@ let my_var: string = "abc";
 
 ```javascript
 function getUser(name: <ArgumentType>): <ReturnType> {}
+getUser = (name: <ArgumentType>): <ReturnType> => {}
 ```
-
-
-
-
 
 
 
@@ -112,6 +116,19 @@ enum Traits {
 - combination: `Traits.Mean | Traits.Funny`
 - individual test: `if((traits & Traits.Mean) === Traits.Mean)`
 
+### Maps
+
+- es6
+
+```js
+const shorterMap: Record<string, string> = {
+    foo: "1",
+    bar: "2"
+}
+```
+
+
+
 
 
 ### Special Types
@@ -133,6 +150,10 @@ let looselyTyped: any = 4;
 
 - opposite of `any`, used in function returns
 
+  ```js
+  insert = (item: string): void => {}
+  ```
+
 **Never**
 
 - return type of function that have no reachable end
@@ -150,15 +171,9 @@ let strLength: number = (<string>someValue).length;
 
 
 
-
-
-
-
 ## Interfaces
 
 - duck-typed
-
-
 
 ```tsx
 interface Animal {
@@ -172,8 +187,6 @@ interface Dog extends Animal {
   breed: string;
 }
 ```
-
-
 
 
 
@@ -223,8 +236,6 @@ interface SearchFunc {
 
 - use `implements` keyword to specify interface
 
-
-
 ```tsx
 // interface
 interface ClockInterface {
@@ -244,7 +255,44 @@ class Clock implements ClockInterface {
 
 
 
+### React Types
 
+**Functional Component**
+
+```js
+interface YourProps {
+    children: ReactNode // the wrapped jsx elements
+    store: TodoStore
+}
+const yourComponent: React.SFC<YourProps> = props => {}
+```
+
+
+
+**Class Components**
+
+```jsx
+type MyProps = {
+  // using `interface` is also ok
+  message: string;
+};
+type MyState = {
+  count: number; // like this
+};
+class App extends React.Component<MyProps, MyState> {
+  state: MyState = {
+    // optional second annotation for better type inference
+    count: 0,
+  };
+  render() {
+    return (
+      <div>
+        {this.props.message} {this.state.count}
+      </div>
+    );
+  }
+}
+```
 
 
 
