@@ -171,6 +171,14 @@ for (begin; condition; step) {
 }
 ```
 
+**foreach**
+
+```js
+num.forEach(function (value) {
+    
+});
+```
+
 **switch**
 
 - type matters, equality check is always strict `===`
@@ -228,8 +236,14 @@ let backticks = `backticks`;
 **Evaluation in strings**
 
 ```javascript
-let my var = `1 + 2 = ${sum(1, 2)}.`;  // 1 + 2 = 3.
+let mystring = `abc  ${my_expression}`;
 ```
+
+**Concatenation**
+
+
+
+
 
 
 
@@ -264,6 +278,26 @@ function myFunction(x, y, z) { }
 var args = [0, 1, 2];
 myFunction(...args);
 ```
+
+
+
+
+
+### Map
+
+- key-value container
+
+```jsx
+var map1 = new Map([[1 , 2], [2 ,3 ] ,[4, 5]]);
+```
+
+- `.has(key)`
+- `.get(key)`
+- `.clear()`
+- `.set("key_value", "value"); `
+- `keys()`
+
+
 
 
 
@@ -381,14 +415,12 @@ let user = {
 
 **Delete Operator**
 
-```javascript
-delete user.name;
-```
+- `delete user.name`
 
 **Property Existence**
 
-- `if "key" in object`
-
+- `object.key !== undefined`
+- `"key" in object`
 - `for (let prop in obj)`
 
 **Optional Chaining**
@@ -442,31 +474,6 @@ user = {
         alert(this.name);
     }
 }
-```
-
-
-
-### Spread Properties
-
-**Shallow Copy**
-
-- spread operator is handy to get shallow copy
-
-```js
-let copy = { ...original };
-```
-
-**Merge Objects**
-
-```js
-let merged = { ...foo, ...bar, ...baz };
-```
-
-**Extend / Overwrite Object**
-
-```js
-let obj = { x: 1, y: "string" };
-var newObj = { ...obj, z: 3, y: 4 }; // { x: number, y: number, z: number }
 ```
 
 
