@@ -4,6 +4,10 @@
 
 
 
+![mobx-state-sharing](img/mobx-state-sharing.png)
+
+
+
 
 
 ## Core Concepts
@@ -78,6 +82,10 @@ class TodoStore {
 - direct use of MobX observable datastructures
   - `observable.array`, `observable.map`, ...
   - `@observable` and `makeObservable` create a copy and then mount the data in containers
+
+**When to make property observable?**
+
+The rule of thumb is: *apply `observer` to all components that read observable data*.
 
 
 
@@ -184,13 +192,7 @@ observableTodoStore.todos[1].assignee = peopleStore[1];
 peopleStore[0].name = "Michel Weststrate";
 ```
 
-
-
 ### Custom Observable Stores
-
-
-
-
 
 
 
@@ -203,22 +205,33 @@ peopleStore[0].name = "Michel Weststrate";
 - MobX requires declaration of actions
 - `makeAutoObservable` can automate annotation
 - only methods that **modify** the state should be marked as actions, **not** methods that perform filtering/calculations on the state
+- action should be passed as far outwards as possible (method that calls an *action* is also an `action`)
 
-### @action annotation
+#### Option A: @action annotation
 
 ```js
-@action setPredicate(store) {
+@action changeProperty(store) {
     store.some_property = 123;
 }
 ```
 
-### Wrapping functions using `action`
+#### Option B: `action()` method wrapper
 
 - `action` is annotation **and** function
 
+```jsx
+const increment = action(state => {
+    state.value++
+})
+```
+
+
+
+#### Examples
+
 **Example**: click handler
 
-```javascript
+```jsx
 import { action } from "mobx"
 const ResetButton = ({ formState }) => (
     <button
@@ -239,8 +252,6 @@ setTimeout(action(() => {
   observableTodoStore.addTodo('Random Todo ' + Math.random());
 }), 2000);
 ```
-
-
 
 
 
@@ -287,11 +298,12 @@ class Store {
 
 > Computed values can be used to derive information from other observables.
 
-- evaluated lazily, have output caching
+- **purpose**: evaluated lazily, have output caching
 
 - declaration:
   - use `makeObservable` to declare getter as computed
   - (Deprecated) decorators
+- method **must** be marked as `get` and have no arguments
 
 **Example:** Decorator
 
@@ -312,9 +324,223 @@ class OrderLine {
 
 
 
+### Computed with Arguments
 
+- derivations don't need to be `computed` in order for MobX to track it
+- computed values are only *caching points*
+- `observer` component will subscribe to detect and subscribe to any observables that are 
+
+**Example:**
+
+```js
+import * as React from 'react'
+import { observer } from 'mobx-react-lite'
+
+const Item = observer(({ item, store }) => (
+    <div className={store.isSelected(item.id) ? "selected" : ""}>
+        {item.title}
+    </div>
+)
+```
 
 
 
 ## MobX and React
+
+- always read observables inside `observer` components
+- `observer` automatically tracks observables used during render
+- `observer` works best if you pass object references around as long as possible, and only read their properties inside the `observer` based components that are going to render them into the DOM / low-level components. In other words, `observer` reacts to the fact that you 'dereference' a value from an object.
+- **whole components** must be wrapped in `observer`, not only rendering methods
+
+
+
+**observer() vs useObserver() vs <Observer>** 
+
+- `observer()`: Wraps a component in 'autorun' to render it whenever an observable change
+- `<Observer>`: instantiates a fresh component that iself is an observer, so it tracks the function you pass and re-render whenever observables used in it change
+- `useObserver`: tracks only the specific function (rather than the entire component body like observer) and re-renders whole component if some observables used by that function changes
+
+
+
+#### A. `observer()` on Props
+
+```jsx
+import { observer } from "mobx-react-lite"
+// the store
+const myTimer = new Timer()
+// view that binds to the store through "observer()"
+const TimerView = observer(({ timer }) => <span>Seconds: {timer.secondsPassed}</span>)
+// pass store to the view
+ReactDOM.render(<TimerView timer={myTimer} />, document.body)
+```
+
+#### B. `@observer` HOC for class based React components
+
+- wraps entire component
+
+```jsx
+import { observer } from "mobx-react"
+
+@observer
+class Timer extends extends React.Component<{myMobxState: AppState}, {}> {
+    render() {
+        return <span>Seconds passed: {this.props.myMobxState.someProperty} </span>
+    }
+}
+```
+
+#### C. `useObserver()` in functional component
+
+```jsx
+const TodoList = () => {
+    const store = useStore()
+    return useObserver(() => (
+        <div>store.a_property</div>
+    ))
+}
+```
+
+```js
+const Parent = observer(() => {
+  return <Child value={store.value} />;  
+})
+```
+
+
+
+## Organizing Stores / State
+
+
+
+
+
+### Global Stores
+
+TODO
+
+
+
+```js
+const MyContext = React.createContext(defaultValue);
+```
+
+```js
+<MyContext.Provider value={/* some value */}>
+```
+
+
+
+**Example:** Global Store
+
+1. Define the store context
+
+```jsx
+import React, { createContext } from 'react';
+import { StoreModel } from '../stores';
+export const StoreContext = createContext<StoreModel>({} as StoreModel);
+```
+
+2. Define the store provider
+
+```jsx
+import { FC, createContext, ReactNode, ReactElement } from 'react';
+export const StoreProvider: StoreComponent = ({
+  children,
+  store
+}): ReactElement => {
+  return (
+    <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
+  )
+}
+
+/* Hook to use store in any functional component */
+export const useStore = () => React.useContext(StoreContext)
+
+/* HOC to inject store to any functional or class component */
+export const withStore = (Component) => (props) => {
+    return <Component {...props} store={useStore()} />
+}
+```
+
+3. Wrap the application in the store provider
+
+```jsx
+<StoreProvider store={new StoreModel()}>
+    <App />
+</StoreProvider>
+```
+
+
+
+4. Access the store
+
+
+
+
+
+
+
+## Common Pitfalls
+
+
+
+### Observable Arrays
+
+- In ES5 there is no way to reliably inherit from arrays, and hence **observable arrays inherit from objects**.
+
+
+
+**Example:** Observing arrays
+
+Store definition
+
+```tsx
+import { observable } from 'mobx'
+export class Store {
+    things: number[]
+    constructor() {
+        // annotate the array as observable
+        makeObservable(this, {
+            number: observable
+        })
+    }
+}
+```
+
+Store observer
+
+```js
+export const MyComponent = withStore(({ store }) => {
+    // Make a local copy of the array so that we can track it.
+    // Passing store.my_array.slice() directly through the props
+    // DOES NOT work.
+    const state_copy = store.my_array.slice()
+    return useObserver(() => (<ThirdPartyComponent prop={state_copy}))
+})
+```
+
+
+
+
+
+
+
+### Transforming observables
+
+**Transforming properties**
+
+```jsx
+const transform = (input: number): string => {
+    return `Original: ${input}, +2: ${input + 2}`
+}
+export const Summary = withStore(({ store }) => {
+    return useObserver(() => (
+        <div>Vehicle count: {transform(store.vehicles.length)}</div>
+    ))
+})
+```
+
+
+
+- Arrays can not easily be inherited from, hence 
 
