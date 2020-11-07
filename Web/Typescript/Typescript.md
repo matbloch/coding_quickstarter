@@ -115,6 +115,9 @@ enum Traits {
 
 - combination: `Traits.Mean | Traits.Funny`
 - individual test: `if((traits & Traits.Mean) === Traits.Mean)`
+- in: `traits & Traits.Funny`
+- not in: `traitsThatAreNotFunny = traits & ~traits.Funny`
+- remove flag: `traits &= ~traits.Funny`
 
 ### Maps
 

@@ -19,15 +19,6 @@
 **Webpack HTML**
 
 
-## Random CSS
-
-**Importing Stylesheets**
-```css
-@import "./variables.sass";
-@import "./styles.css";
-```
-
-
 
 ## Structuring a React Application
 
@@ -53,10 +44,23 @@ export function add(a, b) {
 }
 ```
 
+## React Function Components
+
+```jsx
+const MyComponent = ({param1}) => {
+    <div>{param1}</div>
+}
+// call: <MyComponent param1={123}/>
+```
 
 
 
-## React Components
+
+
+
+
+
+## React Class Components
 
 **Creating a Component**
 
@@ -390,7 +394,72 @@ class ExampleComponent extends Component {
 ```
 
 
+
+## State in Function Components
+
+- ` const [myVariable, setMyVariable] = useState(<initialValue>);`
+  - returns tuple with getter and setter
+
+
+
+**Example:** Simple example
+
+```tsx
+import React, { useState } from 'react';
+function Example() {
+   const [count, setCount] = useState(0);
+    // increase count
+    setCount(count + 1);
+}
+```
+
+**Example:** Storing multiple values
+
+```tsx
+const [allValues, setAllValues] = useState({
+    name: '',	// default values
+    phone: ''
+});
+
+const changeName = name => {
+    // use the 'spread' operator to partially update the state
+    setAllValues({...allValues, name: name})
+}
+```
+
+
+
+
+
+## Side Effects in Function Components
+
+- same as `componentDidMount()` and `componentDidUpdate()` (combination of both)
+- `useEffect(<methodToExecute> [, <variableToTrack>])`
+  - <methodToExecute> called on initial rendering
+  - and: every time <variableToTrack> changes
+
+**Example:** Call only on initial rendering
+
+```jsx
+useEffect(() => {
+    console.log('render');
+});
+```
+
+**Example:** Re-run only if variable changes
+
+```jsx
+useEffect(() => {
+  document.title = `You clicked ${count} times`;
+}, [count]);
+```
+
+
+
+
+
 ## Data Flow
+
 - **The data flows down**
 - pass down parent method to child as prop
 - `<OtherComponent myOnClickMethod={this.props.onClickMethod}/>`
@@ -467,7 +536,7 @@ const numbers = [1, 2, 3, 4, 5];
 const doubled = numbers.map((number) => number * 2);	// [2, 4, 6, 8, 10]
 ```
 
-**Rendering Multiple Compnents**
+**Rendering Multiple Components**
 ```javascript
 const numbers = [1, 2, 3, 4, 5];
 // generate html

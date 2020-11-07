@@ -196,16 +196,24 @@ Object.values(object1)
 
 
 
-## Search
+## Array Search
 
 
 
-### Objects
+### Objects Entries
 
 ```js
 myArray = [{'id':'73','foo':'bar'},{'id':'45','foo':'bar'}]
 myArray.find(x => x.id === '45');
 ```
+
+**Find index**
+
+```tsx
+myArray.findIndex(item => condition)
+```
+
+
 
 
 
@@ -217,6 +225,10 @@ myArray.find(x => x.id === '45');
 const alligator = ["thick scales", 80, "4 foot tail", "rounded snout"];
 alligator.includes("thick scales"); // returns true
 ```
+
+
+
+
 
 
 
