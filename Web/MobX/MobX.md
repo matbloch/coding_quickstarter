@@ -68,14 +68,13 @@ class TodoStore {
 
 > Data that drives application
 
-- needs to be annotated with `@observable`
-- supports objects, arrays, classes, references
+
 
 **Making State Observable**
 
 - `@observable` annotation 
   - on individual properties
-- `makeObservable` 
+- `makeObservable` (**recommended**)
   - specify type of all methods in constructor
 - `makeAutoObservable`
   - derive type of all methods during construction automatically
@@ -83,9 +82,7 @@ class TodoStore {
   - `observable.array`, `observable.map`, ...
   - `@observable` and `makeObservable` create a copy and then mount the data in containers
 
-**When to make property observable?**
 
-The rule of thumb is: *apply `observer` to all components that read observable data*.
 
 
 
@@ -191,8 +188,6 @@ observableTodoStore.todos[1].assignee = peopleStore[1];
 // also updates observableTodoStore
 peopleStore[0].name = "Michel Weststrate";
 ```
-
-### Custom Observable Stores
 
 
 
@@ -322,8 +317,6 @@ class OrderLine {
 }
 ```
 
-
-
 ### Computed with Arguments
 
 - derivations don't need to be `computed` in order for MobX to track it
@@ -351,6 +344,10 @@ const Item = observer(({ item, store }) => (
 - `observer` automatically tracks observables used during render
 - `observer` works best if you pass object references around as long as possible, and only read their properties inside the `observer` based components that are going to render them into the DOM / low-level components. In other words, `observer` reacts to the fact that you 'dereference' a value from an object.
 - **whole components** must be wrapped in `observer`, not only rendering methods
+
+**When to make property observable?**
+
+The rule of thumb is: *apply `observer` to all components that read observable data*.
 
 
 
@@ -408,76 +405,6 @@ const Parent = observer(() => {
 
 
 
-## Organizing Stores / State
-
-
-
-
-
-### Global Stores
-
-TODO
-
-
-
-```js
-const MyContext = React.createContext(defaultValue);
-```
-
-```js
-<MyContext.Provider value={/* some value */}>
-```
-
-
-
-**Example:** Global Store
-
-1. Define the store context
-
-```jsx
-import React, { createContext } from 'react';
-import { StoreModel } from '../stores';
-export const StoreContext = createContext<StoreModel>({} as StoreModel);
-```
-
-2. Define the store provider
-
-```jsx
-import { FC, createContext, ReactNode, ReactElement } from 'react';
-export const StoreProvider: StoreComponent = ({
-  children,
-  store
-}): ReactElement => {
-  return (
-    <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
-  )
-}
-
-/* Hook to use store in any functional component */
-export const useStore = () => React.useContext(StoreContext)
-
-/* HOC to inject store to any functional or class component */
-export const withStore = (Component) => (props) => {
-    return <Component {...props} store={useStore()} />
-}
-```
-
-3. Wrap the application in the store provider
-
-```jsx
-<StoreProvider store={new StoreModel()}>
-    <App />
-</StoreProvider>
-```
-
-
-
-4. Access the store
-
-
-
-
-
 
 
 ## Common Pitfalls
@@ -518,8 +445,6 @@ export const MyComponent = withStore(({ store }) => {
     return useObserver(() => (<ThirdPartyComponent prop={state_copy}))
 })
 ```
-
-
 
 
 

@@ -151,6 +151,25 @@ result = a ?? b
 
 
 
+**Object Equality in JavaScript**
+
+- Primitives (strings, numbers): compared by their value
+- Objects (plain objects, arrays, dates, ...): compared by reference
+
+
+
+**Deep Object Comparison**
+
+- if simple objects without methods
+
+```js
+ JSON.stringify(obj1) === JSON.stringify(obj2)
+```
+
+
+
+
+
 ### Control Structures
 
 

@@ -672,6 +672,7 @@ const el = document.body
 ReactDOM.render(<Hello name='John' />, el)
 ```
 **HTML**
+
 ```php
 <html>
     <head>... react and babel includes...</head>

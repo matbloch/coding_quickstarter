@@ -150,8 +150,16 @@ Object.keys(obj).map(function (key) { return obj[key]; });
 
 ### Array
 
+**General filtering**
+
 ```js
 this.friends.filter(friend => friend.isSingle)
+```
+
+**Remove Null/Undefined**
+
+```js
+arr.filter(n => n)
 ```
 
 
@@ -170,15 +178,11 @@ this.state.cart.map((item) =>
 );
 ```
 
-
-
 **Array Obj > Array new Obj**
 
 ```tsx
 var result = arr.map(person => ({ value: person.id, text: person.name }));
 ```
-
-
 
 **Array Obj > Array(Prop)**
 
@@ -198,8 +202,6 @@ Object.values(object1)
 
 ## Array Search
 
-
-
 ### Objects Entries
 
 ```js
@@ -212,10 +214,6 @@ myArray.find(x => x.id === '45');
 ```tsx
 myArray.findIndex(item => condition)
 ```
-
-
-
-
 
 ### Simple Values
 
@@ -232,11 +230,7 @@ alligator.includes("thick scales"); // returns true
 
 
 
-
-
 ## Removing Items
-
-
 
 ### Arrays
 
@@ -247,4 +241,14 @@ items.splice(items.findIndex(function(i){
     return i.id === "abc";
 }), 1);
 ```
+
+
+
+
+
+## Sorting
+
+
+
+
 
