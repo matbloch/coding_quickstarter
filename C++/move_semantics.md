@@ -39,6 +39,8 @@ cout << x << endl;
 - temporary bound to a reference parameter in a function call exists until the end of the full expressions containing that function call
   - if function returns a reference which outlives the full expression, it becomes a dangling reference
 
+- lifetime extension is not transitive through a function argument (see example below)
+
 
 
 ### Const References to Temporary Objects
@@ -54,6 +56,42 @@ int GetInt() {
 
 const int& x = GetInt();
 ```
+
+
+
+
+
+### Examples
+
+
+
+**const & in constructor**
+
+- `const &` is bound to constructor argument `n` and becomes invalid when `n` goes out of scope
+
+```cpp
+class A {
+public:
+    A(string const& n) : member(n) {}
+    string const& member;
+};
+```
+
+Invalid memory access:
+
+```
+A("abc")
+```
+
+Would work
+
+- temporary only destroyed at the end of full expression - `.member` is a read expression and temporary is still alive.
+
+```cpp
+std::cout << A("abc").member;
+```
+
+
 
 
 
