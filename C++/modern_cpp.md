@@ -522,6 +522,29 @@ struct data {
 
 
 
+### Braced List Initialization
+
+
+
+**In combination with Templates**
+
+- braced lists are not deducible (with an exception for `auto` declarations), and so you cannot instantiate the function template when that missing parameter type.
+
+```cpp
+std::make_unique<MyClass>({"a", "b"});
+```
+
+Would work:
+
+```cpp
+auto input = {"a", "b"};
+std::make_unique<MyClass>(input);
+```
+
+
+
+
+
 ## Pittfalls
 
 ### Temporaries in Range-based for loops
