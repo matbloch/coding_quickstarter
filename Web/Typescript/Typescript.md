@@ -32,18 +32,26 @@ Managing types:
 
 
 
-**Variables**
+### Variables
 
 ```javascript
 let my_var: string = "abc";
 ```
 
-**Methods**
+### Methods
 
-```javascript
+```tsx
 function getUser(name: <ArgumentType>): <ReturnType> {}
 getUser = (name: <ArgumentType>): <ReturnType> => {}
 ```
+
+Destructured arguments
+
+```tsx
+const method = ({ pretty }: { pretty: boolean }): <ReturnType> => {}
+```
+
+
 
 
 
@@ -298,4 +306,32 @@ class App extends React.Component<MyProps, MyState> {
 ```
 
 
+
+## Examples
+
+
+
+
+
+#### Class Initialization
+
+```tsx
+class Person {
+    public name: string = "default"
+    public address: string = "default"
+    public age: number = 0;
+
+    public constructor(init?:Partial<Person>) {
+        Object.assign(this, init);
+    }
+}
+
+let persons = [
+    new Person(),
+    new Person({}),
+    new Person({name:"John"}),
+    new Person({address:"Earth"}),    
+    new Person({age:20, address:"Earth", name:"John"}),
+];
+```
 
