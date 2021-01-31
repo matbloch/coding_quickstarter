@@ -63,6 +63,7 @@ Foo (vector<int> vec) : _member{std::move(vec)} {}
 ```
 
 **Anonymous functions**
+
 - use `static` or anonymous namespace
 
 ```cpp
@@ -82,7 +83,16 @@ namespace {
     // B b1 = 1; // NOT ALLOWED
 ```
 
-**`constexpr`**
+**`static` and `constexpr`**
+
+- `static`
+  - must be initialized before the program starts
+  - has to be thread-safe
+  - initialization order is undefined
+- `constexpr` 
+  - forces constant compile-time initialisation
+  - all other static variables are zero initialized
+  - shouldn't have non-trivial destructior (e.g. freeing of memory). e.g. for `std::string`
 
 ...
 
@@ -100,7 +110,8 @@ namespace {
 ### `std` library
 
 - `std::accumulate`: Accumulate all values in range
-	```cpp
+	
+  ```cpp
   sum = accumulate(float_vector.begin(), float_vector.end(), 0.0);
   ```
 - `std::max_element`: find maximum element

@@ -264,9 +264,15 @@ http://jakascorner.com/blog/2016/01/deadlock.html
 
 
 
-## Misc
+## Misc / Examples
 
 
+
+
+
+**Lock and copy-return**
+
+- Mutex object will always be destroyed **after** the return expression has **copy-initialized the return value.**
 
 
 
