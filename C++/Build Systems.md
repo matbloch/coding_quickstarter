@@ -13,9 +13,7 @@
 - Linux: `nm --demangle a.out`
 - MacOS: `nm a.out | c++filt`
 
-
-
-`nm a.out | c++filt  | grep " T "`
+  - Checking for a symbol:`nm a.out | c++filt  | grep " T "`
 
 ### Static and Dynamic Libraries
 
