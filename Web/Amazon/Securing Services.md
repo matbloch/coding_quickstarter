@@ -2,58 +2,123 @@
 
 
 
+### General
+
+- privilege checks with IAM user Access Advisor
+- CloudTrail
+- Tiers of Subnets layered on top of each other
+- Layering Security Groups with network ACLS
+- Multiple VPCs
+- Redundant clusters
+- Multi-AZ
 
 
-### Security
 
-- Networking: all services except api that schedules tasks in public subnet, rest in private subnet. Access to ECR through AWS private link
+### IAM
+
+- IAM policies:
+  - minimize risk of accidental privilege assignment: attach to group/roles rather than individual users
+- Provision access through IAM roles instead of individual credentials
+  - roles can be revoked if account is compromised
+- Principle of least privileges
+- Multi-factor authentication
+- Rotate credentials
+- Enforce strong password policy
+
+
+
+### Networking
 
 - Security groups: limit traffic to private network if possible, block out traffic
-
-  
-
-- DynamoDB?
-
--  AWS Key Management Service (KMS)
-
-- SSL
-
-- ECS
-  
-  - private link
-  
-- In general: Speak to S3 etc through VPC endpoint
-  
-- VPC entpoint
-  
-- only load balancer in public subnets
-
-- do catch any logs as possible, in S3
-
-- structure AWS accounts
-
+- Networking: all services except api that schedules tasks in public subnet, rest in private subnet. Access to ECR through AWS private link
+- *network access control list (ACL)* is an optional layer of security  for your VPC that acts as a firewall for controlling traffic in and out of one or  more subnets.
+- Use AWS PrivateLink
 - with growth:
   - web application firewall on load balancer
   - e.g. CloudFront
 
 
 
-- VPC endpoints
-  - assign correct security group
-  - assign correct policy
-  - restrict access only to subnets that need access (rout table entries)
+### Networking
+
+- Restrict access to instances from limited IP ranges using Security Groups
+- Host in private, expose via ALB/ELB
+- Internal containers expose random port
 
 
 
-*network access control list (ACL)* is an optional layer of security  for your VPC that acts as a firewall for controlling traffic in and out of one or  more subnets.
+### PrivateLink / VPC Endpoints
 
-- Multiple AWS accounts
-- Multiple VPCs
-- Tiers of Subnets layered on top of each other
-- Layering Security Groups with network ACLS
-- Redundant clusters
-- Load Balancers
-- Etc.
+- assign correct security group
+- assign correct policy
+- restrict access only to subnets that need access (rout table entries)
+- VPC Flow Logs (audit trail of accepted/rejected connections)
+
+
+
+### ECS
+
+- Enable CloudWatch logs
+- Use "assume role" instead of access keys
+- Place in private subnet if possible
+- Communication to other services through AWS Endpoints (PrivateLink)
+- Use security groups as firewall
+
+
+
+### Storage (S3)
+
+- encryption at rest, options:
+  - 
+- bucket or IAM policy (IAM is preferred)
+  - Example: bucket policy that restricts access to a source VPC Endpoint that is connected to a private network
+  - Block public access
+- use "least privilege" IAM policies
+  - e.g. only allow reads: `s3:read`
+- Data encryption in transit
+  - Secure Socket Layer/Transport Layer Security (SSL/TLS) or client-side encryption
+- Data encryption at rest
+  - Server-side: Encryption with AES-256 (AWS generates unique encryption key for each file, master key is stored in save rotation)
+  - Client-side: Encrypt data before storing, decrypt when receiving
+- Protection against data loss/corruption
+  - Enable data versioning
+  - Cross-zone replication
+  - Application-level backups
+
+
+
+
+
+### DynamoDB
+
+See [Documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices-security-preventative.html)
+
+- Use service endpoint that accepts HTTPS
+- Encryption at rest through AWS Key Management System (KMS)
+- IAM roles to authenticate access to DynamoDB (instead of specific users)
+  - Use "least privilege" strategy
+  - Use restrictive conditions
+  - Use IAM policy with condition `aws:sourceVpce` to force access through a specific VPC DynamoDB endpoint
+- Use a VPC endpoint and policies to access DynamoDB
+  - policies attached to dynamodb endpoint control access to DynamoDB table
+- Consider client-side encryption
+  - Encrypt data in transit and at rest [see AWS DynamoDB Encryption Client](https://docs.aws.amazon.com/dynamodb-encryption-client/latest/devguide/what-is-ddb-encrypt.html)
+
+
+
+
+
+### Elastic Load Balancer
+
+> The primary entity that receives the request from Amazon Route 53 is an Internet-facing[ Elastic Load Balancer](https://aws.amazon.com/elasticloadbalancing/). There are multiple ways in which an ELB can be configured, as explained[ here](http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/using-elb-listenerconfig-quickref.html).
+
+- Use secure communication: HTTPS or TCP/SSL
+
+
+
+
+
+
 
 
 
@@ -83,8 +148,6 @@ https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/access-control-
 
 
 
-
-
 ## S3
 
 
@@ -107,44 +170,4 @@ Use S3 bucket policies if:
 - Your IAM policies bump up against the size limit (up to 2 kb for users, 5 kb for groups, and 10 kb for roles). S3 supports bucket  policies of up 20 kb.
 - You prefer to keep access control policies in the S3 environment.
 
-
-
-
-
-
-
-## Best Practices per Service
-
-
-
-### Networking
-
-
-
-
-
-### S3
-
-- encryption
-- restrict policy
-- use "least privilege" IAM policies
-  - e.g. only allow reads: `s3:read`
-
-
-
-
-
-### DynamoDB
-
-See [Documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices-security-preventative.html)
-
-- Encryption at rest through AWS Key Management System (KMS)
-- IAM roles to authenticate access to DynamoDB (instead of specific users)
-  - Use "least privilege" strategy
-  - Use restrictive conditions
-  - Use IAM policy with condition `aws:sourceVpce` to force access through a specific VPC DynamoDB endpoint
-- Use a VPC endpoint and policies to access DynamoDB
-  - policies attached to dynamodb endpoint control access to DynamoDB table
-- Consider client-side encryption
-  - Encrypt data in transit and at rest [see AWS DynamoDB Encryption Client](https://docs.aws.amazon.com/dynamodb-encryption-client/latest/devguide/what-is-ddb-encrypt.html)
 
