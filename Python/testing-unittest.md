@@ -268,7 +268,7 @@ with patch('module.Foo') as mock:
 @patch('os.path')
 @patch('my_custom_module.fetch')
 def test_single_model_prediction(mocked_fetch, _):
-    mocked_fetch().return_value = True
+    mocked_fetch.return_value = True
     assert mocked_fetch()
 ```
 
