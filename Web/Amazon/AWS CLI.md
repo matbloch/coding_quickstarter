@@ -99,6 +99,8 @@ output=text
 
 ## Switching Between AWS Profiles
 
+> !!  does ***not\*** affect any command shell that is already running at the time you run the command
+
 - UNIX:
   - set:  `export AWS_PROFILE=user2`
   - display: `printenv | grep AWS_PROFILE`
