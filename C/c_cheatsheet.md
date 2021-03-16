@@ -30,7 +30,7 @@ employee.salary = 12000.21;
 
 
 
-### 1D Arrays
+### 1D Arrays, fixed size
 
 
 - Declaration: `type arrayName [ arraySize ]`
@@ -38,29 +38,30 @@ employee.salary = 12000.21;
 ```cpp
 // declaration
 double balance[10];
-double balance[] = {1000.0, 2.0, 3.4, 7.0, 50.0};	// automatic size
-
+double balance[] = {1000.0, 2.0};	// automatic size
 // access
 balance[4] = 50.0;
 ```
 
-**Unit offset Arrays**  
-- **Problem**: Some algorithms want to start with `arrayName[1]` istead of `arrayName[0]` 
+**Passing arrays as arguments**
 
+- pass pointer to first element and nr_elements
+- alternative: Have custom struct that contains length
+- alternative (strings): mark end of input with `'\0'`
 
-**Solution 1: Additional pointer**
 ```cpp
-int numbers[] = {1,2,3,4};
-int *p;
-p = numbers-1; /* p points to the address one field before the array */
+// declaration
+int array[] = {1, 2, 3};
+void doWork(int* input, size_t size){}
+// call
+doWork(array, 3);
 ```
 
-**Solution 2: Manipulate function input**
-```c
-someMethod(numbers-1, 4);	/* use the shifted address */
-```
 
-### 2D Arrays
+
+
+
+### 2D Arrays, fixed size
 
 - Declaration: `type arrayName [ m ][ n ]`
 
@@ -120,14 +121,14 @@ cout << *(p+2)<< endl;
 
 
 ```cpp
-   int  var;
-   int  *ptr;
-   int  **pptr;
+int  var;
+int  *ptr;
+int  **pptr;
 
-   var = 3000;
+var = 3000;
    
-   ptr = &var;
-   pptr = ptr;
+ptr = &var;
+pptr = ptr;
 ```
 
 ### Strings
@@ -150,21 +151,15 @@ void *memcpy(void *str1, const void *str2, size_t n)
 
 ## Functions
 
-
-** Arrays as Arguments**
+**Arrays as Arguments**
 
 ```cpp
 // pointer
-void myFunction(int *param) {
-}
+void myFunction(int *param) {}
 // sized array
-void myFunction(int param[10]) {
-}
+void myFunction(int param[10]) {}
 // unsized array
-void myFunction(int param[]) {
-}
-double getAverage(int arr[], int size) {
-}
+void myFunction(int arr[], int size) {}
 ```
 
 
