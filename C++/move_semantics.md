@@ -32,70 +32,9 @@ cout << x << endl;
 
 
 
-## Lifetime of a Temporary
-
-- temporary bound to a `return` value of a function is not extended: It is destroyed immediately at the end of the return expression.
-- temporary bound to a reference member in a constructor initializer list persists only until the constructor exits, not as long as the object exists
-- temporary bound to a reference parameter in a function call exists until the end of the full expressions containing that function call
-  - if function returns a reference which outlives the full expression, it becomes a dangling reference
-
-- lifetime extension is not transitive through a function argument (see example below)
 
 
-
-### Const References to Temporary Objects
-
-- The C++ standard *guarantees* that binding a temporary to a `const` reference on the stack, extends the lifetime of the temporary to the lifetime of the const reference.
-- only `direct` reference to temporary objects, not reference obtained via member function (can e.g. be modified by constructor, i.e. not save)
-
-```cpp
-int GetInt() {
-    int x = 1;
-    return x;
-}
-
-const int& x = GetInt();
-```
-
-
-
-
-
-### Examples
-
-
-
-**const & in constructor**
-
-- `const &` is bound to constructor argument `n` and becomes invalid when `n` goes out of scope
-
-```cpp
-class A {
-public:
-    A(string const& n) : member(n) {}
-    string const& member;
-};
-```
-
-Invalid memory access:
-
-```
-A("abc")
-```
-
-Would work
-
-- temporary only destroyed at the end of full expression - `.member` is a read expression and temporary is still alive.
-
-```cpp
-std::cout << A("abc").member;
-```
-
-
-
-
-
-## Copy Elision
+## Copy Elision and Pass-by-Value
 
 > Copy elision is an optimization implemented by most compilers to prevent extra (potentially expensive) copies in certain situations. It makes  returning by value or pass-by-value feasible in practice (restrictions  apply).
 
