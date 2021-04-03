@@ -33,14 +33,27 @@
 - `500` Internal server error
 - `503` Service unavailable
 
-### Request Payload
 
 
-### Response Payload
-- Envelope data response (due to potential security rists)
-	- altough HTTP status code provides distincition
+## Request Payload
 
-**Response**
+
+
+## Response Payload
+
+- see the Google style guide: https://google.github.io/styleguide/jsoncstyleguide.xml
+
+- Envelope data response (due to potential security risks)
+	- although HTTP status code provides distinction
+
+
+
+**Top-Level Structure and reserved properties**
+
+- `data`: Container for all the data from a response.  This property itself has  many reserved property names, which are described below.  Services are  free to add their own data to this object.  A JSON response should  contain either a `data` object or an `error` object, but not both.  If both `data` and `error` are present, the `error` object takes precedence.
+- `error`: Indicates that an error has occurred, with details about the error.  The error format supports either one or more errors returned from the  service.  A JSON response should contain either a `data` object or an `error` object, but not both.  If both `data` and `error` are present, the `error` object takes precedence
+- `status`: HTTP status code
+
 ```javascript
 {
   status: 200,
@@ -54,6 +67,7 @@
 ```
 
 **Processing the Response**
+
 ```javascript
 // enveloped, error extraction from payload
 const { data, error } = payload
@@ -65,19 +79,57 @@ if (error) { throw ... }
 const normalizedData = normalize(data, schema)
 ```
 
-#### Many-to-Many Relationships
-- encode relationships as links
-
-**References vs Embedding**
-
-- references: encode relationships as links
-- embeddings: auto-load related resources
-	- can easily result in an "N+1 select issue"
 
 
-#### Error Handling
+### Error Handling
 
-**Field Validation**
+> How to return errors in a normalized way
+
+- MUST use HTTP status codes in 400 or 500 range
+- Content-type: `application/json`
+
+
+
+
+
+#### Option 1: Return First Error
+
+- `error` just contains the first occurred error and it's details
+
+
+
+Structure:
+
+- **code:** HTTP status code
+- **message**: A human-readable message, describing the error. This message MUST be a  description of the problem NOT a suggestion about how to fix it.  If there are multiple errors, `message` will be the message for the first error.
+
+- **errors** (optional): An array that contains individual instance(s) of the error. 
+  - `message`
+  - `reason` (optional): Unique identifier for this error.  Different from the `error.code` property in that this is not an http response code.
+
+```json
+{
+  "error":{
+    "code": 500,
+    "message": "Internal Error",
+    "identifier": "ai2b82asadf823r",  # optional
+    "errors": [
+    	{"message": "You didn't do this correctly", "reason": "INTERNAL_IDENTIFIER"}  
+    ]
+  }
+}
+```
+
+
+
+#### Option 2: Supporting Multiple Errors
+
+- `error` contains a dictionary or list of errors
+
+
+
+**Example:** Field Validation
+
 ```javascript
 "error": {
     "error": "FIELDS_VALIDATION_ERROR",
@@ -89,7 +141,8 @@ const normalizedData = normalize(data, schema)
 }
 ```
 
-**Request Error**
+**Example:** Request Error
+
 ```javascript
 "error": {
     "error": "EMAIL_ALREADY_EXISTS",
@@ -98,7 +151,27 @@ const normalizedData = normalize(data, schema)
 ```
 
 
-### Endpoints
+
+### Success Handling
+
+
+
+#### Embedding Many-to-Many Relationships
+
+> Deciding on the depth of the returned data
+
+- encode relationships as URLs
+
+**References vs Embedding**
+
+- references: encode relationships as URLs
+- embeddings: auto-load related resources
+  - can easily result in an "N+1 select issue"
+
+
+
+## Endpoint Design
+
 - don't include *action* in endpoint
 - use Plurals
 - Avoid unneccessary query strings (e.g. rather `/projects/:id/collections` than `/collections?projectId=:id`)
