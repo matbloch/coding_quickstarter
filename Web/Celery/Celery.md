@@ -141,14 +141,6 @@ def add(x, y):
 
 
 
-
-
-### Sharing Memory between Worker Processes
-
-https://stackoverflow.com/questions/45459205/keras-predict-not-returning-inside-celery-task/49164854#49164854
-
-
-
 --------------
 
 
@@ -533,67 +525,6 @@ final_result = r.get(on_message=on_raw_message, propagate=False)
 
 
 
-## Error Handling
-
-
-
-### Making a Task Fail
-
-**NOTE: ** The combination of `Ignore` and `update_state` does not seem to make the task fail, the overall status is still `PENDING`. In Redis, the state is updated correctly though.
-
-
-
-- set task state to `FAILURE`
-- raise `Ignore()` exception to ignore the results. Tasks that return a value count as successful.
-
-```python
-import traceback
-
-@app.task(bind=True)
-def task(self):
-    try:
-        raise ValueError('Some error')
-    except Exception as ex:
-        self.update_state(
-            state=states.FAILURE,
-            meta={
-                'exc_type': type(ex).__name__,
-                'exc_message': traceback.format_exc()
-                'custom': '...'
-            })
-        raise Ignore()
-
-```
-
-
-
-### Registering Failure Callbacks
-
-```python
-import celery
-from celery.task import task
-
-class MyBaseClassForTask(celery.Task):
-
-    def on_failure(self, exc, task_id, args, kwargs, einfo):
-        # exc (Exception) - The exception raised by the task.
-        # args (Tuple) - Original arguments for the task that failed.
-        # kwargs (Dict) - Original keyword arguments for the task that failed.
-        print('{0!r} failed: {1!r}'.format(task_id, exc))
-
-@task(name="foo:my_task", base=MyBaseClassForTask)
-def add(x, y):
-    raise KeyError()
-```
-
-
-
-
-
-
-
-
-
 ----------
 
 
@@ -606,55 +537,6 @@ def dump_context(self, x, y):
     print('Executing task id {0.id}, args: {0.args!r} kwargs: {0.kwargs!r}'.format(
             self.request))
 ```
-
-
-
-
-
-## Launching a Celery Worker
-
-- Celery worker controls multiple processes (configured through `--concurrency`)
-- Worker distributes tasks among it's controlled processes
-
-
-
-**From the command line**
-
-`celery -A my_application worker --loglevel=debug`
-
-- `-A`, `--app` application name
-- `-c` `--concurrency`  `<concurrency>`  Number of child processes processing the queue.  The default is the number of CPUs available on your system. 
-
-`my_application.py`
-
-```python
-celery = Celery(
-    MODULE_NAME,
-    backend=CELERY_RESULT_BACKEND,
-    broker=CELERY_BROKER_URL
-)
-@celery.task
-def task1(input):
-    time.sleep(1)
-    return input
-```
-
-**Through a script**
-
-```python
-app = Celery('proj',
-             broker=CELERY_BROKER_URL,
-             backend=CELERY_RESULT_BACKEND,
-             include=['proj.tasks'])
-if __name__ == '__main__':
-    app.start()
-```
-
-
-
-#### Running worker as daemon
-
-- see [daemonizing celery]("daemonizing celery.md")
 
 
 
@@ -846,23 +728,6 @@ def success_callback(response):
 
 app.send_task("remote.processing", link=success_callback.s())
 ```
-
-
-
-## Optimizations
-
-
-
-
-
-#### Task Distribution
-
-- **default**: Even number of task onto each worker
-- **fair**: Waiting to distribute tasks until each worker process is available for work
-
-![celery_task_distribution](img/celery_task_distribution.png)
-
-
 
 
 
