@@ -436,7 +436,21 @@ def create_app(config_object_name) -> Flask:
 
 
 
-## Requests Types
+## Requests Input Types
+
+> `request.data` Contains the incoming request data as string in case it came with a mimetype Flask does not handle.
+
+- [`request.args`](https://flask.palletsprojects.com/api/#flask.Request.args): the key/value pairs in the URL query string
+- [`request.form`](https://flask.palletsprojects.com/api/#flask.Request.form): the key/value pairs in the body, from a HTML post form, or JavaScript request that isn't JSON encoded
+- [`request.files`](https://flask.palletsprojects.com/api/#flask.Request.files): the files in the body, which Flask keeps separate from `form`. HTML forms must use `enctype=multipart/form-data` or files will not be uploaded.
+- [`request.values`](https://flask.palletsprojects.com/api/#flask.Request.values): combined `args` and `form`, preferring `args` if keys overlap
+- [`request.json`](https://flask.palletsprojects.com/api/#flask.Request.json): parsed JSON data. The request must have the `application/json` content type, or use [`request.get_json(force=True)`](https://flask.palletsprojects.com/api/#flask.Request.get_json) to ignore the content type.
+
+All of these are [`MultiDict`](https://werkzeug.palletsprojects.com/datastructures/#werkzeug.datastructures.MultiDict) instances (except for `json`). You can access values using:
+
+- `request.form['name']`: use indexing if you know the key exists
+- `request.form.get('name')`: use `get` if the key might not exist
+- `request.form.getlist('name')`: use `getlist` if the key is sent multiple times and you want a list of values. `get` only returns the first value.
 
 
 
