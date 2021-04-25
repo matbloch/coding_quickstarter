@@ -120,8 +120,6 @@ df = pd.DataFrame(data)
 
 
 
-
-
 ### Misc Methods
 
 - `df.empty`
@@ -146,10 +144,6 @@ grouped.get_group('Falcon')
 df_list  = map(lambda df_i: grouped.get_group(df_i), sampled_df_i)
 sampled_df = pd.concat(df_list, axis=0, join='outer')
 ```
-
-
-
-
 
 
 
@@ -196,6 +190,47 @@ data_top = data.head()
 row_names = list(data_top.index)
 ```
 
+
+
+### Slicing and Data Access
+
+**Slicing rows**
+
+```python
+# by integer
+dataframe[0]
+dataframe[0:3]
+dataframe[-1:]
+
+# by condition: df[{condition}]
+df[df.A > 3]
+```
+
+
+
+**Slicing rows AND columns**
+
+- `iloc` integer based indexing
+- `loc` label based indexing
+
+```python
+# iloc[row slicing, column slicing]
+dataframe.iloc[0:3, 1:4]
+dataframe.loc[[0, 10], :]
+dataframe.loc[0, ['species_id', 'plot_id', 'weight']]
+dataframe.loc[[0, 10, 35549], :]
+```
+
+**Serie from column/row**
+
+- slicing with a single row/column
+
+```python
+df.iloc[:,0]
+```
+
+
+
 ### Iterating
 
 ```python
@@ -203,14 +238,6 @@ columns = list(df)
 for i in columns:
     # printing the third element of the column
     print (df[i][2])
-```
-
-
-
-### Loading From Files
-
-```python
-data = pd.read_csv("nba.csv", index_col ="Name")
 ```
 
 
@@ -295,40 +322,43 @@ df = df.set_index('YourColumnName')
 
 
 
-### Slicing and Data Access
 
-**Slicing rows**
+
+### Filtering
+
+**by multiple column values**
 
 ```python
-# by integer
-dataframe[0]
-dataframe[0:3]
-dataframe[-1:]
+df = df[df['id'].isin([1,6])]
+```
 
-# by condition: df[{condition}]
-df[df.A > 3]
+**by multiple columns**
+
+```python
+ df[(df["Name"]=="Tom") & (df["Age"]==42)]
+```
+
+```python
+df[(df["Name"]=="Tom") | (df["Age"]==34)]
 ```
 
 
 
-**Slicing rows AND columns**
 
-- `iloc` integer based indexing
-- `loc` label based indexing
 
-```python
-# iloc[row slicing, column slicing]
-dataframe.iloc[0:3, 1:4]
-dataframe.loc[[0, 10], :]
-dataframe.loc[0, ['species_id', 'plot_id', 'weight']]
-dataframe.loc[[0, 10, 35549], :]
-```
 
-**Serie from column/row**
 
-- slicing with a single row/column
+## Storing / Loading
+
+
+
+### Loading From Files
 
 ```python
-df.iloc[:,0]
+data = pd.read_csv("nba.csv", index_col ="Name")
 ```
+
+
+
+
 
