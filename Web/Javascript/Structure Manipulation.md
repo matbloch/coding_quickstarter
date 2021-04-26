@@ -69,7 +69,7 @@ my_input = {
     prop1: 123,
     prop2: "abc",
     prop3: "def"
-}$
+}
 let myMethod = ({prop1, prop3}:{prop1?: number, prop3: string}) => {}
 ```
 
@@ -91,7 +91,7 @@ let myMethod = ({prop1, prop3}:{prop1?: number, prop3: string}) => {}
 let copy = { ...original };
 ```
 
-**Merge Objects**
+**Merge / Partially Update Objects**
 
 ```js
 let merged = { ...foo, ...bar, ...baz };
@@ -223,8 +223,6 @@ myArray.findIndex(item => condition)
 const alligator = ["thick scales", 80, "4 foot tail", "rounded snout"];
 alligator.includes("thick scales"); // returns true
 ```
-
-
 
 
 

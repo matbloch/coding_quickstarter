@@ -71,6 +71,7 @@ fetchData()
 ## Promises Chaining
 
 - chained `then` are synchronized and pass results to each other
+- handlers are FIFO queued
 - `then` can also retrun a new promise
 
 
@@ -84,9 +85,86 @@ my_promise()
 
 
 
+## Async Await
 
 
-## Parallel Execution
+
+#### Async Functions
+
+- `async` keyword to automatically return a Promise
+- `return` statement is used as the `resolve` value of the returned promise
+
+```tsx
+async function f() {
+  // same as:
+  // return Promise.resolve(1);
+  return 1;
+}
+```
+
+**With arrow function**
+
+```tsx
+const foo = async () => {}
+```
+
+```tsx
+const foo = async arg => {}
+```
+
+```tsx
+const foo = async (arg1, arg2) => {}
+```
+
+**In a callback**
+
+```tsx
+const foo = event.onCall(async () => {
+  // do something
+})
+```
+
+
+
+
+
+1. To **set** the resolution value of the promise created by the `async` function, you have to use a `return` statement from the `async` function itself. Your code has a `return` in the `getJSON` callback (which is ignored), not the `async` function itself.
+2. To **get** the resolution value of an `async` function, you must `await` it (or consume its promise in the older way, via `then`, etc.).
+
+
+
+
+
+#### Await
+
+- `await` keyword suspends function execution until promise is resolved and returns the result
+- consumes the promise as an alternative to `promise.then` and returns the resolution value
+- **only works in `async ` methods**
+
+```tsx
+// works only inside async functions
+let value = await promise;
+// "value" can now be accessed, "await" blocks
+console.log(value);
+```
+
+
+
+
+
+#### Async Class Methods
+
+```tsx
+class Waiter {
+  async wait() {
+    return await Promise.resolve(1);
+  }
+}
+```
+
+
+
+## Parallel Execution of Promises
 
 -  see https://javascript.info/promise-api
 
@@ -96,4 +174,22 @@ let promise = Promise.all([...promises...]);
 
 
 
-## Async Await
+```tsx
+// wait for the array of results
+let results = await Promise.all([
+  fetch(url1),
+  fetch(url2),
+  ...
+]);
+```
+
+
+
+
+
+## Examples
+
+
+
+
+
