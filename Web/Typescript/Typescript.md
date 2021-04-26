@@ -45,13 +45,11 @@ function getUser(name: <ArgumentType>): <ReturnType> {}
 getUser = (name: <ArgumentType>): <ReturnType> => {}
 ```
 
-Destructured arguments
+De-structured arguments
 
 ```tsx
 const method = ({ pretty }: { pretty: boolean }): <ReturnType> => {}
 ```
-
-
 
 
 
@@ -79,9 +77,16 @@ type LockStates = "locked" | "unlocked";
 type OddNumbersUnderTen = 1 | 3 | 5 | 7 | 9;
 ```
 
+### Type Assertions / Casting
+
+```tsx
+let strLength: number = (someValue as string).length;
+let strLength: number = (<string>someValue).length;
+```
 
 
-## Basic Types
+
+## Defining Types
 
 ### Array
 
@@ -140,6 +145,22 @@ const shorterMap: Record<string, string> = {
 
 
 
+### Nested Types
+
+```tsx
+export interface Item {
+    id: number;
+    size: number;
+}
+
+export interface Example {
+    name: string;
+    items: {
+        [key: string]: Item
+    };
+}
+```
+
 
 
 ### Special Types
@@ -171,14 +192,9 @@ let looselyTyped: any = 4;
 
 
 
+### Utility Types
 
-
-### Type Assertions / Casting
-
-```tsx
-let strLength: number = (someValue as string).length;
-let strLength: number = (<string>someValue).length;
-```
+- see https://www.typescriptlang.org/docs/handbook/utility-types.html
 
 
 
@@ -204,7 +220,7 @@ interface Dog extends Animal {
 ### Object Interfaces
 
 - optionals: indicated with `?`
-- readonly flagged with `readonly`
+- read-only flagged with `readonly`
 
 ```tsx
 interface SquareConfig {
@@ -217,7 +233,7 @@ interface SquareConfig {
 
 ### Array Interfaces
 
-**Readonly Array**
+**Read-only Array**
 
 - typed with `ReadonlyArray`
 
