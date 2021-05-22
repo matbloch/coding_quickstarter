@@ -59,3 +59,8 @@ IAM policies specify what actions are allowed or denied on what AWS  resources (
 
 
 
+## Delegating Access Across Accounts
+
+
+
+Must read: https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html
