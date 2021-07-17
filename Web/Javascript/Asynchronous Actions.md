@@ -49,7 +49,7 @@ fetchData().then(
 - if only interested in error
 
 ```tsx
-promise.catch(alert);
+promise.catch(error => {});
 // same as:
 promise.then(null, f)
 ```

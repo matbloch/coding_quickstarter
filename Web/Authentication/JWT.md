@@ -28,7 +28,5 @@ Hash-based Message Authentication Code (HMAC) is an algorithm that combines a ce
 - public-key algorithm
 - you deal with a public/private key pair rather than a shared secret
 
-
-
 ##### ES256
 

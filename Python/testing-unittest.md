@@ -214,6 +214,8 @@ mock.reset_mock()
 
 ### Patch()
 
+> Patch works by (temporarily) changing the object that a name points to with another one. The basic principle is that you **patch where an object is looked up**,  which is not necessarily the same place as where it is defined.
+
 - looks up an object in a given module and replaces that object with a `Mock`
 - `from unittest.mock import patch`
 
@@ -266,7 +268,7 @@ with patch('module.Foo') as mock:
 
 ```python
 @patch('os.path')
-@patch('my_custom_module.fetch')
+@patch('my_custom_module.fetch', return_value="my-mocked-return-value")
 def test_single_model_prediction(mocked_fetch, _):
     mocked_fetch.return_value = True
     assert mocked_fetch()
