@@ -1,5 +1,9 @@
 # Coding Styleguide and Best Practice for C++
 
+**Guidelines**: https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c2-use-class-if-the-class-has-an-invariant-use-struct-if-the-data-members-can-vary-independently
+
+
+
 
 
 ## Naming

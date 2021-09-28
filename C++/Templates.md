@@ -8,11 +8,7 @@
 
 
 
-
-
-
-
-## Regular templates
+## Template Declaration
 
 ```cpp
 template <class T>
@@ -53,6 +49,8 @@ T mypair<T>::getmax () {
 
 
 ## Template Specialization
+
+> Implement functionality for a specific type
 
 **Function specialization**
 
@@ -167,12 +165,45 @@ int Thing<A,int>::doSomething()  { /* do whatever you want to do here */ }
 
 
 
-### Inheritance from Templated Classes
+
+
+## Template Aliases
+
+
+
+**Alias Template**
 
 ```cpp
-class Rectangle: public Area<int> {
+template<typename T> 
+using pointer = T*;
+```
 
-};
+
+
+
+
+**Template Function Alias**
+
+```cpp
+// your templated fn
+template<typename T>
+void g(T){}
+
+// the templated alias
+template<typename T>
+const auto f = g<T>;
+```
+
+**Alias with specialisation**
+
+
+
+
+
+## Inheritance
+
+```cpp
+class Rectangle: public Area<int> {};
 ```
 
 **Templated inheritance**
@@ -258,7 +289,7 @@ class MyClass : public T {
 
 
 
-### Variadic Templates
+## Variadic Templates
 
 - `typename... Ts` to define **template parameter pack**
 - To "unpack" parameter packs, use a template function taking one (or more) parameters explicitely and the "rest" of the parameters as a template parameter pack
@@ -322,7 +353,7 @@ void foo(int first, Args... more) {
 
 
 
-### Non-type Template parameters
+## Non-type Template Parameters
 
 **Integer template**
 
@@ -445,6 +476,8 @@ public:
 
 ### Enable_if
 
+> Conditionally compile a method
+
 ```cpp
 template<typename T>
 struct Point
@@ -468,6 +501,23 @@ struct Point
 
 
 **Conditional Method definition**
+
+
+
+### std::is_same
+
+> compile-time template evaluation
+
+```cpp
+template<class T> double doit(T &t) {
+    if constexpr (std::is_same_v<T, AA>)
+        return t.Plus(t);
+    else
+        return t + t;
+}
+```
+
+
 
 
 
