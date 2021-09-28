@@ -85,7 +85,7 @@ lst = ['Geeks', 'For', 'Geeks', 'is',
 df = pd.DataFrame(lst)
 ```
 
-**From Dict**
+**From Dict  - without rows**
 
 ```python
 import pandas as pd
@@ -93,6 +93,38 @@ data = {'Name':['Tom', 'nick', 'krish', 'jack'],
         'Age':[20, 21, 19, 18]}
 df = pd.DataFrame(data)
 ```
+
+result:
+
+```
+     Name  Age 
+0    Tom   20
+1    nick  21
+2    krish 19
+3   jack   18
+
+**From Dict - with rows**
+
+​```python
+data = {'Name':['Tom', 'Jack', 'nick', 'juli'],
+        'marks':[99, 98, 95, 90]}
+df = pd.DataFrame(data, index =['rank1',
+                                'rank2',
+                                'rank3',
+                                'rank4'])
+```
+
+
+
+```
+         Name    marks 
+rank1    Tom     99
+rank2    Jack    98
+rank3    nick    95
+rank14   juli    90
+```
+
+
 
 
 
@@ -277,8 +309,6 @@ df = pd.concat(list_of_dataframes)
 
 
 
-
-
 ### Sorting
 
 **Sorty by Column/Row names**
@@ -286,8 +316,6 @@ df = pd.concat(list_of_dataframes)
 ```python
 df.sort_index(axis = 0)
 ```
-
-
 
 
 
@@ -342,6 +370,28 @@ df = df[df['id'].isin([1,6])]
 df[(df["Name"]=="Tom") | (df["Age"]==34)]
 ```
 
+**Row-wise custom filter**
+
+```python
+df[df.apply(lambda x: x['b'] > x['c'], axis=1)]
+```
+
+
+
+### Aggregation
+
+**Group by Column value and then merge**
+
+```python
+aggregation_functions = {'price': 'sum', 'amount': 'sum', 'name': 'first'}
+# group all rows by unique column value pairs
+df = df.groupby(["name", "surname"])
+# aggregate the groups
+df_new = df.aggregate(aggregation_functions)
+```
+
+
+
 
 
 
@@ -361,4 +411,18 @@ data = pd.read_csv("nba.csv", index_col ="Name")
 
 
 
+
+
+
+## Plotting
+
+
+
+### Matplotlib
+
+```python
+import matplotlib.pyplot as plt
+df.plot(kind='scatter',x='num_children',y='num_pets',color='red')
+plt.show()
+```
 

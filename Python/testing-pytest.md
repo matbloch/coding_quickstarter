@@ -126,6 +126,15 @@ with tempfile.TemporaryDirectory() as tmpdirname:
 
 
 
+**Nested folders**
+
+```python
+import os
+os.makedirs(os.path.join(tempdir, 'nested_dir'))
+```
+
+
+
 ## Fixtures
 
 conftest.py

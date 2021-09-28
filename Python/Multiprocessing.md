@@ -252,19 +252,16 @@ from subprocess import Popen, PIPE
 
 process = Popen(['docker', 'ps', '-a'], 
                 stdout=PIPE, stderr=PIPE, # send output to subprocess.PIPE
-                universal_newlines=True	  # store output as string
+                universal_newlines=True,	# store output as string
+                cwd="/a/b/c"              # specify the working directory
                )
-output, errors = p.communicate()
+output, errors = process.communicate()
 print("retcode =", process.returncode)
 ```
 
 
 
 **Aysnchronous Communication:** `asyncio.create_subprocess_exec`
-
-
-
-
 
 
 
@@ -282,10 +279,6 @@ p1.stdout.close()
 output = p2.communicate()[0]
 ```
 
-
-
-
-
 **Polling process output**
 
 ```python
@@ -293,13 +286,10 @@ output = p2.communicate()[0]
 process = subprocess.Popen(shlex.split(command),shell=False,stdout=process.PIPE)
 
 # Poll process.stdout to show stdout live
-while True:
+while process.poll() is None:
   output = process.stdout.readline()
-  if process.poll() is not None:
-    break
   if output:
-    print output.strip()
-rc = process.poll()
+    print(output.strip())
 ```
 
 
