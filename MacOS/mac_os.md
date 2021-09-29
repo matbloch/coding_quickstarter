@@ -181,6 +181,22 @@ prompt_context() {
 if [[ "$USER" = "$DEFAULT_USER" || -n "$SSH_CLIENT" ]];
 ```
 
+alternative:
+
+open `~/.zshrc`, paste the following code:
+
+```
+prompt_context() {
+  if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
+    prompt_segment black default "%(!.%{%F{yellow}%}.)$USER"
+  fi
+}
+```
+
+
+
+
+
 ## IDE: CLion
 
 **Edit configurations**
