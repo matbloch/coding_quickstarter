@@ -451,6 +451,46 @@ std::function<void(int)> f_add_display = std::bind(&Foo::foo_static);
 
 
 
+**std::function with templates and lambdas**
+
+- lambda is not a `std::function`
+- template deduction looks through limited set of implicit conversion
+
+Option 1: Template whole function
+
+```cpp
+template <typename T, typename F>
+T test2(T arg, F mapfn) {
+  return mapfn(arg);
+}
+```
+
+Option 2: Put `std::function<T(T)>` in non-deduced context
+
+```cpp
+template <typename T> struct identity { using type = T; };
+template <typename T> using non_deduced = typename identity<T>::type;
+
+template <typename T>
+T test2(T arg, non_deduced<std::function<T (T)>> mapfn) {
+  return mapfn(arg);
+}
+```
+
+**templated function argument with default**
+
+```cpp
+template <typename InputType, typename F = void(InputType)>
+void doSomething(InputType input, F = [](InputType){
+  // do something...
+})
+
+```
+
+
+
+
+
 
 
 ### Reference Wrappers

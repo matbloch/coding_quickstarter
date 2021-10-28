@@ -30,6 +30,29 @@
 
 
 
+
+
+### Preventing Memory Leaks
+
+- when calling `delete` to pointer of base class, destructor of derived class **is not called!**
+- add `virtual` destructor if class has at list one `virtual` method
+
+
+
+```cpp
+class ISample {
+  public:
+  virtual ISample() = default;
+  virtual void doSomething();
+}
+```
+
+
+
+
+
+
+
 ### Calling `virtual` Child Method in Parent
 
 ```cpp

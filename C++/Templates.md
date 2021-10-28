@@ -472,35 +472,7 @@ public:
 
 ## Template Metaprogramming
 
-
-
-### Enable_if
-
-> Conditionally compile a method
-
-```cpp
-template<typename T>
-struct Point
-{
-  template<typename U = T>
-  typename std::enable_if<std::is_same<U, int>::value>::type
-    MyFunction()
-  {
-    std::cout << "T is int." << std::endl;
-  }
-
-  template<typename U = T>
-  typename std::enable_if<std::is_same<U, float>::value>::type
-    MyFunction()
-  {
-    std::cout << "T is not int." << std::endl;
-  }
-};
-```
-
-
-
-**Conditional Method definition**
+- see https://en.cppreference.com/w/cpp/header/type_traits
 
 
 
@@ -517,11 +489,57 @@ template<class T> double doit(T &t) {
 }
 ```
 
+**Static assertion**
+
+```cpp
+template <typename T>
+void myMethod(T input) {
+  static_assert(std::is_same<decltype(input), bool>::value, "retval must be bool");
+}
+```
+
+
+
+### std::enable_if - conditional compilation
+
+> Conditionally compile a method
+
+- use `std::enable_if_t` for `std::enable_if<...>::type`
+
+```cpp
+template<typename T>
+struct Point {
+  template<typename U = T>
+  typename std::enable_if<std::is_same<U, int>::value>::type
+  myFunction(){
+    std::cout << "T is int." << std::endl;
+  }
+  template<typename U = T>
+  typename std::enable_if<std::is_same<U, float>::value>::type
+  myFunction() {
+    std::cout << "T is not int." << std::endl;
+  }
+};
+```
+
 
 
 
 
 #### Conditional Method Compilation
+
+```cpp
+// the template argument
+template<class T>
+// conditional compilation
+typename std::enable_if_t<
+  std::is_same<T, int>::value, // the condition
+	bool                         // the return type
+>
+return_something(){
+  return true;
+}
+```
 
 **Overload by return type**
 
@@ -573,4 +591,21 @@ struct is_bar
 ```cpp
 
 ```
+
+
+
+### std::remove_reference
+
+
+
+```cpp
+template <typename T>
+void method(T& input)
+  static_assert(std::is_same<typename std::remove_reference<decltype(input)>::type, bool>::value, "retval must be bool");
+}
+```
+
+
+
+### std::return_type
 
