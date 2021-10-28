@@ -11,7 +11,7 @@
 **Interface**
 - Defines the blueprint of a class
 - All classes derived from base class `NSObject`
-- variables only inside `{}` - Functions and properties only outside
+- only instance variables (see further below) inside `{}` - Functions and properties only outside
 
 ```cpp
 @interface Box: NSObject {
@@ -83,7 +83,7 @@ self.my_var = 123;
 - definition: `@property(ACCESS_SPECIFIERS) TYPE VARNAME;`
 	```cpp
     @property (readonly) NSString *firstName;
-    ```
+  ```
 - Access specifiers:
 	- **`atomic`**/`nonatomic`: atomic is thread safe
 	- **`readwrite`**/`readonly` readonly: no setters generated

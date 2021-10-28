@@ -68,69 +68,6 @@
 
 
 
-# View Controllers
-- manages user interface and interaction between interface and data
-- base class: `UIViewController`
-
-**Example View Controller**
-```cpp
-@interface ViewController : UIViewController
-@end
-```
-
-#### View Controller Types
-
-**Regular View Controller**
-
-**Container View Controller**
-- Example: Tab Bar
-- Contains multiple sub-views
-
-**Navigation View Controller**
-- Bar Button Item
-
-
-## NavigationViewController
-
-
-
-
-## Views
-- Views created in the storyboard are automatically initiated (no need to init them in view controller code)
-- Custom view classes can be selected to implement the UI callbacks
-- All outlets that connect storyboard elements to code are marked with `IBOutlet`
-
-**Creating callbacks for storyboard views**
-
-0. Create a custom view class in code
-``` cpp
-@interface InterfaceView : UIView
-@end
-```
-1. Click on view
-![select_view.png](./img_app_tutorial/select_view.png)
-2. Select view class that implements the callbacks from attributes tab
-![view_class_select.png](./img_app_tutorial/view_class_select.png)
-3. Connect your outlets to the UIView subclass in the code (right-click drag and drop)
-
-**Reconnecting Code Callbacks to Storyboard**
-- Code Outlets are marked with dots. Connected ones are filled.
-- Available outlets are also visible in the view property tab of the storyboard
-- Right-click drag & drop from code dot to storyboard element
-![code_connection_state.png](./img_app_tutorial/code_connection_state.png)
-
-**Debugging UIView order**
-![debug_ui_z_index.png](./img_app_tutorial/debug_ui_z_index.png)
-
-**Connecting Storyboard View delegates**
-- Create custom view class and delegate property
-```cpp
-@property (nonatomic, weak) IBOutlet id <InterfaceViewDelegate> delegate;
-```
-- drag&drop property onto view controller in storyboard
-- The delegate will appear in the property tab of the view controller (in the storyboard)
-![delegate_outlet_connected.png](./img_app_tutorial/delegate_outlet_connected.png)
-
 
 
 ## Navigation in iOS
@@ -341,8 +278,10 @@ configuration.planeDetection = ARPlaneDetectionHorizontal;
 ```
 
 
-# Profiling
 
+
+
+# Profiling & Debugging
 
 
 

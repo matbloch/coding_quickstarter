@@ -20,7 +20,10 @@
 
 ![navigation_controller.png](img_tutorial_multiview/navigation_controller.png)
 
+
+
 ## 2. Connecting View Controllers
+
 - Search for “Button” and then drag into the first view. You can change the text.
 - Click to select the button that was just added.
 - Hold down the “ctrl” key and drag a “connection” line to the next view.

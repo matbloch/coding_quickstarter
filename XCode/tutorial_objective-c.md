@@ -1,6 +1,9 @@
-# Creating a Single View Application in Objective C
+# Single View Application in Objective C
+
+
 
 ## 1. Create a new project from an XCode Template
+
 Project structure:
 
 - YourApp
