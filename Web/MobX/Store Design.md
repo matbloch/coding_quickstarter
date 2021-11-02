@@ -1,22 +1,20 @@
 # Store Design
 
-
-
 - Class instances will never be made observable automatically by passing them to `observable`
 
 
 
 
 
-### Observing Class Instances
+## What is observed?
 
-- Classes are not automatically observed like plain objects
+**Observing Class Instances**
+
+- Classes are **not** automatically observed like plain objects
 - use `makeObservable` in class constructor
 - add `"useDefineForClassFields": true` to Typescript configuration
 
-
-
-## Converting observables back to vanilla JS
+**Converting observables back to vanilla JS**
 
 ```js
 const plainObject = { ...observableObject }
@@ -32,13 +30,60 @@ const plainMap = new Map(observableMap)
 
 
 
+![cascaded-state](img/cascaded-state.png)
+
+### Linking Stores
+
+```ts
+class Parent {
+  Parent(){
+    child = Child(parent: this);
+  }
+  Child child;
+}
+```
 
 
-### Global Stores
+
+## Initializing Models / Stores
+
+
+
+
+
+```tsx
+class Person {
+    public name: string = "default"
+    public address?: string = "default"
+    public constructor(init:Person) {
+        Object.assign(this, init);
+    }
+}
+
+let persons = [
+    new Person(), 
+    new Person({}), // error
+    new Person({name:"John"}),
+];
+```
+
+
+
+
+
+
+
+
+
+## Examples
+
+
+
+### Global Store
+
+
 
 TODO
-
-
 
 ```js
 const MyContext = React.createContext(defaultValue);

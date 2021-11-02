@@ -200,7 +200,9 @@ let looselyTyped: any = 4;
 
 ## Interfaces
 
-- duck-typed
+> JS is duck-typed. Interfaces allow to define a contract between components.
+
+
 
 ```tsx
 interface Animal {
@@ -320,6 +322,41 @@ class App extends React.Component<MyProps, MyState> {
   }
 }
 ```
+
+
+
+
+
+## Utility Types
+
+
+
+#### `Partial<T>` and `Required<T>`
+
+```tsx
+interface Todo {
+    title: string;
+    description: string;
+}
+
+function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>): Todo {
+    return { ...todo, ...fieldsToUpdate };
+}
+```
+
+
+
+
+
+
+
+## Mixins
+
+https://www.typescriptlang.org/docs/handbook/mixins.html
+
+
+
+
 
 
 

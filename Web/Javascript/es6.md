@@ -70,11 +70,38 @@ function whois({displayName, fullName: {firstName: name}}) {
 
 
 
-## JavaScript Fundamentals
+## Modules
 
 
 
-### Imports
+### Export
+
+- use label `export`
+- before or after declaration
+
+**Before declaration**
+
+```js
+export let months = ["January", "February"]
+```
+
+**After declaration**
+
+```js
+function sayHi() {}
+function sayBye() {}
+export {sayHi, sayBye};
+```
+
+**Default export**
+
+```js
+export default sayHi;
+```
+
+
+
+### Import
 
 **Import default export**
 
@@ -87,6 +114,16 @@ import moduleName from 'module'
 ```javascript
 import { destructuredModule } from 'module'
 ```
+
+**Import `as`**
+
+```js
+import {myModule as myAlias}  from 'module'
+```
+
+
+
+## Language Fundamentals
 
 
 

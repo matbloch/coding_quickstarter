@@ -43,7 +43,23 @@ assert.deepEqual(a, b);
 
 
 
+## Expect
 
+- The module `chai` allows more checks like `expect` statements
+
+
+
+**Example**
+
+```tsx
+describe("This", () => {
+    describe("should", () => {
+        it("always pass", () => {
+            expect(true).to.equal(true);
+        });
+    });
+});
+```
 
 
 
