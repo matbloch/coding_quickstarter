@@ -551,8 +551,8 @@ class MyClass {
   
   public:
     template<typename U = T>	// template alias
-    static                              // keyword
-    // the return type
+    static                    // keyword
+    // now define the the return type
     typename std::enable_if<
                   std::is_same<U, MyTypeToEnableMethod>::value, // the condition 
                                                                 // to enable the fn
