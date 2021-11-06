@@ -1,6 +1,13 @@
 # State Management with MobX
 
-<Benefits of using MobX>
+
+
+**Main Components**
+
+- **observable**: A state that is observable
+- **computed**: A derived observable state
+- **action**: A method that alters state
+- **observer**: a context that listens to state change
 
 
 
@@ -88,31 +95,13 @@ class TodoStore {
 
 ### Make State Observable
 
-#### A. `@observable` Annotation
+> There are multiple options to make state observable, see below.
 
-- `observable(source, overrides?, options?)`
 
-**Example:** Decorator
 
-```javascript
-import { observable } from "mobx"
-class Todo {
-    id = Math.random()
-    @observable title = ""
-    @observable finished = false
-}
-```
+#### A. `makeObservable`
 
-**Example:** Method/function
-
-```javascript
-const peopleStore = observable([
-  { name: "Michel" },
-  { name: "Me" }
-]);
-```
-
-#### B. `makeObservable`
+> Recommended way.
 
 - make **existing** object properties observable
 - typically used in constructor of class
@@ -144,6 +133,34 @@ class Doubler {
 }
 ```
 
+
+
+#### B. `@observable` Annotation
+
+- `observable(source, overrides?, options?)`
+
+**Example:** Decorator
+
+```javascript
+import { observable } from "mobx"
+class Todo {
+    id = Math.random()
+    @observable title = ""
+    @observable finished = false
+}
+```
+
+**Example:** Method/function
+
+```javascript
+const peopleStore = observable([
+  { name: "Michel" },
+  { name: "Me" }
+]);
+```
+
+
+
 #### C. `makeAutoObservable`
 
 - like `makeObservable` but infers all properties
@@ -173,7 +190,7 @@ class Animal {
 
 ### State References
 
-- references between stores are automatically handled
+> References between stores are automatically handled
 
 **Example**
 
@@ -195,14 +212,36 @@ peopleStore[0].name = "Michel Weststrate";
 
 ## Actions
 
-> Actions update the state. Actions run inside *transactions* - no observers are updated until outer-most action has finished.
+> **Actions** update the state. Actions run inside *transactions* - no observers are updated until outer-most action has finished.
+>
+> Same with **observables**, there are multiple ways of defining actions.
 
 - MobX requires declaration of actions
 - `makeAutoObservable` can automate annotation
 - only methods that **modify** the state should be marked as actions, **not** methods that perform filtering/calculations on the state
 - action should be passed as far outwards as possible (method that calls an *action* is also an `action`)
 
-#### Option A: @action annotation
+
+
+#### Option A: `makeObservable` 
+
+> Recommended way. Can also be used for **observables**.
+
+```tsx
+class Counter {
+    value: int = 0
+    constructor() {
+        makeObservable(this, {
+            increment: action
+        })
+    }
+    increment() { this.value++ }
+}
+```
+
+#### Option B: @action annotation
+
+- `@action`
 
 ```js
 @action changeProperty(store) {
@@ -210,7 +249,11 @@ peopleStore[0].name = "Michel Weststrate";
 }
 ```
 
-#### Option B: `action()` method wrapper
+
+
+#### Option C: `action()` method wrapper
+
+> Useful for inline action methods
 
 - `action` is annotation **and** function
 
