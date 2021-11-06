@@ -4,8 +4,6 @@
 
 
 
-
-
 **Features**
 
 - hard typing
@@ -13,6 +11,8 @@
 - interfaces
 - type aliasing
 - additional types: any, void, enums, tuple, ...
+- shorthands
+- ...
 
 
 
@@ -20,7 +20,28 @@
 
 ## Project Setup
 
-Managing types:
+#### Sample Project
+
+
+
+
+
+
+
+
+
+#### Import System
+
+
+
+
+
+#### Modules
+
+- if `.ts` file uses `import`/`export`, it becomes a module
+- else it's a global script
+
+
 
 
 
@@ -76,6 +97,8 @@ declare const backpack: Backpack<string>;
 type LockStates = "locked" | "unlocked";
 type OddNumbersUnderTen = 1 | 3 | 5 | 7 | 9;
 ```
+
+
 
 ### Type Assertions / Casting
 
@@ -346,6 +369,37 @@ function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>): Todo {
 
 
 
+## Union and Intersection of Types
+
+- `|` for union
+- only allows operations/properties that are present in **both** types
+
+
+
+**Example:** Different types
+
+```tsx
+function printId(id: number | string) {
+  console.log(id.toUpperCase());
+  //Property 'toUpperCase' does not exist on type 'string | number'.
+  //   Property 'toUpperCase' does not exist on type 'number'.
+}
+```
+
+**Example:** different values
+
+```tsx
+function printText(s: string, alignment: "left" | "right" | "center") {}
+```
+
+
+
+
+
+## Decorators
+
+- see https://www.typescriptlang.org/docs/handbook/decorators.html
+
 
 
 
@@ -360,31 +414,104 @@ https://www.typescriptlang.org/docs/handbook/mixins.html
 
 
 
+## Types for Internal Code
+
+> `.d.ts` should only be used to add types for external libraries. For internal usage, use import with shorthands.
+
+
+
+src/typings/index.ts
+
+```tsx
+export type Optional<T> = T | null
+```
+
+tsconfig.json
+
+```json
+...
+"paths": {
+    "types": [".src/typings/index.ts"]
+}
+...
+```
+
+my_file.ts
+
+```tsx
+import {Optional} from 'types'
+```
+
+
+
+
+
+## Types for External Code
+
+> **Ambient Types** allow to write type declaration for existing code/js packages.
+
+- `.d.ts` contain declarations (won't produce .js files)
+- **Don't** use `.d.ts` for your own code! Use plain `.ts` files instead.
+
+
+
+#### **DefinitelyTyped / `@types`**
+
+> Community-sourced type repository for many projects. Available as npm packages.
+
+```bash
+npm install --save-dev @types/react
+```
+
+
+
+#### Declaring types for existing modules
+
+- https://drag13.io/posts/custom-typings/index.html
+
+
+
+
+
 ## Examples
 
 
 
+#### Easy Class Initialization
+
+- `DataOnly` type extracts only data fields from a type to require non-optional arguments automatically
+- `Object.assign` allows to copy all properties in a single call
+
+```tsx
+// based on : https://medium.com/dailyjs/typescript-create-a-condition-based-subset-types-9d902cea5b8c
+type FilterFlags<Base, Condition> = { [Key in keyof Base]: Base[Key] extends Condition ? never : Key };
+type AllowedNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
+type SubType<Base, Condition> = Pick<Base, AllowedNames<Base, Condition>>;
+type OnlyData<T> = SubType<T, (_: any) => any>;
+```
 
 
-#### Class Initialization
 
 ```tsx
 class Person {
     public name: string = "default"
     public address: string = "default"
-    public age: number = 0;
-
-    public constructor(init?:Partial<Person>) {
+    // optional arguments won't be required at construction
+    public age?: number = 0;
+    
+    // not requested in OnlyData
+    doSomething =() => {}
+    public constructor(init:OnlyData<Person>) {
         Object.assign(this, init);
     }
 }
 
 let persons = [
-    new Person(),
-    new Person({}),
-    new Person({name:"John"}),
-    new Person({address:"Earth"}),    
-    new Person({age:20, address:"Earth", name:"John"}),
+    new Person(),		// error
+    new Person({}),     // error
+    new Person({name:"John"}),      // error
+    new Person({address:"Earth"}),  // error   
+    new Person({address:"Earth", name:"John"}),  // ok
 ];
 ```
 
