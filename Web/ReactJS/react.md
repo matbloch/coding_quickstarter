@@ -4,6 +4,8 @@
 - React is built with JSX, a mix of Javascript and HTML
 - Needs preprocessor (Babel) to compile JSX into JS
 
+
+
 ## Setup Base Project
 
 **Prerequisites**
@@ -14,9 +16,9 @@
 
 #### Additional Webpack Productivity Tools
 
-**Webpack Hotloader**
+- Webpack Hotloader
 
-**Webpack HTML**
+- Webpack HTML
 
 
 
@@ -26,7 +28,7 @@
 
 **TODO**: Add example
 
-## Basic Bundling
+#### Basic Bundling
 - Import functionality from different files using the dynamic `import()` syntax
 - Code will be bundled together in a single file by your bundler (e.g. Webpack or Browserify)
 - **Code Splitting**: Bundles can become too large. Extensions can split the code into multiple bundles for "lazy-loading"
@@ -44,7 +46,9 @@ export function add(a, b) {
 }
 ```
 
-## React Function Components
+## React Functional Components
+
+> Component is defined as a function
 
 ```jsx
 const MyComponent = ({param1}) => {
@@ -55,12 +59,9 @@ const MyComponent = ({param1}) => {
 
 
 
-
-
-
-
-
 ## React Class Components
+
+> Component is defined as a class
 
 **Creating a Component**
 

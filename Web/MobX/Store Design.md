@@ -45,26 +45,54 @@ class Parent {
 
 
 
-## Initializing Models / Stores
 
 
+
+
+## Examples
+
+
+
+### Nested Stores
+
+```tsx
+type FilterFlags<Base, Condition> = { [Key in keyof Base]: Base[Key] extends Condition ? never : Key };
+type AllowedNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
+type SubType<Base, Condition> = Pick<Base, AllowedNames<Base, Condition>>;
+export type OnlyData<T> = SubType<T, (_: any) => any>;
+```
 
 
 
 ```tsx
-class Person {
-    public name: string = "default"
-    public address?: string = "default"
-    public constructor(init:Person) {
-        Object.assign(this, init);
+import { action, computed, observable, makeObservable } from 'mobx'
+
+class Todo {
+	title: string
+    description?: string
+    constructor(args: OnlyData<Todo>) {
+        makeObservable(this, {
+            title: observable,
+            description: observable
+        })
+        Object.assign(this, args)
     }
 }
 
-let persons = [
-    new Person(), 
-    new Person({}), // error
-    new Person({name:"John"}),
-];
+export class Todos {
+    todos: Todo[] = []
+    
+    constructor(args: OnlyData<Todo>[]) {
+        makeObservable(this, {
+            todos: observable.shallow
+        })
+        args.forEach(this.addTodo)
+    }
+    
+    addTodo(todo: Todo) {
+        this.list.push(todo)
+    }
+}
 ```
 
 
@@ -75,13 +103,7 @@ let persons = [
 
 
 
-## Examples
-
-
-
-### Global Store
-
-
+### Initialize the Global Store
 
 TODO
 

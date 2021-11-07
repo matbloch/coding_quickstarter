@@ -1,7 +1,5 @@
 # Typescript
 
-- based on "duck typing"
-
 
 
 **Features**
@@ -11,8 +9,123 @@
 - interfaces
 - type aliasing
 - additional types: any, void, enums, tuple, ...
-- shorthands
-- ...
+
+
+
+## Core Principle
+
+> TypeScript uses **structural subtyping:** aka "duck typing". Type checking focuses on *shape* rather than values. If the type is shaped like a duck, it's a duck. If a goose has all the same attributes as a duck, then it also is a duck.
+
+
+
+#### Structural Typing and Nominal Typing
+
+> TypeScript creates types for classes but uses **nominal** instead of **structural** typing for them.
+
+- **Pitfall:** TS only cares about the properties of a type. If they are the same, no error is thrown.
+
+  
+
+**Structural Typing**
+
+- Objects are considered equal if their properties match
+
+```tsx
+class Foo { method(input: string) { /* ... */ } }
+class Bar { method(input: string) { /* ... */ } }
+let foo: Foo = new Bar(); // Works!
+```
+
+
+
+**Nominal Typing**
+
+- A nominal type system means **that each type is unique** and even if types have the same data you cannot assign across types. . E.g. featured by C++, Java, Swift.
+
+```tsx
+class Foo { method(input: string) { /* ... */ } }
+class Bar { method(input: string) { /* ... */ } }
+let foo: Foo = new Bar(); // Error!
+```
+
+
+
+#### Workaround for Nominal Typing
+
+> There are multiple approaches to simulate Nominal Typing but no official one yet.
+>
+>  
+
+**1. Type assertions**
+
+
+
+**2. Private properties**
+
+```tsx
+class USD {
+  private __nominal: void;
+  constructor(public value: number) {};
+}
+class EUR {
+  private __nominal: void;
+  constructor(public value: number) {};
+}
+```
+
+**3. Brands**
+
+- introduce a unused property with `_` prefix and `Brand` suffix in name
+- the *TypeScript* compiler team follows this convention. Serve to give a small amount of nominal typing
+- `brands` are never actually given values. At runtime they have zero cost.
+- use type assertion when needing to new up or cast down
+
+```tsx
+interface USD {
+  _usdBrand: void;
+  value: number;
+}
+interface EUR {
+  _eurBrand: void;
+  value: number;
+}
+```
+
+
+
+#### Excess Property Checks
+
+- **Pitfall:** properties are only checked for if they are inlined: probably a bug if an unused variable is defined inline.
+
+**Example**
+
+```tsx
+interface Dog {
+  breed: string
+} 
+function handleDog(dog: Dog)
+
+```
+
+**ok**
+
+```tsx
+const ginger = {
+    breed: "Airedale",
+    age: 3
+}
+handleDog(ginger)
+```
+
+**not ok** (inline)
+
+```tsx
+handleDog({
+    breed: "Airedale",
+    age: 3
+})
+// Argument of type '{ breed: string; age: number; }' is not assignable to parameter of type 'Dog'.
+```
 
 
 
@@ -20,7 +133,125 @@
 
 ## Project Setup
 
-#### Sample Project
+
+
+
+
+## Defining Types
+
+#### Array
+
+```tsx
+let list: number[] = [1, 2, 3];
+let list: Array<number> = [1, 2, 3];
+```
+
+#### Tuple
+
+```tsx
+let x: [string, number] = ["hello", 10];
+```
+
+#### Enum
+
+- assigned value starts at `0`
+
+```tsx
+enum Color {
+    Red,
+    Green,
+    Blue
+}
+let c: Color = Color.Green;
+```
+
+**Enum Flags**
+
+```tsx
+enum Traits {
+    None = 0,
+    Friendly = 1 << 0, // 001 -- the bitshift is unnecessary, but done for consistency
+    Mean = 1 << 1,     // 010
+    Funny = 1 << 2,    // 100
+    All = ~(~0 << 3)   // 111
+}
+```
+
+- combination: `Traits.Mean | Traits.Funny`
+- individual test: `if((traits & Traits.Mean) === Traits.Mean)`
+- in: `traits & Traits.Funny`
+- not in: `traitsThatAreNotFunny = traits & ~traits.Funny`
+- remove flag: `traits &= ~traits.Funny`
+
+#### Maps
+
+- es6
+
+```js
+const shorterMap: Record<string, string> = {
+    foo: "1",
+    bar: "2"
+}
+```
+
+
+
+#### Nested Types
+
+```tsx
+export interface Item {
+    id: number;
+    size: number;
+}
+
+export interface Example {
+    name: string;
+    items: {
+        [key: string]: Item
+    };
+}
+```
+
+
+
+#### Special Types
+
+**Unknown**
+
+```tsx
+let notSure: unknown = 4;
+notSure = "maybe a string instead";
+```
+
+**Any**
+
+```tsx
+let looselyTyped: any = 4;
+```
+
+**Void**
+
+- opposite of `any`, used in function returns
+
+  ```js
+  insert = (item: string): void => {}
+  ```
+
+**Never**
+
+- return type of function that have no reachable end
+
+
+
+#### Utility Types
+
+- see https://www.typescriptlang.org/docs/handbook/utility-types.html
+
+
+
+
+
+## Templated Types
 
 
 
@@ -28,26 +259,7 @@
 
 
 
-
-
-#### Import System
-
-
-
-
-
-#### Modules
-
-- if `.ts` file uses `import`/`export`, it becomes a module
-- else it's a global script
-
-
-
-
-
-
-
-## Type Annotation
+## Annotating Types
 
 - use **lowercase** basic type names
 
@@ -58,6 +270,8 @@
 ```javascript
 let my_var: string = "abc";
 ```
+
+
 
 ### Methods
 
@@ -109,115 +323,7 @@ let strLength: number = (<string>someValue).length;
 
 
 
-## Defining Types
 
-### Array
-
-```tsx
-let list: number[] = [1, 2, 3];
-let list: Array<number> = [1, 2, 3];
-```
-
-### Tuple
-
-```tsx
-let x: [string, number] = ["hello", 10];
-```
-
-### Enum
-
-- assigned value starts at `0`
-
-```tsx
-enum Color {
-    Red,
-    Green,
-    Blue
-}
-let c: Color = Color.Green;
-```
-
-**Enum Flags**
-
-```tsx
-enum Traits {
-    None = 0,
-    Friendly = 1 << 0, // 001 -- the bitshift is unnecessary, but done for consistency
-    Mean = 1 << 1,     // 010
-    Funny = 1 << 2,    // 100
-    All = ~(~0 << 3)   // 111
-}
-```
-
-- combination: `Traits.Mean | Traits.Funny`
-- individual test: `if((traits & Traits.Mean) === Traits.Mean)`
-- in: `traits & Traits.Funny`
-- not in: `traitsThatAreNotFunny = traits & ~traits.Funny`
-- remove flag: `traits &= ~traits.Funny`
-
-### Maps
-
-- es6
-
-```js
-const shorterMap: Record<string, string> = {
-    foo: "1",
-    bar: "2"
-}
-```
-
-
-
-### Nested Types
-
-```tsx
-export interface Item {
-    id: number;
-    size: number;
-}
-
-export interface Example {
-    name: string;
-    items: {
-        [key: string]: Item
-    };
-}
-```
-
-
-
-### Special Types
-
-**Unknown**
-
-```tsx
-let notSure: unknown = 4;
-notSure = "maybe a string instead";
-```
-
-**Any**
-
-```tsx
-let looselyTyped: any = 4;
-```
-
-**Void**
-
-- opposite of `any`, used in function returns
-
-  ```js
-  insert = (item: string): void => {}
-  ```
-
-**Never**
-
-- return type of function that have no reachable end
-
-
-
-### Utility Types
-
-- see https://www.typescriptlang.org/docs/handbook/utility-types.html
 
 
 
@@ -369,36 +475,39 @@ function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>): Todo {
 
 
 
-## Union and Intersection of Types
-
-- `|` for union
-- only allows operations/properties that are present in **both** types
 
 
+## Union and Intersection
 
-**Example:** Different types
+
+
+### Union Types
+
+- **or**
+- only properties of **both** types can be accessed
 
 ```tsx
-function printId(id: number | string) {
-  console.log(id.toUpperCase());
-  //Property 'toUpperCase' does not exist on type 'string | number'.
-  //   Property 'toUpperCase' does not exist on type 'number'.
+function addPadding(padding: string | number);
+```
+
+### Intersection Types
+
+- **and**
+
+```tsx
+interface Colorful {
+  color: string;
 }
+interface Circle {
+  radius: number;
+}
+ 
+type ColorfulCircle = Colorful & Circle;
 ```
 
-**Example:** different values
-
-```tsx
-function printText(s: string, alignment: "left" | "right" | "center") {}
-```
 
 
 
-
-
-## Decorators
-
-- see https://www.typescriptlang.org/docs/handbook/decorators.html
 
 
 
@@ -412,62 +521,63 @@ https://www.typescriptlang.org/docs/handbook/mixins.html
 
 
 
-
-
-## Types for Internal Code
-
-> `.d.ts` should only be used to add types for external libraries. For internal usage, use import with shorthands.
+## Class Utilities
 
 
 
-src/typings/index.ts
+#### Access Modifies
+
+> Access modifiers can be replicated in ES6 using closures. TSX allows to introduce modifiers in a more common way.
+
+**public/protected/private**
 
 ```tsx
-export type Optional<T> = T | null
-```
-
-tsconfig.json
-
-```json
-...
-"paths": {
-    "types": [".src/typings/index.ts"]
+class Foo {
+ private x: number;
+ protected y: number;
+ public z: number;
 }
-...
 ```
 
-my_file.ts
+**readonly**
+
+> must be initialized at their declaration or in the constructor (similar to `const` in C++).
 
 ```tsx
-import {Optional} from 'types'
+class Foo {
+	readonly country: string = "India";
+	readonly name: string;
+
+    constructor(_name: string) {
+        this.name = _name;
+    }
+}
+```
+
+
+
+#### Accessors
+
+> TypeScript supports get/set accessors to access and to set the value to a member of an object, like e.g. in C#.
+
+- `get`/`set` declares accessors
+- allows to read/write property with additional logic but usual syntax
+
+```tsx
+class Employee {
+ private _fullName: string;
+    
+ get fullName(): string;
+ set fullName(newName: string);
+}
+
+let employee = new Employee()
+employee.fullName = "Hans"
 ```
 
 
 
 
-
-## Types for External Code
-
-> **Ambient Types** allow to write type declaration for existing code/js packages.
-
-- `.d.ts` contain declarations (won't produce .js files)
-- **Don't** use `.d.ts` for your own code! Use plain `.ts` files instead.
-
-
-
-#### **DefinitelyTyped / `@types`**
-
-> Community-sourced type repository for many projects. Available as npm packages.
-
-```bash
-npm install --save-dev @types/react
-```
-
-
-
-#### Declaring types for existing modules
-
-- https://drag13.io/posts/custom-typings/index.html
 
 
 
@@ -477,41 +587,27 @@ npm install --save-dev @types/react
 
 
 
-#### Easy Class Initialization
-
-- `DataOnly` type extracts only data fields from a type to require non-optional arguments automatically
-- `Object.assign` allows to copy all properties in a single call
-
-```tsx
-// based on : https://medium.com/dailyjs/typescript-create-a-condition-based-subset-types-9d902cea5b8c
-type FilterFlags<Base, Condition> = { [Key in keyof Base]: Base[Key] extends Condition ? never : Key };
-type AllowedNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
-type SubType<Base, Condition> = Pick<Base, AllowedNames<Base, Condition>>;
-type OnlyData<T> = SubType<T, (_: any) => any>;
-```
 
 
+#### Class Initialization
 
 ```tsx
 class Person {
     public name: string = "default"
     public address: string = "default"
-    // optional arguments won't be required at construction
-    public age?: number = 0;
-    
-    // not requested in OnlyData
-    doSomething =() => {}
-    public constructor(init:OnlyData<Person>) {
+    public age: number = 0;
+
+    public constructor(init?:Partial<Person>) {
         Object.assign(this, init);
     }
 }
 
 let persons = [
-    new Person(),		// error
-    new Person({}),     // error
-    new Person({name:"John"}),      // error
-    new Person({address:"Earth"}),  // error   
-    new Person({address:"Earth", name:"John"}),  // ok
+    new Person(),
+    new Person({}),
+    new Person({name:"John"}),
+    new Person({address:"Earth"}),    
+    new Person({age:20, address:"Earth", name:"John"}),
 ];
 ```
 
