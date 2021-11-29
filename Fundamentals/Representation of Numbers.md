@@ -97,6 +97,14 @@ add 1 -> 1101 110**1** = -35
 
 
 
+## Floating Point Numbers
+
+
+
+![float-point-numbers](img/float-point-numbers.png)
+
+
+
 
 
 ## Bit Operations
@@ -119,10 +127,6 @@ add 1 -> 1101 110**1** = -35
 
 
 ### Bit Shifting
-
-
-
-**Left Shifts**
 
 
 
@@ -154,9 +158,19 @@ Interpret as a positive number (easier to read):
 
 
 
+**Left Shifts**
 
 
 
+
+
+### Arithmetic vs Logical Shift
+
+
+
+**logical shift**
+
+- does not preserve sign bit
 
 
 
