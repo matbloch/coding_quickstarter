@@ -121,105 +121,13 @@ Color(1) # RED
 
 
 
-## Object Oriented Programming
+## Decorators
 
-```python
-class MyClass:
-    pass
+https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html
 
-class MyClass(Base):
-  # static variables
-	__private_class_attribute = 123
-  class_attribute = 'abc'
+- overloading methods by argument type
 
-  # Initializer / Instance Attributes
-  def __init__(self, name, age):
-    # assigning instance attributes
-    self.name = name
-    self.age = age
-    # call constructor of parent class
-    super().__init__(name)
-    
-  def call_super_method(self):
-    return super().baz()
-    
-  # static method
-  @staticmethod
-	def info(name, email, username):
-    pass
-        
-  # class methods: work with the class itself (e.g. for factory methods)
-  @classmethod
-  def all(cls):
-     return db.session.query(cls).all()
-```
-
-### Interface and Protocols
-
-#### ABCs: Formal Interfaces
-
-```python
-import abc
-
-class Bird(abc.ABC):
-    @abc.abstractmethod
-    def fly(self):
-        pass
-```
-
-#### Duck Typing
-
-- raise `NotImplementedError`
-
-```python
-class Base(object):
-    def virtualMethod(self):
-        raise NotImplementedError()
-    def usesVirtualMethod(self):
-        return self.virtualMethod() + 1
-
-class Derived(Base):
-    def virtualMethod(self):
-        return 1
-```
-
-#### Abstract Methods
-
-```python
-from abc import abstractmethod
-
-class MyInterface():
-	# abstract
-    @abstractmethod
-    def get_radius(self):
-         """Method that should do something."""
-    
-    # abstract AND static
-    @staticmethod
-    @abstractmethod
-    def do_something():
-         """Method that should do something."""
-```
-
-
-
-**Overriding Abstract Methods**
-
-> **NOTE:** private methods (starting with `__`) won't be overwritten
-
-```python
-class A:
-    def f(self):
-        print 'a.f'
-        self.g()
-
-    def g(self):
-        print 'a.g'
-
-class B(A):
-    def g(self):
-        print 'b.g'
-```
+https://docs.python.org/3/library/typing.html#typing.overload
 
 
 
@@ -242,19 +150,7 @@ for random_number in lottery():
 
 
 
-## Decorators
-
-https://python-3-patterns-idioms-test.readthedocs.io/en/latest/PythonDecorators.html
-
-- overloading methods by argument type
-
-https://docs.python.org/3/library/typing.html#typing.overload
-
-
-
-
-
-
+## 
 
 
 
@@ -433,5 +329,4 @@ Order of declaration
 ```python
 some_func(fargs, *args, **kwargs)
 ```
-
 
