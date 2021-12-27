@@ -20,8 +20,8 @@
 	- different bars for different desktops
 - links in taskbar
 
-
 **Key assignment**
+
 - Windows + left/right: switch desktops
 - invert command and windows keys
 - ctrl + up/down: move line of code
@@ -42,6 +42,7 @@
 
 
 - alt + tab: switch through windows
+
 
 
 ## Package Installations
@@ -91,10 +92,13 @@ Will be installed to:
 **General Fixes**
 - `brew doctor`
 
+
+
 ## General Optimizations
 
 ### Input Controls
 **Install Swiss Keyboard Layout**
+
 - Install **Ukulele**
 - Download swiss keyboard layout: [Download](https://www.krenger.ch/blog/mac-os-x-standard-de_ch-keymap/)
 - Copy Layout to: `/Users/Matthias/Library/Keyboard Layouts`
@@ -103,10 +107,12 @@ Will be installed to:
 - restart if icon to switch layout does not show up
 
 **Speed up scroll speed**
+
 - Go to Preferences > Keyboard > Keyboard
 - Scale up "Key Repeat", shorten "Delay untili Repeat"
 
 **Lock Menu Bar and Scroll Bars**
+
 - Go to Preferences > General
 - Select "Show scroll bars" > "Always
 - Disable hide menu bar
@@ -115,6 +121,7 @@ Will be installed to:
 - [HyperDock](https://bahoom.com/hyperdock/)
 
 **Customizable Window Grid**
+
 - [SLATE](http://nicholas.charriere.com/blog/2014/12/basic-slate)
 - Example config:
     ```bash
@@ -131,10 +138,10 @@ Will be installed to:
     alias bottomright corner bottom-right resize:screenSizeX/2;screenSizeY/2
     alias center move screenOriginX+screenSizeX/6;screenOriginY+screenSizeY/6 2*screenSizeX/3;2*screenSizeY/3
     alias bigCenter move screenOriginX+screenSizeX/12;screenOriginY+screenSizeY/12 10*screenSizeX/12;10*screenSizeY/12
-
+    
     # The triple keys
     alias triple ctrl;alt;cmd
-
+    
     # Location bindings
     bind left:cmd ${lefthalf}
     bind right:cmd ${righthalf}
@@ -226,5 +233,4 @@ make -j8
 
 **Preprocessor Directives**
 - add to build tipes in preferences
-
 

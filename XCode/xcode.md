@@ -103,6 +103,8 @@ MyViewController.mm
 
 
 
+
+
 ## Misc
 
 
@@ -124,4 +126,14 @@ follow [this](https://ioscodesigning.com/generating-code-signing-files/) tutoria
 - [See Stackoverflow](https://stackoverflow.com/questions/46316373/xcode-9-iphone-is-busy-preparing-debugger-support-for-iphone)
 
 
+
+
+
+## Profiling & Debugging
+
+**Restarting the app without building it**
+
+1. open debugger console
+2. write `r` and press return
+3. App should just restart
 

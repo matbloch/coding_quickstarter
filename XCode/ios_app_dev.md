@@ -281,13 +281,5 @@ configuration.planeDetection = ARPlaneDetectionHorizontal;
 
 
 
-# Profiling & Debugging
-
-
-
-
-
-
-
 
 
