@@ -1,10 +1,20 @@
 # Polymorphism
 
+> Polymorphism is **the ability of a programming language to present the same interface for several different underlying data types**. Polymorphism is the ability of different objects to respond in a unique way to the same message.
+
+
+
 
 
 **Calling Child method from parent**
 
 
+
+## The Diamond Problem
+
+
+
+- virtual inheritance: https://www.sandordargo.com/blog/2020/12/23/virtual-inheritance
 
 
 
@@ -30,8 +40,6 @@
 
 
 
-
-
 ### Preventing Memory Leaks
 
 - when calling `delete` to pointer of base class, destructor of derived class **is not called!**
@@ -46,10 +54,6 @@ class ISample {
   virtual void doSomething();
 }
 ```
-
-
-
-
 
 
 

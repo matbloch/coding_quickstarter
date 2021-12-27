@@ -33,7 +33,10 @@
 @end
 ```
 
+
+
 ## Instance vs. Class (static) Methods
+
 - Instance: `-` in definition
 - Class: `+` in definition
 
@@ -334,19 +337,23 @@ if ([someDate compare:anotherDate] == NSOrderedAscending) {
 ```
 
 
+
 ## Categories
+
 - Add methods to existing classes
 - used to extend classes for specific use cases
 - methods of category will be available for all instances of original and sub classes
 - File naming: e.g. `NSString+MyAdditions.h`
 - **Usage:** Just import category extension and base class will inherit properties
 
-#### Notice
-- Categories are **added** to existing class definition - avoid **name clashes**
+- **NOTE:** Classes are **added** to existing class definition - avoid **name clashes**
 
-#### Usage
+
+
+### Usage
 
 **Interface Definition**
+
 ```cpp
 @interface ClassName (CategoryName)
 @end
@@ -374,7 +381,25 @@ NSString *magic = [NSString getMagicString];
 ```
 
 
-## Anonymous Categories
+
+### Categories with Protocols
+
+
+
+```objective-c
+@interface NSDate (CategoryName) <ProtocolName>
+@end
+
+@implementation NSDate (CategoryName)
+@end
+```
+
+
+
+
+
+### Anonymous Categories
+
 - Extend internal implementation of a class
 - Used to implement **hidden** properties - callable but not visible in public header
 

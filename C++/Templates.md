@@ -522,10 +522,6 @@ struct Point {
 };
 ```
 
-
-
-
-
 #### Conditional Method Compilation
 
 ```cpp
@@ -590,6 +586,20 @@ struct is_bar
 
 ```cpp
 
+```
+
+
+
+### std::conditional_t
+
+- conditional type selection based on compile-time boolean
+
+```cpp
+template <bool use_floating_point>
+void doSomeMath(float a, float b) {
+  using T = std::conditional_t<interpolate, float, int>;
+  return (T)a + (T)b;
+}
 ```
 
 

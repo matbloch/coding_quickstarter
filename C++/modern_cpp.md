@@ -2,6 +2,7 @@
 
 **Ressources**
 - [New C++ language features](https://github.com/AnthonyCalandra/modern-cpp-features#return-type-deduction)
+- [C++ Tips](https://abseil.io/tips/)
 
 **TODO**
 
@@ -443,13 +444,17 @@ using std::placeholders::_1;
 std::function<void(const Foo&, int)> f_add_display = std::bind(&Foo::print_add, foo, _1);
 ```
 
-**Static member function**
+**Binding to static member function**
 
 ```cpp
-std::function<void(int)> f_add_display = std::bind(&Foo::foo_static);
+std::function<void(int)> my_lambda = std::bind(&Foo::foo_static);
 ```
 
+**Null initialization**
 
+```cpp
+std::function<void(int)> may_lambda = nullptr;
+```
 
 **std::function with templates and lambdas**
 

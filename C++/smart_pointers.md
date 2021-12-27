@@ -233,13 +233,13 @@ https://www.modernescpp.com/index.php/c-core-guidelines-passing-smart-pointer
 
 
 
+## Multi-Threading
 
+https://www.informit.com/articles/article.aspx?p=31529&seqNum=13
 
 
 
 ## Common Mistakes
-
-
 
 - passing shared_ptrs as parameters by value. People do it all the time because "passing pointer parameters is as cheap as it gets, right?" But, shared_ptr's thread safety means that each copy involves a full trip past all cache levels to actual DRAM. 100+ cycles each. They are not pointers. They are small yet heavy objects and should be passed by reference. Copying implies assuming shared ownership and should not be done lightly.
 

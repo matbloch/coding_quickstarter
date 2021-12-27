@@ -29,8 +29,6 @@ $$
 18_{2}=\textbf{1} * 2^4 + \textbf{0} * 2^3 + \textbf{0} * 2^2 + \textbf{1} * 2^1 + \textbf{0} * 2^0 = 10010
 $$
 
-
-
 **Signed and unsigned integers**
 
 - **Negative numbers**: left-most bit indicates sign
@@ -41,6 +39,8 @@ $$
 ![signed-unsigned](img/signed-unsigned.png)
 
 
+
+### Signed <> Unsigned Conversion
 
 **Convert positive <> negative numbers**
 
@@ -56,6 +56,8 @@ invert -> 1101 1100
 add 1 -> 1101 110**1** = -35
 
 
+
+### Sign Extension
 
 **Extending the number of bits used**
 
@@ -136,7 +138,7 @@ add 1 -> 1101 110**1** = -35
 
 - To handle signed numbers:
   - padd by `0` for unsigned numbers, by the `sign bit` for signed numbers (see example below)
-  - **NOTE**: Some compilers might not fill with the sign bit, it is not guaranteed
+  - **NOTE**: Some compilers might not fill with the sign bit, it is not guaranteed. Vary rare though.
 
 
 
@@ -159,6 +161,11 @@ Interpret as a positive number (easier to read):
 
 
 **Left Shifts**
+
+- **NOTE:** right-shift a 32bit variable by 32 or more bit is undefined behavior
+- most of the time the output will be 0 (if `int` is 32 bits or less) since you're shifting the 1 until it drops off again and nothing but 0 is left. But the compiler may optimize it to do whatever it likes.
+
+
 
 
 

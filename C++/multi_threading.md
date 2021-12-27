@@ -214,7 +214,42 @@ for (auto &future : futures) {
 
 
 
+**Example:** Check if future is ready
+
+```cpp
+template<typename R>
+  bool is_ready(std::future<R> const& f)
+  { return f.wait_for(std::chrono::seconds(0)) == std::future_status::ready; }
+```
+
+
+
 ## Promises
+
+> A facility to store a value that is later acquired asynchronously via a `std::future` object created by the `std::promise` object
+
+- `std::promise` packages the result of an asynchronous operation
+  - only meant to be used once
+  - "push" end of a promise-future communication
+- `std::future` provides access to the result of an asynchronous operation
+
+
+
+```cpp
+auto promise = std::promise<std::string>();
+auto producer = std::thread([&]
+                            {
+                              promise.set_value("Hello World");
+                            });
+auto future = promise.get_future();
+
+auto consumer = std::thread([&]
+                            {
+                              std::cout << future.get();
+                            });
+producer.join();
+consumer.join()
+```
 
 
 
