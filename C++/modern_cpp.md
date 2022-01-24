@@ -11,6 +11,7 @@
 # Misc
 
 **Range-based for loop**
+
 ```cpp
 for (const auto &i : vector) {}
 ```

@@ -1,12 +1,16 @@
 # Smart Pointers
 
-- Manage storage of pointer (providing limited garbage-collection facility)
-- Only for object that can be allocated with **new** and deleted with **delete**
+> - Manage storage of pointer (providing limited garbage-collection facility)
+> - Only for object that can be allocated with **new** and deleted with **delete**
+
+
 
 **Two Memory Types**
 
 - **Stack**: defined lifetime, e.g. scope of a function
 - **Heap**: memory that needs to be freed again, eventually managed through smart pointers
+
+
 
 **Pointer Types**
 
@@ -18,6 +22,8 @@
 
 - Stack > unique_ptr > shared_ptr
 - due to atomic reference count
+
+
 
 ### General
 
@@ -113,6 +119,7 @@ ptr = std::make_shared<MyObject>();
 - `std::shared_ptr<T>(this)` is not working
 - Create `shared_ptr` reference to self using `std::enable_shared_from_this`
 - Use **public** inheritance
+- requires that at least one `shared_ptr` points to object
 
 ```cpp
 struct Good: public std::enable_shared_from_this<Good> { // note: public inheritance
@@ -121,6 +128,15 @@ struct Good: public std::enable_shared_from_this<Good> { // note: public inherit
     }
 };
 ```
+
+**Polymorphism**
+
+```cpp
+struct Base {}
+struct Child : public Base, public std::enable_shared_from_this<Child> {}
+```
+
+
 
 **Initialization of the owner**
 
@@ -138,8 +154,9 @@ Good not_so_good;
 not_so_good.do_something_else();
 ```
 
-**Forcing `shared_ptr` creation**
+**Better: Forcing `shared_ptr` creation**
 
+- enforce construction as shared pointer to prevent issues
 - private construtor
 - static factory method
 
@@ -153,6 +170,12 @@ class MyObject {
   	MyObject(){}
 }
 ```
+
+
+
+
+
+
 
 
 
@@ -223,7 +246,17 @@ std::weak_ptr<int> weak_ptr = ptr;       // ref-count 1
 
 
 
-TODO
+
+
+
+
+## Self-Referencing
+
+
+
+
+
+
 
 
 
