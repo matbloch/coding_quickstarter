@@ -619,3 +619,19 @@ void method(T& input)
 
 ### std::return_type
 
+
+
+## Type Traits
+
+> Compile-time type comparison
+
+- see https://en.cppreference.com/w/cpp/header/type_traits
+
+
+
+**Storing values of traits**
+
+```cpp
+inline constexpr bool is_same_v = is_same<T, U>::value;
+```
+
