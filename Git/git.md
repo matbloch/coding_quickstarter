@@ -78,6 +78,18 @@ A --- B --- C --- D <-- master
 
 
 
+
+
+#### Rebase last X commits onto different branch
+
+```bash
+git rebase -i HEAD~10 --onto another_branch
+```
+
+
+
+
+
 ## Submodules
 
 
