@@ -1,4 +1,4 @@
-# Lifetime
+# Object and Reference Lifetime
 
 > Every [object](https://en.cppreference.com/w/cpp/language/object) and [reference](https://en.cppreference.com/w/cpp/language/reference) has a *lifetime*, which is a runtime property: for any object or reference, there is a point of execution of a program when its lifetime begins, and there is a moment when it ends.
 
@@ -12,23 +12,19 @@ See https://en.cppreference.com/w/cpp/language/lifetime
 
 
 
-
-
 ## Storage Reuse
 
 
 
 
 
-## Reference Lifetime Extension
+## Lifetime Extension through References
 
-In short, lifetimes of temporaries (referents) will be extended *if and only if*:
+In short, lifetimes of temporaries (referents) will be extended ***if and only if***:
 
 - A local `const T&` (or `T&&`, although Google style generally ignores that) is initialized to the result of an expression (usually a function call) returning a temporary `T` *or* the `T` subobject of a temporary (e.g. a struct containing `T`).
 
-
-
-## Temporary Object Lifetime
+**In Detail**
 
 - temporary bound to a reference parameter in a function call exists until the end of the full expressions containing that function call
   - if function returns a reference which outlives the full expression, it becomes a dangling reference
@@ -73,11 +69,7 @@ void SomeFunction() {
 
 
 
-
-
-
-
-### Extended
+### Examples
 
 - Temporary returned by function expression
 
@@ -106,17 +98,46 @@ const int& good = GetInt();
 
 
 
-### Gotchas
+## Polymorphism and Lifetime Extension
 
-**Examples**
+- when taking `const &` to base class, `Base` class destructor will also be called, even if not virtual
 
-- Temporary returned by chained function
+```cpp
+class Base {
+    ~Base() { std::cout << "Base dtor\n"; }
+};
+class Foo : public Base {
+    // Note: No virtual dtors
+    ~Foo() { std::cout << "Foo dtor\n"; }
+};
+
+Base return_base() { return {}; }
+Foo  return_foo()  { return {}; }
+```
+
+```cpp
+const Base &b {return_foo()};
+// Foo dtor
+// Base dtor
+```
+
+
+
+
+
+## Gotchas
+
+
+
+#### 1. Temporary returned by chained function
 
 ```cpp
 const T& bad = f("Bad!").Member();
 ```
 
-**const & in constructor**
+
+
+#### 2. `const &` as constructor argument
 
 ```cpp
 class A {
@@ -149,27 +170,23 @@ Store copy of `member` instead of reference
 
 
 
-### Polymorphism and Lifetime Extension
+#### 3. Temporary in variadic Template
 
-- when taking `const &` to base class, `Base` class destructor will also be called, even if not virtual
 
-```cpp
-class Base {
-    ~Base() { std::cout << "Base dtor\n"; }
-};
-class Foo : public Base {
-    // Note: No virtual dtors
-    ~Foo() { std::cout << "Foo dtor\n"; }
-};
-
-Base return_base() { return {}; }
-Foo  return_foo()  { return {}; }
-```
 
 ```cpp
-const Base &b {return_foo()};
-// Foo dtor
-// Base dtor
+class MyClass {
+  public:
+  	MyClass(DataStructure const &data): data_(data) {}
+  protected:
+  	DataStructure const &data_;
+}
+
+
+class Factory {
+  public:
+  template <typename ..>
+}
 ```
 
 
