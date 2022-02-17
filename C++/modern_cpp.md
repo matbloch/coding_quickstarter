@@ -493,6 +493,29 @@ void doSomething(InputType input, F = [](InputType){
 
 ```
 
+**Capturing Scopes**
+
+- local variables can be captured by reference or by value
+- **! Caution ! ** capturing local variables that go out of scope before the labmda is executed might lead to issues
+
+```cpp
+int my_variable_to_copy = 3;
+auto lambda = [my_variable_to_copy]() {
+  // my_variable_to_copy is captured by value/copied
+};
+```
+
+**example:** Captured variables run out of scope
+
+```cpp
+std::function<void(int)> generateLambda(int input) {
+  return [&]() {
+    // input will go out of scope before lambda is executed
+    return input;
+  };
+}
+```
+
 
 
 
@@ -506,14 +529,9 @@ void doSomething(InputType input, F = [](InputType){
 - used as a mechanism to store references inside **standard** containers (like **std::**vector) which cannot normally hold references.
 
 ```cpp
-class MyClass
-{
+class MyClass {
 public:
-    MyClass& operator=(MyClass const& other)
-    {
-        ???
-    }
-    // ...
+    MyClass& operator=(MyClass const& other){}
 private:
     T& reference;
 };
