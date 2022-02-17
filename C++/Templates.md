@@ -200,7 +200,11 @@ const auto f = g<T>;
 
 
 
-## Inheritance
+## Templated Inheritance
+
+> Inheriting from templated classes
+
+
 
 ```cpp
 class Rectangle: public Area<int> {};
@@ -214,9 +218,16 @@ template<typename T> class Rectangle: public Area<T> {
 };
 ```
 
-**Accessing members of superclass**
+#### Accessing members of superclass
 
 - not automaticall due to two-phase name lookup of compiler
+- Options:
+  1. `using`
+  2. `this`
+
+
+
+**Example: **
 
 First option: `using`
 
@@ -330,14 +341,7 @@ void foo(int first, Args... more)
 }
 ```
 
-**For references**
 
-```cpp
-template <typename ...Args>
-int myfunction(Args & ... args) {
-  /* ... */
-}
-```
 
 **Iterating over packet arguments**
 
@@ -350,6 +354,21 @@ void foo(int first, Args... more) {
 	 }
 }
 ```
+
+**passing by reference**
+
+
+
+**For references**
+
+```cpp
+template <typename ...Args>
+int myfunction(Args & ... args) {
+  /* ... */
+}
+```
+
+
 
 
 
