@@ -9,7 +9,26 @@
   - Python will remain dynamically typed language but type hints have been introduced
 - **Duck-Typing:** Focussing on how object behaves, rather than its type/class *"If it talks and walks like a duck, then it is a duck"*.  By emphasizing interfaces rather than specific types, well-designed code improves its flexibility by allowing polymorphic substitution.
 
-### Type Hints and Annotations
+
+
+## Static Type Checking
+
+- Through type annotations
+- [Mypy](http://www.mypy-lang.org/): Runs VM and does type checking with almost no overhead
+
+
+
+## Runtime Type Checking
+
+- rather not recommended
+
+```python
+assert isinstance(foo, Set[int]), 'Wrong type'
+```
+
+
+
+## Type Hints and Annotations
 
 - variables: `variable_name: type`
 - methods: ``def function_name(parameter1: type) -> return_type:``
@@ -61,18 +80,21 @@ class Tree:
 
 
 
-### Static Type Checking
-
-- Through type annotations
-- [Mypy](http://www.mypy-lang.org/): Runs VM and does type checking with almost no overhead
+### Best Practices
 
 
 
-### Runtime Type Checking
+**classes**
 
-- rather not recommended
+
 
 ```python
-assert isinstance(foo, Set[int]), 'Wrong type'
+class MyClass:
+  # non-class variable
+  x: int
+  def __init__():
+  	self.x = 123
 ```
+
+
 
