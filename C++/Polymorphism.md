@@ -15,6 +15,23 @@
 
 
 - virtual inheritance: https://www.sandordargo.com/blog/2020/12/23/virtual-inheritance
+- https://isocpp.org/wiki/faq/multiple-inheritance
+
+
+
+
+
+### Virtual Inheritance
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -125,6 +142,32 @@ public:
 
 auto obj = ObjectFactory<MyClass>();
 ```
+
+
+
+
+
+## Multiple Inheritance
+
+
+
+#### Inheritance Order
+
+
+
+```cpp
+class A : public B, public C {
+  
+}
+```
+
+
+
+
+
+
+
+
 
 
 

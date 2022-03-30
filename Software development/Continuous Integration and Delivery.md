@@ -1,4 +1,4 @@
-# Continuous Integration and Deliveray
+# Continuous Integration and Delivery
 
 
 

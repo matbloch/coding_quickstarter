@@ -1,4 +1,16 @@
-# Typecasting
+# Types and Typecasting
+
+
+
+
+
+## Type Alias
+
+
+
+
+
+
 
 
 
