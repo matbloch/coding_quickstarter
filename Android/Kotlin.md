@@ -202,9 +202,13 @@ class Parent(private val child: Child)
 
 ## Logging
 
+- see https://developer.android.com/reference/android/util/Log
 
 
 
+```kotlin
+Log.v("my-tag", "index=" + i);
+```
 
 
 

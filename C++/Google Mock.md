@@ -2,7 +2,7 @@
 
 Source: https://google.github.io/googletest/gmock_cook_book.html
 
-
+See also: https://gitlab.inria.fr/Phylophile/Treerecs/blob/master/tests/gtest/googlemock/docs/CheatSheet.md
 
 
 
@@ -145,6 +145,60 @@ EXPECT_CALL(turtle, GetY())
 ### Expected Call Order
 
 
+
+
+
+
+
+
+
+## Advanced Structure Assertions
+
+
+
+**Checking exact elements**
+
+```cpp
+using ::testing;
+```
+
+```cpp
+//checks that vector v is {5, 10, 15}
+ASSERT_THAT(v, ElementsAre(5, 10, 15));
+
+//checks that map m only have elements 1 => 10, 2 => 20
+ASSERT_THAT(m, ElementsAre(Pair(1, 10), Pair(2, 20)));
+
+//checks that in vector v all the elements are greater than 10 and less than 20
+ASSERT_THAT(v, Each(AllOf(Gt(10), Lt(20))));
+
+//checks that vector v consist of 
+//   5, number greater than 10, anything.
+ASSERT_THAT(v, ElementsAre(5, Gt(10), _));
+```
+
+
+
+**Checking list of structures**
+
+- define custom matcher
+
+```cpp
+// some test type
+struct Foo {
+    bool b;
+    int i;
+};
+
+// define a matcher if ==operator is not needed in production
+MATCHER_P(EqFoo, other, "Equality matcher for type Foo") {
+    return std::tie(arg.b, arg.i) == std::tie(other.b, other.i);
+}
+
+// example usage in your test
+const Foo test_value {true, 42};
+EXPECT_CALL(your_mock, YourMethod(EqFoo(test_value)));
+```
 
 
 

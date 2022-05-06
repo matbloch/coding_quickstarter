@@ -6,6 +6,14 @@
 
 
 
+## Static and Inline Functions
+
+
+
+- defining function implementation in header: will automatically be inlined
+
+
+
 
 
 

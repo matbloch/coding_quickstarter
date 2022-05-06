@@ -1,6 +1,7 @@
 # Software Design Patterns
 
 - [Excellent list, summarize this!](https://sourcemaking.com/design_patterns)
+- https://www.youtube.com/watch?v=motLOioLJfg&feature=youtu.be
 
 
 
@@ -195,6 +196,28 @@ class MyClass {
 
 
 ### State Machine
+
+
+
+
+
+### Observer
+
+
+
+
+
+## Other
+
+
+
+### Non-Virtual Inheritance Pattern
+
+
+
+
+
+### Testing Private Members
 
 
 
