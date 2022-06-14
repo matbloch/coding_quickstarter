@@ -10,18 +10,32 @@
 
 
 
-## The Diamond Problem
 
 
+
+
+## Private/Virtual Inheritance
+
+- ensures that only 1 copy of base class member variables are inherited by 2nd-level derivatives (A > B > C)
+
+
+
+
+
+
+
+**Resources**
 
 - virtual inheritance: https://www.sandordargo.com/blog/2020/12/23/virtual-inheritance
 - https://isocpp.org/wiki/faq/multiple-inheritance
 
+- V tables
 
 
 
 
-### Virtual Inheritance
+
+### The Diamond Problem
 
 
 
