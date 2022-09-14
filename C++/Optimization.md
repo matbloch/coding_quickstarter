@@ -178,3 +178,4 @@ sum = up + down + left + right;
 
 
 - move semantics/copy prevention, Return Value Optimization
+- C++ aliasing: https://developers.redhat.com/blog/2020/06/02/the-joys-and-perils-of-c-and-c-aliasing-part-1#

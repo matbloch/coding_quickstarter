@@ -119,11 +119,20 @@ delete [] cstr;
 
 
 
-**Call function on every item**
+#### **`std::for_each`** `C++17`
+
+- call function for every element in a container
 
 ```cpp
 void foo(int a);
 std::vector<int> v;
 std::for_each(v.begin(), v.end(), &foo);
+```
+
+binding arguments
+
+```cpp
+for_each(storageVector.begin(), storageVector.end(),
+    std::bind(std::mem_fn(&BaseClass::DisplayText), _1, key, x, y));
 ```
 

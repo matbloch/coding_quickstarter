@@ -4,77 +4,235 @@
 
 
 
+**Resources:**
 
-
-**Calling Child method from parent**
-
-
-
-
-
-
-
-## Private/Virtual Inheritance
-
-- ensures that only 1 copy of base class member variables are inherited by 2nd-level derivatives (A > B > C)
+- https://isocpp.org/wiki/faq/multiple-inheritance#virtual-inheritance-where
 
 
 
 
 
+## The Diamond Problem
 
-
-**Resources**
-
-- virtual inheritance: https://www.sandordargo.com/blog/2020/12/23/virtual-inheritance
-- https://isocpp.org/wiki/faq/multiple-inheritance
-
-- V tables
+> The "diamond problem" (sometimes referred to as the "Deadly Diamond of Death") is an ambiguity that arises when two classes B and C inherit from A, and class D inherits from both B and C.
 
 
 
+**Problems:** 
 
+1. A contains 2 copies of D's member variables. 1 from B and 1 from C.
+   - **Solution:** use `virtual` inheritance
 
-### The Diamond Problem
-
-
-
-
-
-
-
+2. Calls to methods of D from A are unambiguous (through B or C?). 
+   - **Solution: ** is addressed by V-Tables / dynamic dispatch (see next section)
 
 
 
+![diamond-problem](img/diamond-problem.png)
+
+
+
+**Example**
+
+- `ta.speak()` is ambiguous since any `TeachingAssistant` object has two different `Person` base class subjects
+
+```cpp
+struct Person {
+    virtual ~Person() = default;
+    virtual void speak() {}
+};
+
+struct Student: Person {
+    virtual void learn() {}
+};
+
+struct Worker: Person {
+    virtual void work() {}
+};
+
+// A teaching assistant is both a worker and a student
+struct TeachingAssistant: Student, Worker {};
+
+TeachingAssistant ta;
+```
 
 
 
 
 
-## Virtual Classes
+
+
+## Static vs Dynamic Dispatch
+
+> There are two ways of how the definition of a routine is resolved.
+>
+> 1. static dispatch: The compiler knows the definition of the routine at compile time
+> 2. Dynamic dispatch: The definition of the routine has to be resolved at runtime
+
+
+
+**Static dispatch / early binding**
+
+> Compiler creates a **single** routine for `bar()`. This routine will be executed every time the compiler finds a call to `bar()` for an instance of `A`
+
+```cpp
+class A {
+public:
+  void bar();
+};
+```
+
+
+
+**Dynamic dispatch**
+
+- `virtual` methods can be overwritten in subclasses
+- calls via pointers/references to base class **can not** be dispatched at compile time - compiler has to find the right function definition at runtime (= dynamic dispatch/late method binding)
+
+```cpp
+class B : public A {
+public:
+  void bar() override;
+};
+```
+
+
+
+```cpp
+A* a = new B();
+// we expect B::bar to be called
+a->bar();
+```
+
+
+
+
+
+### V-Tables
+
+> Implements the routes to resolve methods definitions at runtime (dynamic dispatch)
+
+- created by compiler at compile time for each class (shared among instances)
+- Contains entry for each virtual function accessible by the class and stores pointer to its (most specific) definition
+
+
+
+**Example**
+
+- V-table of B: points to the local definition of functions since they are the most specific from B's point of view
+- V-table of B: 
+  - `bar` points to `C::bar` since it overrides `B::bar`
+  - `qux` still points to `B::qux` since it was not overridden
+
+```cpp
+class B {
+public:
+  virtual void bar();
+  virtual void qux();
+};
+
+class C : public B {
+public:
+  void bar() override;
+};
+```
+
+![vtables](img/vtables.png)
+
+
+
+### V-Pointers
+
+- attached to every class by compiler (regular member) and points to the corresponding *vtable* of the class
+- **NOTE:** Increases size of every object that has a *vtable* by `sizeof(vpointer)`
+
+
+
+Every time a call to a virtual function is performed:
+
+1. *V-pointer*of object is used to find corresponding *V-Table*
+2. Function name is used as index to the *V-Table* to find the (most specific) routine to be executed
+
+![vpointer](img/vpointer.png)
+
+
+
+
+
+## In Practise
 
 **The `virtual` keyword:**
 
-- `virtual` methods can be overriden in derived classes
-- if derived class is handled by a reference to the base class: behaviour is still taken from **derived** class
-- overriden `virtual` methods are also `virtual`
-- Use `final` to prevent further overriding
+- `virtual` methods can be overwritten (use `override` keyword) in derived classes
+  - allows to access implementation of **derived** class, even though instance is managed through reference to base class
+  - only for non-static methods
+  - overriden `virtual` methods are also `virtual`
+  - Use `final` to prevent further overriding
+- order of inheritance: left to right
+- order of constructors:
+  1. virtual base classes anywhere in hierarchy (left to right/depth-first)
+  2. base class
+  3. derived class
 
 
 
-- `override` keyword on child class implementation verifies that the function actually implements a virtual method
-
-- if base class method is not `virtual` the implementation is **hiding** it
-  - Thus: `override` needs `virtual` base method
-
-- `virtual ` only for non-static
-
+```cpp
+class A : public B, public C {
+  
+}
+```
 
 
-### Preventing Memory Leaks
 
-- when calling `delete` to pointer of base class, destructor of derived class **is not called!**
-- add `virtual` destructor if class has at list one `virtual` method
+
+
+### Issue 1: Preventing base class duplication
+
+- Like with method, also class members can be ambiguous
+
+
+
+```cpp
+class Base {
+  protected:
+    int data_;
+}
+
+// use "virtual" inheritance before the "join"
+class Der1 : public virtual Base { ... }
+class Der2 : public virtual Base { ... }
+
+class Join : public Der1, public Der2 {
+  public:
+	void method() {
+    // Good: this is now unambiguous
+    data_ = 1;
+  }  
+}
+```
+
+
+
+```cpp
+                         Base
+                         /  \
+                        /    \
+               virtual /      \ virtual
+                    Der1      Der2
+                       \      /
+                        \    /
+                         \  /
+                         Join
+```
+
+
+
+### Issue 2: Preventing Destructor obfuscation
+
+- **Problem**: if derived class is handled via base class reference, a non-virtual destructor will be dispatched statically - obfuscating the destructor of the derived class
+  - when calling `delete` to pointer of base class, destructor of **derived** class **is not called!** This can lead to memory leaks.
+
+- **Solution:** add `virtual` destructor if class has at list one `virtual` method
 
 
 
@@ -85,6 +243,16 @@ class ISample {
   virtual void doSomething();
 }
 ```
+
+
+
+
+
+
+
+
+
+## Method calls between levels of inheritance
 
 
 
@@ -161,29 +329,11 @@ auto obj = ObjectFactory<MyClass>();
 
 
 
-## Multiple Inheritance
+
+
+## Design Considerations
 
 
 
-#### Inheritance Order
-
-
-
-```cpp
-class A : public B, public C {
-  
-}
-```
-
-
-
-
-
-
-
-
-
-
-
-
+- see https://isocpp.org/wiki/faq/multiple-inheritance#mi-not-evil-2
 

@@ -19,22 +19,9 @@
 
 
 
-## Resource Management
+## Program Memory
 
-[Summary](https://docs.microsoft.com/en-us/cpp/cpp/object-lifetime-and-resource-management-modern-cpp?view=vs-2017)
-
-**Topics**
-
-- Stack/heap, allocation/deallocation
-
-- Pointer/references (pointer size etc)
-
-
-
-
-
-### Program Memory
-
+- [Summary](https://docs.microsoft.com/en-us/cpp/cpp/object-lifetime-and-resource-management-modern-cpp?view=vs-2017)
 - Most modern OS's use similar system
 - Memory segments are separated based on permission
   - Code (text section) has execute permission, other segments don't
@@ -58,7 +45,7 @@
 
 **Data**
 
-- statically allocated data, read from disk
+- *statically* allocated data, read from disk
   - Read-only: string literals
   - Read/write: global arrays and variables
 - initialized and uninitialized sections
@@ -66,7 +53,7 @@
 
 **Text**
 
-- executable machine instructions
+- executable machine instructions (method definitions)
 - read-only
 - placed below stack/heap to prevent overflow from overwriting it
 
@@ -81,32 +68,34 @@
 
 
 
-### Memory Layout of C++ Object
+## Memory Layout of C++ Objects
 
-https://dev.to/visheshpatel/memory-layout-of-c-object-1p17
+Resources:
 
+- https://dev.to/visheshpatel/memory-layout-of-c-object-1p17
 
-
-
-
-### Binary Machine Code / Assembly
+- https://www.bogotobogo.com/cplusplus/assembly.php
 
 
 
-
-
-https://www.bogotobogo.com/cplusplus/assembly.php
+![memory-layout-simple-class](img/memory-layout-simple-class.png)
 
 
 
 
 
+![memory-layout-virtual-class-static-members](img/memory-layout-virtual-class-static-members.png)
 
 
 
 
 
-### Memory Allocation
+![memory-layout-inheritance](img/memory-layout-inheritance.png)
+
+
+
+
+## Memory Management
 
 ```cpp
 YourClass foo;
@@ -191,7 +180,27 @@ memmove(b, a, sizeof(a));
 
 
 
+
+
+## Binary Machine Code / Assembly
+
+
+
+
+
+
+
 ## Dynamic Memory
+
+
+
+**Pointer size**
+
+However, most contemporary operating systems of general purpose (desktop UNIX-compatible systems, MS Windows) use data models where the pointer size corresponds to the capacity of the address bus employed by the architecture of these platforms. The address bus (used to pass memory addresses between components, e.g. the cpu) width determines the size of addressable memory. For example, if the address bus width is 32 bits and the memory word size is one byte (the minimal addressable data amount), then the size of the addressable memory equals 2^32 bytes, which determines the optimal pointer size to be used for this platform.
+
+
+
+
 
 ### Vector
 
@@ -206,6 +215,10 @@ myvector[0] = 1234;              // assign values like a c++ array
 
 ### Array
 
+
+
+
+
 ## Caching
 
 - [Introduction to caches](https://docs.roguewave.com/threadspotter/2011.2/manual_html_linux/manual_html/ch_intro_caches.html)
@@ -214,35 +227,6 @@ myvector[0] = 1234;              // assign values like a c++ array
 - hot loops
 
 
-
-## Dynamic Memory
-
-**Pointer size**
-
-However, most contemporary operating systems of general purpose (desktop UNIX-compatible systems, MS Windows) use data models where the pointer size corresponds to the capacity of the address bus employed by the architecture of these platforms. The address bus (used to pass memory addresses between components, e.g. the cpu) width determines the size of addressable memory. For example, if the address bus width is 32 bits and the memory word size is one byte (the minimal addressable data amount), then the size of the addressable memory equals 2^32 bytes, which determines the optimal pointer size to be used for this platform.
-
-
-
-
-
-## Implementation of Basic Data Containers
-
-- array vs linked list
-- memory locality for classes/structs
-
-#### std::vector
-
-- usually implemented as [dynamic array](https://en.wikipedia.org/wiki/Dynamic_array)
-
-
-
-## Performance of STD Containers
-
-
-
-**Search: vector, set, unordered_set**
-
-https://medium.com/@gx578007/searching-vector-set-and-unordered-set-6649d1aa7752
 
 
 
@@ -271,8 +255,6 @@ https://en.cppreference.com/w/cpp/header/cstdint
 
 
 ## Memory Layout of Primitive Data Types
-
-
 
 
 
