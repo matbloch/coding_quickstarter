@@ -1,6 +1,8 @@
 # Object Oriented Programming
 
-**Definition**
+
+
+## Class Definition
 
 - only arrow functions have access to `this` (function binding)
 - properties in class scope are per instance
@@ -55,6 +57,10 @@ class Car {
 ```javascript
 my_car_instance.name = name 
 ```
+
+
+
+
 
 ## Scoping
 

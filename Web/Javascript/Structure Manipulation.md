@@ -144,6 +144,26 @@ Object.keys(obj).map(function (key) { return obj[key]; });
 
 
 
+### Array
+
+Iterate
+
+```javascript
+for (let i = 0; i < arr.length; i++)
+```
+
+```javascript
+for (let elem of arr)
+```
+
+
+
+
+
+
+
+
+
 ## Filtering
 
 
@@ -161,6 +181,14 @@ this.friends.filter(friend => friend.isSingle)
 ```js
 arr.filter(n => n)
 ```
+
+**Intersection**
+
+```js
+const filteredArray = array1.filter(value => array2.includes(value));
+```
+
+
 
 
 

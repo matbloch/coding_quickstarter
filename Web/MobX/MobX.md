@@ -471,7 +471,7 @@ export class Store {
     constructor() {
         // annotate the array as observable
         makeObservable(this, {
-            number: observable
+            things: observable
         })
     }
 }
@@ -512,3 +512,13 @@ export const Summary = withStore(({ store }) => {
 
 - Arrays can not easily be inherited from, hence 
 
+
+
+
+
+## Open Questions
+
+
+
+- How to you slice/track an object array **before** passing it on to another component?
+  - we **don't** want to pass the properties individually and we **don't** just want to pass the array

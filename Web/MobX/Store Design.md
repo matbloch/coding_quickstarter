@@ -119,7 +119,7 @@ const MyContext = React.createContext(defaultValue);
 
 **Example:** Global Store
 
-1. Define the store context
+1. **Define the store context**
 
 ```jsx
 import React, { createContext } from 'react';
@@ -127,7 +127,7 @@ import { StoreModel } from '../stores';
 export const StoreContext = createContext<StoreModel>({} as StoreModel);
 ```
 
-2. Define the store provider
+2. **Define the store provider**
 
 ```jsx
 import { FC, createContext, ReactNode, ReactElement } from 'react';
@@ -149,7 +149,7 @@ export const withStore = (Component) => (props) => {
 }
 ```
 
-3. Wrap the application in the store provider
+3. **Wrap the application in the store provider**
 
 ```jsx
 <StoreProvider store={new StoreModel()}>
@@ -157,9 +157,25 @@ export const withStore = (Component) => (props) => {
 </StoreProvider>
 ```
 
+4. **Access the store somewhere in the application**
+
+For functional components
+
+```tsx
+import { useObserver } from 'mobx-react-lite'
+const doSomething = withStore(({ store }) => {
+  // use properties of the store
+  
+  // wrap the returned content in a observer in order to react to changes in observables
+  return useObserver(() => (<div>{store.someProperty}</div>))
+})
+```
 
 
-4. Access the store
+
+## Open Questions
 
 
 
+- How to properly initialize nested stores from plain objects/json?
+  - do we need to initialize classes with `new` inside the owning storage and just allow `DataOnly<MyClass>` inputs?

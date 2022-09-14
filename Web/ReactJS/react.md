@@ -61,7 +61,7 @@ const MyComponent = ({param1}) => {
 
 ## React Class Components
 
-> Component is defined as a class
+> Component is defined as a class. Only use class components when you have to store state!
 
 **Creating a Component**
 
@@ -159,7 +159,7 @@ class AlertBox extends React.Component {
 
 
 
-## Storing Data in Components
+## Storing Data in Class Components
 
 **You should...**
 - keep as few stateful components as possible
@@ -324,7 +324,9 @@ Greeting.propTypes = {
 ```
 
 
+
 #### State
+
 - state is **mutable**
 
 **Modifying the State**
@@ -396,7 +398,7 @@ class ExampleComponent extends Component {
 
 
 
-## State in Function Components
+## Storing Data in Functional Components
 
 - ` const [myVariable, setMyVariable] = useState(<initialValue>);`
   - returns tuple with getter and setter

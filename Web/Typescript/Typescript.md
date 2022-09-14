@@ -137,7 +137,7 @@ handleDog({
 
 
 
-## Defining Types
+## Basic Type Definition
 
 #### Array
 
@@ -183,9 +183,39 @@ enum Traits {
 - not in: `traitsThatAreNotFunny = traits & ~traits.Funny`
 - remove flag: `traits &= ~traits.Funny`
 
+**String-type Enums**
+
+```tsx
+enum Color {
+  blue = "BLUE",
+  green = "GREEN"
+}
+```
+
+Convert value-type to enum:
+
+```tsx
+Color["GREEN"]
+```
+
+enum to union types:
+
+```tsx
+// type ValuesUnion = "BLUE" | "GREEN"
+type ValuesUnion = `${StringEnum}`;
+
+// type KeysUnion = "blue" | "green"
+type KeysUnion = keyof typeof StringEnum;
+```
+
+
+
+
+
 #### Maps
 
-- es6
+- `Record<Keys, Type>`
+- constructs an object type whose property keys are `Keys` and property values are `Type`
 
 ```js
 const shorterMap: Record<string, string> = {
@@ -490,6 +520,12 @@ function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>): Todo {
 function addPadding(padding: string | number);
 ```
 
+
+
+
+
+
+
 ### Intersection Types
 
 - **and**
@@ -579,35 +615,14 @@ employee.fullName = "Hans"
 
 
 
+## Open Questions
 
 
 
-
-## Examples
-
-
-
-
-
-#### Class Initialization
-
-```tsx
-class Person {
-    public name: string = "default"
-    public address: string = "default"
-    public age: number = 0;
-
-    public constructor(init?:Partial<Person>) {
-        Object.assign(this, init);
-    }
-}
-
-let persons = [
-    new Person(),
-    new Person({}),
-    new Person({name:"John"}),
-    new Person({address:"Earth"}),    
-    new Person({age:20, address:"Earth", name:"John"}),
-];
-```
-
+- difference between `type` and `interface`?
+  - does `interface` has to be implemented explicitly?
+- difference between `interface` and `class`?
+  - `interface` allows to reduce dependencies but creates code duplication
+  - how can you avoid this code duplication? (No re-definition of properties)
+- how to annotate optional returns? i.e. `string | null`
+- how to mark in/out (reference) parameters/arguments in a function? E.g. a MobX store
