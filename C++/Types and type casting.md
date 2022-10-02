@@ -88,21 +88,7 @@ C++ supports 4 types of casting operators:
 
 
 
-## Virtual Tables in C++
-
-https://pabloariasal.github.io/2017/06/10/understanding-virtual-tables/
-
-For each concrete implementation of class:
-
-- Table of function pointers to all the virtual methods
-- pointer to this table exists as data member in all the objects
-- when virtual method is called, appropriate derived class method is looked up in the v-table
-
-
-
 ## Up- and Downcasting
-
-**Memory Layout**
 
 
 

@@ -1,4 +1,4 @@
-# Memory Management and Caching
+# Memory Management
 
 
 
@@ -216,15 +216,6 @@ myvector[0] = 1234;              // assign values like a c++ array
 ### Array
 
 
-
-
-
-## Caching
-
-- [Introduction to caches](https://docs.roguewave.com/threadspotter/2011.2/manual_html_linux/manual_html/ch_intro_caches.html)
-
-- branch prediction
-- hot loops
 
 
 

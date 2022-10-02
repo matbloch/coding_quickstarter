@@ -132,6 +132,8 @@ TEST_F(FooTest, Test2) {
 
 
 
+**Exposing `protected` members**
+
 ```cpp
 class MyClass {
   protected:
@@ -145,4 +147,27 @@ class Mock : public MyClass {
 ```
 
 
+
+**Inheriting constructors**
+
+> A constructor so declared has the same access as the corresponding constructor in X.
+
+- `using` will result in inheriting a constructor with same access level
+
+
+
+**Example**: Exposing the protected constructor
+
+```cpp
+class Foo {
+  protected:
+   Foo(int i) {}
+   void run() {}
+};
+class TestableFoo : public Foo {
+  public :
+    TestableFoo(int i) : Foo(i) { }
+    using Foo::run;
+};
+```
 

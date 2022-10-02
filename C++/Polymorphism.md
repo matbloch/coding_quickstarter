@@ -161,13 +161,20 @@ Every time a call to a virtual function is performed:
 
 ## In Practise
 
-**The `virtual` keyword:**
-
-- `virtual` methods can be overwritten (use `override` keyword) in derived classes
+- `virtual` methods can be overwritten in derived classes
   - allows to access implementation of **derived** class, even though instance is managed through reference to base class
   - only for non-static methods
   - overriden `virtual` methods are also `virtual`
-  - Use `final` to prevent further overriding
+- `override` keyword used to annotate overwritten methods
+  - shows user that method is virtual
+  - helps compiler perform checks
+
+- `final` keyword instead of `override` to prevent further overriding
+
+
+
+**Initialization order**
+
 - order of inheritance: left to right
 - order of constructors:
   1. virtual base classes anywhere in hierarchy (left to right/depth-first)
@@ -239,7 +246,7 @@ class Join : public Der1, public Der2 {
 ```cpp
 class ISample {
   public:
-  virtual ISample() = default;
+  virtual ~ISample() = default;
   virtual void doSomething();
 }
 ```
@@ -324,6 +331,35 @@ public:
 
 auto obj = ObjectFactory<MyClass>();
 ```
+
+
+
+
+
+## Managing Instances through Interface
+
+See also separate documentation about "Types and type casting".
+
+
+
+
+
+
+
+### Passing reference to interface/abstract class
+
+> A reference to an abstract class is just like a pointer to an abstract class: it needs to reference an object of some non-abstract subclass of the abstract class. 
+
+
+
+An abstract class is designed to be derived from. The Liskov substitution principle (see SOLID principles) roughly states that anything that uses the abstract parts of types derived from an abstract base should work equally well using the base polymorphically. That means a reference or pointer to the base should be used.
+
+
+
+Use pointer:
+
+- If there's ever a chance that you could want to pass "no object"
+- If you want ability to point the passed pointer to different location
 
 
 

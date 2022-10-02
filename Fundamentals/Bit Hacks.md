@@ -6,6 +6,12 @@
 
 
 
+- https://brilliant.org/wiki/bit-manipulation-hacks/
+
+
+
+
+
 ## Bit representation
 
 
