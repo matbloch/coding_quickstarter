@@ -6,6 +6,33 @@
 
 
 
+## Code Documentation
+
+
+
+```kotlin
+/**
+ * A group of *members*.
+ *
+ * This class has no useful logic; it's just a documentation example.
+ *
+ * @param T the type of a member in this group.
+ * @property name the name of this group.
+ * @constructor Creates an empty group.
+ */
+class Group<T>(val name: String) {
+    /**
+     * Adds a [member] to this group.
+     * @return the new size of the group.
+     */
+    fun add(member: T): Int { ... }
+}
+```
+
+
+
+
+
 ## Basic Types
 
 
@@ -36,6 +63,26 @@ if (obj is String) {
 
 
 
+### Numbers
+
+```kotlin
+val one = 1 // Int
+val threeBillion = 3000000000 // Long
+val oneLong = 1L // Long
+val oneByte: Byte = 1
+```
+
+
+
+```kotlin
+val e = 2.7182818284 // Double
+val eFloat = 2.7182818284f // Float, actual value is 2.7182817
+```
+
+
+
+
+
 
 
 ### Strings
@@ -62,8 +109,6 @@ var Arr5: IntArray = intArrayOf(5,10,15,20)
 
 
 
-
-
 ### List
 
 
@@ -75,10 +120,22 @@ var Arr5: IntArray = intArrayOf(5,10,15,20)
 val list = listOf('a', 'b', 'c')
 // list of collections
 val users: List<User> = listOf( User("Tom", 32), User("John", 64) )
-
-
-
 ```
+
+**clone/copy**
+
+```kotlin
+val my_copy = series.toMutableList()
+```
+
+**add/remove**
+
+```kotlin
+val numbers = mutableListOf("one", "two")
+numbers.add(5)
+```
+
+
 
 **properties**
 
@@ -123,6 +180,46 @@ val filteredMap = numbersMap.filter { (key, value) -> key.endsWith("1") && value
 
 
 
+### Sorting
+
+**SortBy**
+
+```kotlin
+data class Movie(var name: String, var year: Int)
+ 
+fun main() {
+    val movies = mutableListOf(
+        Movie("Joker", 2019), Movie("Aquaman", 2018),
+        Movie("Logan", 2017), Movie("Irishman", 2019)
+    )
+    movies.sortBy { it.year }
+    movies.forEach { println(it) }
+}
+```
+
+**sortWith**
+
+- in-place sorting
+- can be cascaded
+
+```kotlin
+movies.sortWith(compareBy{ it.year }.thenBy { it.name })
+```
+
+
+
+
+
+
+
+### Splitting Containers
+
+Last elements
+
+```kotlin
+list.takeLast(3)
+```
+
 
 
 
@@ -157,7 +254,11 @@ val max = if (a > b) {
 }
 ```
 
+Ternary assignment
 
+```kotlin
+var small = if(num1>num2) num2 else num1
+```
 
 ### For Loop
 
@@ -202,7 +303,7 @@ fun powerOf(number: Int, exponent: Int): Int { /*...*/ }
 **Default arguments**
 
 ```kotlin
-fun doIt(i: Int = 2) {
+fun doIt(i: Int = 2): Int {
   return i
 }
 ```
@@ -219,20 +320,36 @@ fun doIt(i: Int = 2) {
 
 ### Regular classes
 
-**Constructors**
+**Primary Constructor**
 
 - primary constructor is part of class header
 - primary constructors cannot contain any code
 - initialization code is placed in `init` blocks (executed in same order as they appear)
+- property initializers from class body can use primary constructor parameters
 
 ```kotlin
-class Person(firstName: String) {
-  // ...
+class Person(val firstName: String) { // class header
+  // class body: member functions and properties
+  val upperCaseName: String = firstName.toUpperCase()
+  
   init {
     println("Construcion argument: ${name}")
   }
 }
 ```
+
+**Secondary Constructor**
+
+```kotlin
+class Car(val id: String, val type: String) {
+    // the secondary constructor
+    constructor(id: String): this(id, "unknown")
+}
+```
+
+
+
+
 
 **Creating a class instance**
 
@@ -240,23 +357,35 @@ class Person(firstName: String) {
 val customer = Customer("Joe Smith")
 ```
 
-**Class members**
+**Examples**
 
-Properties
+
 
 ```kotlin
-class Address {
-    var name: String = "Holmes, Sherlock"
-    var street: String = "Baker"
-    var city: String = "London"
-    var state: String? = null
-    var zip: String = "123456"
-}
+class Account {  
+		var acc_no: Int = 0  
+		var name: String? = null  
+		var amount: Float = 0f  
+  
+    fun insert(ac: Int,n: String, am: Float ) {  
+        acc_no=ac  
+        name=n  
+        amount=am  
+        println("Account no: ${acc_no} holder :${name} amount :${amount}")  
+    }  
+  
+    fun withdraw() {  
+       // withdraw code  
+    }  
+  
+    fun checkBalance() {  
+        //balance check code  
+     }  
+  
+}  
 ```
 
 
-
-Functions
 
 
 
@@ -334,6 +463,55 @@ Access the property:
 ```python
 val color = CardType.SILVER.color
 ```
+
+
+
+
+
+## Operator Overloading
+
+- see https://kotlinlang.org/docs/operator-overloading.html#indexed-access-operator 
+
+
+
+**Unary prefix and Increment/Decrement Operators**
+
+- `+a` : `a.unaryPlus()`
+- `-a` : `a.unaryMinus()`
+- `!a` : `a.not()`
+- `a++` : `a.inc()`
+- `a--` : `a.dec()` 
+
+```kotlin
+data class Point(val x: Int, val y: Int)
+
+// implement the logic for "-point"
+operator fun Point.unaryMinus() = Point(-x, -y)
+```
+
+
+
+**Arithmetic Operators**
+
+- `a + b`
+- `a - b`
+- `a / b`
+- `a * b`
+- ...
+
+```kotlin
+data class Counter(val dayIndex: Int) {
+    operator fun plus(increment: Int): Counter {
+        return Counter(dayIndex + increment)
+    }
+}
+```
+
+
+
+
+
+
 
 
 
