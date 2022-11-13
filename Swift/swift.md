@@ -1,6 +1,8 @@
 # Swift
 
-# Misc
+
+
+## Misc
 
 **Comments**
 - `/* hi ther */`
@@ -37,11 +39,18 @@ if let song = item as? Song {}
 ```
 
 
-# Project Structuring
+
+## Project Structuring
 
 - Extensions: `String+UTF8Data.swift`
 
-# Debugging/Error Handling
+
+
+
+
+
+
+## Debugging/Error Handling
 
 - `print()`
 
@@ -106,7 +115,7 @@ let newCourse = try? Course(name: "Bob the Dev")
 ```
 
 
-# Data Structures
+## Data Structures
 #### Variables
 
 - `var` Variables
@@ -457,7 +466,7 @@ var closeCities = cityDistanceDict.filter { $0.value < 1000 }
 ```
 
 
-# Control Flow
+## Control Flow
 
 
 - `guard`
@@ -518,7 +527,7 @@ guard let cars = devices["Car"] else {
 ```
 
 
-# Functions
+## Functions
 
 **Definition**
 ```swift
@@ -627,7 +636,7 @@ processItems(123) { [unowed self] (var1, var2) in
 ```
 
 
-# Closures
+## Closures
 - Self-containing blocks of functionality that can be passed around and used in code
 - Init const variable
 
@@ -677,7 +686,13 @@ func createButton(enterTitle: String) -> UIButton {
 
 # Persistence
 
+
+
+
+
 ### `Codable`
+
+> Allows do encode/decode structures
 
 ```swift
 struct Product: Codable {
@@ -690,17 +705,19 @@ struct Product: Codable {
     case quantity
   }
   init(title:String,price:Double, quantity:Int) {
-    self.title = title
-    self.price = price
-    self.quantity = quantity
+    self.init()
+    title = title
+    price = price
+    quantity = quantity
   }
-  func encode(to encoder: Encoder) throws {
+  public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
     try container.encode(title, forKey: .title)
     try container.encode(price, forKey: .price)
     try container.encode(quantity, forKey: .quantity)
   }
-  init(from decoder: Decoder) throws {
+  public init(from decoder: Decoder) throws {
+    self.init()
     let container = try decoder.container(keyedBy: CodingKeys.self)
     title = try container.decode(String.self, forKey: .title)
     price = try container.decode(Double.self, forKey: .price)
@@ -711,12 +728,17 @@ struct Product: Codable {
 
 
 
-# Integrating C
+
+
+
+
+
+
+## Integrating C
 
 - OpaquePointer: represent C pointers
 
 ```cpp
 
 ```
-
 
