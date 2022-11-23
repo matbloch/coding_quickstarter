@@ -8,7 +8,7 @@
 
 
 
-## Template Declaration
+## Declaration
 
 ```cpp
 template <class T>
@@ -48,9 +48,11 @@ T mypair<T>::getmax () {
 
 
 
-## Template Specialization
+## Specialization
 
 > Implement functionality for a specific type
+
+
 
 **Function specialization**
 
@@ -62,75 +64,35 @@ T add(T x, T y)  {
 
 // implementation for chars
 template<>
-char add<char>(char x, char y) {
-	...
-}
+char add<char>(char x, char y) {}
 ```
 
 **Class specialization**
 
 ```c++
 template <class T> 
-class mycontainer { ... };
+class MyClass { ... };
 
+// specialize hole class
 template <> 
-class mycontainer <char> { ... };
-```
+class MyClass <char> { ... };
 
-```cpp
-// Normal class
-template <typename T>
-class A
-{
-public:
-	A(){ cout << "A()\n"; }
-	T add(T x, T y);
-};
-
-template <typename T>
-T A<T>::add(T x, T y) {
-	return x+y;
-}
-// Specialized class
+// or, specialize individual methods
 template <>
-class A <char>
-{
-public:
-	A() { cout << "Special A()\n"; }
-	char add(char x, char y);
-};
-
-// template <>   <= this is not needed if defined outside of class
-char A<char>::add(char x, char y)
-{
-	int i = x-'0';
-	int j = y-'0';
-	return i+j;
-}
+void MyClass<int>::doSomething(int arg) { ... }
 ```
 
-**Member function specialization**
-
-Test.h
+**Templated member function specialization**
 
 ```cpp
 class Test {
   public:
     template <typename T>
-    void function (T data) {
-      std::cout << data;
-    }
+    void doSomething (T data);
 };
 
 template <>
-void Test::function<char>(char data);
-```
-
-Test.cpp
-
-```cpp
-template <>
-void Test::function<char>(char data) {...}
+void Test::doSomething<char>(char data) {...}
 ```
 
 
@@ -161,6 +123,95 @@ class Thing<A,int>  //partial specialization of the class template
 
 template <class A>
 int Thing<A,int>::doSomething()  { /* do whatever you want to do here */ }
+```
+
+
+
+### Separating Spezialization Implementation
+
+**What templates are**
+
+So a template is *literally* a template; a class template is *not* a class, it's a recipe for creating a new class for each `T` we encounter. A template cannot be compiled into code, only the result of instantiating the template can be compiled. Templates implement instantiation-style polymorphism.
+
+**Separate compilation**
+
+C++ supports separate compilation where different pieces of the program can be compiled independently through the two stage approach of compilation and then linking. In combination with the requirement for instantiation, template specialisations must be instantiated in the header file.
+
+**Solution**
+
+There's no corresponding code generated if there's no use of its definition, which therefore come up with the first solution. Exposing any type to which you would like your library user to have access can help split up the declaration and implementation.
+
+
+
+**Example:** Wrong separation of template declaration and implementation
+
+- foo.h:     declares the interface of `class MyClass<T>`
+- foo.cpp: defines the implementation of `class MyClass<T>`
+- **bar**.cpp: uses `MyClass<int>`
+
+When compiling *foo.cpp*, the compiler doesn't see *bar.cpp* to see that `MyClass<int>` is needed. It can see `MyClass<T>` but it can't emit code for it (it's a template, not a class). When *bar.cpp* is compile, the compiler can't see the template, only it's interface, defined in *foo.h*.
+
+
+
+#### Example: Class-type template
+
+MyClass.h
+
+```cpp
+// template definition
+template<typename T>
+class MyGenericClass {
+    public:
+    void doSomething(T const& arg);
+    T member;
+};
+
+// explicit instantiation for the specialized types
+template class MyGenericClass<int>;
+```
+
+MyClass.cpp
+
+```cpp
+#include "a.h"
+
+// specialization
+template <>
+void MyGenericClass<int>::doSomething(int const & arg) {
+    // ...
+}
+```
+
+
+
+#### Example: function-type template
+
+MyClass.h
+
+```cpp
+// template definition
+class MyGenericClass {
+    public:
+  	template <typename T>
+    void doSomething(T const& arg);
+};
+
+// member function template instantiation
+template<> void MyGenericClass::doSomething<int> (int const &);
+// or by using type inference form the argument
+template<> void MyGenericClass::doSomething(int const &);
+```
+
+MyClass.cpp
+
+```cpp
+#include "a.h"
+
+// specialization
+template <>
+void MyGenericClass<int>::doSomething(int const & arg) {
+    // ...
+}
 ```
 
 
