@@ -78,19 +78,23 @@ Resources:
 
 
 
-![memory-layout-simple-class](img/memory-layout-simple-class.png)
+<img src="img/memory-layout-simple-class.png" alt="memory-layout-simple-class" style="zoom:67%;" />
+
+<img src="img/memory-layout-virtual-class-static-members.png" alt="memory-layout-virtual-class-static-members" style="zoom:67%;" />
+
+<img src="img/memory-layout-inheritance.png" alt="memory-layout-inheritance" style="zoom: 67%;" />
+
+
+
+## Memory Alignement and Padding of Structures
+
+
+
+source: https://www.geeksforgeeks.org/structure-member-alignment-padding-and-data-packing/
 
 
 
 
-
-![memory-layout-virtual-class-static-members](img/memory-layout-virtual-class-static-members.png)
-
-
-
-
-
-![memory-layout-inheritance](img/memory-layout-inheritance.png)
 
 
 
@@ -175,7 +179,7 @@ memmove(b, a, sizeof(a));
 
 **References**
 
-- object lifetime is not bound to reference (like pointer): Reference will become invalid (undefined behavior) if object is destructed
+- object lifetime is not bound to reference (like smart pointer): Reference will become invalid (undefined behavior) if object is destructed
 - `const &` to temporary: Lifetime of temporary is extended to reference 
 
 

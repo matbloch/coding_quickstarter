@@ -10,6 +10,19 @@
 
 
 
+**Summary**
+
+- Function overriding makes it impossible to dispatch virtual functions statically (at compile time)
+- Dispatching of virtual functions needs to happen at runtime
+- The virtual table method is a popular implementation of dynamic dispatch
+- For every class that defines or inherits virtual functions the compiler creates a virtual table
+- The virtual table stores a pointer to the most specific definition of each virtual function
+- For every class that has a *vtable*, the compiler adds an extra member to the class: the *vpointer*
+- The *vpointer* points to the corresponding vtable of the class
+- Always declare desctructors of base classes as virtual
+
+
+
 
 
 ## The Diamond Problem
@@ -112,15 +125,18 @@ a->bar();
 
 > Implements the routes to resolve methods definitions at runtime (dynamic dispatch)
 
-- created by compiler at compile time for each class (shared among instances)
+- created by compiler at compile time
+- single vtable per class (shared among all instances!)
 - Contains entry for each virtual function accessible by the class and stores pointer to its (most specific) definition
 
 
 
 **Example**
 
-- V-table of B: points to the local definition of functions since they are the most specific from B's point of view
 - V-table of B: 
+  - points to the local definition of functions since they are the most specific from B's point of view
+
+- V-table of C: 
   - `bar` points to `C::bar` since it overrides `B::bar`
   - `qux` still points to `B::qux` since it was not overridden
 
@@ -137,7 +153,43 @@ public:
 };
 ```
 
-![vtables](img/vtables.png)
+![vpointer](img/vpointer.png)
+
+**Example:** What the compiler does for class B
+
+> Similar is done for class C. The C V-Table is partially linked to the implementations on B though.
+
+Generated V-Table interface:
+
+```cpp
+struct VTable_B {
+  int identifier;
+  void (*bar)(B* this);
+  void (*qux)(B* this);
+}
+```
+
+Generated routing through v-table:
+
+```cpp
+struct SBase
+{
+   VTable_B* vtable;
+   // functions route through vtable
+   inline void bar(Base* this) { vtable->bar(this); }
+   inline void qux(Base* this) { vtable->qux(this, x); }
+};
+```
+
+Actual V-Table:
+
+``` cpp
+VTable_B vtable_b = { 
+   1234567, &B::bar, &B::qux
+};
+```
+
+
 
 
 
@@ -150,16 +202,38 @@ public:
 
 Every time a call to a virtual function is performed:
 
-1. *V-pointer*of object is used to find corresponding *V-Table*
+1. *V-pointer* of object is used to find corresponding *V-Table*
 2. Function name is used as index to the *V-Table* to find the (most specific) routine to be executed
 
-![vpointer](img/vpointer.png)
+
+
+## Type Casting and Virtual Inheritance
+
+> **Note**
+>
+> - type casting = handling derived class instance/object using a base class pointer or reference
+>
+> - casting doesn't change dynamic type of underlying object
+
+
+
+**Example:** Access through base pointer
+
+```cpp
+Derived derived;
+Base * base = static_cast<Base*>(derived);
+```
+
+- Instance `derived` has a v-pointer pointing to a v-table to resolve the implementations of the `virtual` methods
+- by casting from type `Derived` to `Base`, we're treating the pointer as if it points to an instance of `Base`
+- the actual object has not changed in value and v-pointer on `base` still points to the v-table of `Derived`
+- when accessing methods through the `Base` pointer at runtime, the address of the virtual method is taken from the virtual table from `Derived`
 
 
 
 
 
-## In Practise
+## `virtual` Inheritance in Practise
 
 - `virtual` methods can be overwritten in derived classes
   - allows to access implementation of **derived** class, even though instance is managed through reference to base class
@@ -236,7 +310,7 @@ class Join : public Der1, public Der2 {
 
 ### Issue 2: Preventing Destructor obfuscation
 
-- **Problem**: if derived class is handled via base class reference, a non-virtual destructor will be dispatched statically - obfuscating the destructor of the derived class
+- **Problem**: if derived class is handled via base class reference, a non-virtual destructor will be dispatched **statically** - obfuscating the destructor of the derived class
   - when calling `delete` to pointer of base class, destructor of **derived** class **is not called!** This can lead to memory leaks.
 
 - **Solution:** add `virtual` destructor if class has at list one `virtual` method
@@ -299,7 +373,11 @@ class Bar : public Foo {
 
 ### Calling `virtual` Method in Constructor
 
-Calling virtual functions from a constructor or destructor is dangerous  and should be avoided whenever possible.  All C++ implementations should call the version of the function defined at the level of the hierarchy  in the current constructor and no further.
+- **NOTE**: Calling virtual functions from a constructor or destructor is **dangerous**  and should be avoided whenever possible!
+
+
+
+All C++ implementations should call the version of the function defined at the level of the hierarchy  in the current constructor and no further.
 
 The reason is that C++ objects are constructed like onions, from the  inside out. Base classes are constructed before derived classes. So,  before a B can be made, an A must be made. When A's constructor is  called, it's not a B yet, so the virtual function table still has the  entry for A's copy of fn().
 

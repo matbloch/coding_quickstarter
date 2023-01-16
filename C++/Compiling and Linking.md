@@ -1,6 +1,6 @@
 # Compiling and Linking
 
-
+- **to read:** https://www.sandordargo.com/blog/2023/01/11/executable-and-its-structure
 
 
 

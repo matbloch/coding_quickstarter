@@ -125,7 +125,7 @@ void forwardCall(F &&process) {
 
 
 
-### Trait Classes
+### Trait Classes
 
 ….
 
@@ -202,6 +202,68 @@ class MyClass {
 
 
 ### Observer
+
+
+
+
+
+## Consumption of different types
+
+> How to you design interfaces that should be able to consume different types?
+
+
+
+
+
+### Language: C++
+
+#### Opt 1: Virtual Inheritance
+
+- indirect lookup through V-table: Memory fragmentation
+
+- doesn't force you to implement algorithms for new overloads
+
+
+
+#### Opt 2: Implement just the interface
+
+- compile-time checks
+
+
+
+#### Opt 3: std::variant
+
+- duplicate space (combination of all variants)
+- tedious to write all supported types
+- no shortcut to specify that the type doesn't play a role
+
+
+
+#### Opt 4: Templates
+
+- lot of boiler-plate
+
+
+
+#### Opt 5:  Concepts (C++20)
+
+- 
+
+
+
+### Language: ...
+
+
+
+#### Opt 1: Protocol
+
+
+
+
+
+
+
+### 
 
 
 

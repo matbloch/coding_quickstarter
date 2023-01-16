@@ -2,8 +2,6 @@
 
 
 
-
-
 **Running Tests**
 
 1. `ctest` (high level) 
@@ -23,13 +21,8 @@
 
 
 ```cpp
-
 TBD
-
-
 ```
-
-
 
 
 
@@ -132,6 +125,8 @@ TEST_F(FooTest, Test2) {
 
 
 
+### Protected Access
+
 **Exposing `protected` members**
 
 ```cpp
@@ -169,5 +164,27 @@ class TestableFoo : public Foo {
     TestableFoo(int i) : Foo(i) { }
     using Foo::run;
 };
+```
+
+### 
+
+### Mocking
+
+
+
+**Dependency Injection through factory**
+
+```cpp
+class ISubModule {
+  public:
+  bool doSomething() = 0;
+}
+class Testable {
+  public:
+  	Testable(std::function<std::shared_ptr<ISubModule>> createSubModule):
+	  sub_module_(createSubModule()) {}
+  protected:
+  	std::shared_ptr<ISubModule> sub_module_;
+}
 ```
 

@@ -96,8 +96,6 @@ C++ supports 4 types of casting operators:
 
 
 
---------------
-
 ### Down-Casting (base > derived)
 
 - Should be avoided in general, sign of bad design
@@ -156,6 +154,43 @@ basePtr = std::static_pointer_cast<Base>(derivedPtr);
 // dynamic_pointer_cast to go down/across class hierarchy
 auto downcastedPtr = std::dynamic_pointer_cast<Derived>(basePtr);
 ```
+
+
+
+## Casting of References
+
+- no special syntax for upcasting
+
+
+
+```cpp
+
+class Parent {
+public:
+    virtual void sayHello() const = 0;
+};
+
+class Child : public Parent {
+public:
+    void sayHello() const override {
+        std::cout << "hello" << std::endl;
+    }
+};
+
+void consumeParent(Parent const & parent) {
+    parent.sayHello();
+}
+
+int main () {
+  Child child;
+  consumeParent(child);
+  return 0;
+}
+```
+
+
+
+
 
 
 
