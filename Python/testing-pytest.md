@@ -211,7 +211,7 @@ def resource(resource_name, resource_value):
 @pytest.mark.parametrize(
     "resource_name, resource_value", [("ResName1", "ResVal1"), ("ResName2", "ResVal2")]
 )
-def test_this(resource, resource_name, resource_value):
+def test_this(resource_name, resource_value):
     print(resource_name)
     print(resource_value)
 ```

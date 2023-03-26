@@ -162,8 +162,6 @@ rank14   juli    90
 
 ### Grouping
 
-
-
 ```python
 df = pd.DataFrame({'Animal': ['Falcon', 'Falcon','Parrot', 'Parrot'],
                    'Max Speed': [380., 370., 24., 26.]})
@@ -353,6 +351,20 @@ df = df.set_index('YourColumnName')
 
 
 ### Filtering
+
+
+
+**by column value**
+
+```python
+df = df[df['my_value'] > 0]
+```
+
+**by column regex**
+
+```python
+df.filter(regex='e$', axis=1)
+```
 
 **by multiple column values**
 

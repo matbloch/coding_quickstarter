@@ -45,64 +45,11 @@ double Line::getLength(double len) const { return length_; }
 
 ## Member Initialization
 
-**Initialization Order**
+See [initialization](initialization.md)
 
-1. `virtual` base classes
-2. direct base classes (depth-first)
-3. nonstatic data members, in order of declaration in the class definition
-   - also applies to initializer list
-4. body of constructor
+Things to watch out for:
 
-
-
-#### Pittfalls
-
-```cpp
-class A : public B {
-  public:
-  // base classes are initialized before members - "a_member" is not initialized
-  A(): B(a_member), a_member(123) {}
-  int a_member;
-}
-```
-
-
-
-### Initialization Types
-
-- initializer list just specifies values and base class constructors
-  - order of initialization not changed
-  - order of initilizer list should be canonical to prevent reading from uninitialized memory
-
-
-
-##### Method 1: Class constructor
-
-##### Method 2: Initialization list
-
-- If a member class does not have a default constructor: It **MUST** be initialized wth an initialization list
-
-```cpp
-class A
-{
-    public:
-        A() { x = 0; }
-        A(int x_) { x = x_; }
-        int x;
-};
-// Default Constructor of A is called anyways
-class B
-{
-    public:
-        B(){a.x = 3;}
-    private:
-        A a;
-};
-```
-
-##### Method 3: Assignment
-
-### 
+- base classes are initialized before other members
 
 
 

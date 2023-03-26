@@ -5,29 +5,13 @@
 
 
 
-### Inheritance vs Composition
-
-**Composition**
-
-- implementation hidden (header files not exposed)
-- classes can be switched at runtime
-- methods need to be forwarded
-
-**Inheritance**
-
-- no code duplication for forwarding
-- headers exposed
-- class switch only at compile time
-
-
-
-
-
 **Classification of Patterns**
 
 - **Creational patterns** provide object creation mechanisms that increase flexibility and reuse of existing code.
 - **Structural patterns** explain how to assemble objects and classes into larger structures, while keeping the structures flexible and efficient.
 - **Behavioral patterns** take care of effective communication and the assignment of responsibilities between objects.
+
+
 
 
 

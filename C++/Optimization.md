@@ -169,13 +169,17 @@ sum = up + down + left + right;
 
 
 
-## Other
+## Other / General Considerations
 
 
 
-
-
-
-
-- move semantics/copy prevention, Return Value Optimization
+- images
+  - add padding for alignment
+  - store in continuous memory block
+- move semantics/copy prevention
+- Container choice
+  - Query/add complexity
+- Return Value Optimization
+- Caching / memory locality / fragmentation
+- inheritance: V-tables, indirection/fragmentation
 - C++ aliasing: https://developers.redhat.com/blog/2020/06/02/the-joys-and-perils-of-c-and-c-aliasing-part-1#

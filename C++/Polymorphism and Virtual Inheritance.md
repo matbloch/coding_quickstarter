@@ -15,11 +15,12 @@
 - Function overriding makes it impossible to dispatch virtual functions statically (at compile time)
 - Dispatching of virtual functions needs to happen at runtime
 - The virtual table method is a popular implementation of dynamic dispatch
-- For every class that defines or inherits virtual functions the compiler creates a virtual table
-- The virtual table stores a pointer to the most specific definition of each virtual function
-- For every class that has a *vtable*, the compiler adds an extra member to the class: the *vpointer*
-- The *vpointer* points to the corresponding vtable of the class
-- Always declare desctructors of base classes as virtual
+  - For every class that defines or inherits virtual functions the compiler creates a virtual table
+  - The virtual table stores a pointer to the most specific definition of each virtual function
+  - For every class that has a *vtable*, the compiler adds an extra member to the class: the *vpointer*
+  - The *vpointer* points to the corresponding vtable of the class
+  - Always declare desctructors of base classes as virtual
+
 
 
 
@@ -45,7 +46,7 @@
 
 
 
-**Example**
+**Example Problem**
 
 - `ta.speak()` is ambiguous since any `TeachingAssistant` object has two different `Person` base class subjects
 
@@ -267,7 +268,10 @@ class A : public B, public C {
 
 
 
-### Issue 1: Preventing base class duplication
+### <u>Issue 1</u>: Preventing base class duplication / Diamond Problem
+
+- define inheritance `virtual`, otherwise:
+  - two separate instances of base class - method/prop resolution ambiguous
 
 - Like with method, also class members can be ambiguous
 
@@ -308,7 +312,7 @@ class Join : public Der1, public Der2 {
 
 
 
-### Issue 2: Preventing Destructor obfuscation
+### <u>Issue 2</u>: Preventing Destructor obfuscation
 
 - **Problem**: if derived class is handled via base class reference, a non-virtual destructor will be dispatched **statically** - obfuscating the destructor of the derived class
   - when calling `delete` to pointer of base class, destructor of **derived** class **is not called!** This can lead to memory leaks.

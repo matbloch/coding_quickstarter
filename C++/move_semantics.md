@@ -2,17 +2,18 @@
 
 
 
-## Default Containers
+Table of Contents:
 
-**vector**
-
-- vector will be empty after move
-
-`A = std::move(B);`
-
+- R- and L-Values: Definition
+- &&: R-Value references
+- Copy Elision and Pass-by-Value
+- ...
 
 
-## R- and L-Values
+
+
+
+## Definition: R- and L-Values
 
 - `lvalues`:
   - refers to an object that persists beyond a single expression
@@ -29,6 +30,57 @@
 int x = 3 + 4;	// x: lvalue, (3+4): rvalue
 cout << x << endl;
 ```
+
+
+
+
+
+
+
+
+## Rvalue References (&&)
+
+- see also http://thbecker.net/articles/rvalue_references/section_01.html
+
+
+
+### Lifetime
+
+
+
+### Non-const References
+
+
+
+**Reads**
+
+- [Returning R-val-references](https://stackoverflow.com/questions/4986673/how-to-return-an-object-from-a-function-considering-c11-rvalues-and-move-seman/4986802#4986802)
+
+**Rvalue References: &&**
+Used for:
+
+- Implementing move semantics
+- Perfect forwarding
+
+```cpp
+void foo(X& x); // lvalue reference overload
+void foo(X&& x); // rvalue reference overload
+X x;
+X foobar();
+foo(x); // argument is lvalue: calls foo(X&)
+foo(foobar()); // argument is rvalue: calls foo(X&&)
+```
+
+- The compiler treats a named rvalue reference as an lvalue and an unnamed rvalue reference as an rvalue
+- In `f(const MemoryBlock&)`. This version cannot modify the parameter.
+- In `f(MemoryBlock&&)`. This version can modify the parameter.
+
+- `const auto&&` will only bind to rvalue references. In this case you basically just want to say: "my_variable should bind to a (any) reference so I can make sure the return value does not get copied".
+- Hence, usually people choose `const auto &` instead of `const auto &&` as it is more concise and 'const auto &&' does not really offer any advantage over 'const auto &&'.
+
+- Wouldn't you always use `auto&&` whenever you want to bind something to a mutable reference? `auto&` only binds lvalue types, hence `auto&&` would be more concise for this case as it allows to bind both `rvalue` and `lvalue` types.
+
+
 
 
 
@@ -137,50 +189,65 @@ Possible outputs (dependent on compiler):
 
 
 
+# std::move
 
 
 
-## Rvalue References
+### What is it?
 
-- see also http://thbecker.net/articles/rvalue_references/section_01.html
-
-
-
-### Lifetime
+While `std::move()` is technically a function - I would say **it isn't \*really\* a function**. It's sort of a *converter* between ways the compiler considers an expression's value.
 
 
 
-### Non-const References
+### What does it do?
+
+The first thing to note is that `std::move()` **doesn't actually move anything**. It changes an expression from being an [lvalue](http://en.cppreference.com/w/cpp/language/value_category) (such as a named variable) to being an [xvalue](http://en.cppreference.com/w/cpp/language/value_category). An xvalue tells the compiler:
+
+> You can plunder me, **move** anything I'm holding and use it elsewhere (since I'm going to be destroyed soon anyway)".
+
+in other words, when you use `std::move(x)`, you're allowing the compiler to cannibalize `x`. Thus if `x` has, say, its own buffer in memory - after `std::move()`ing the compiler can have another object own it instead.
 
 
 
-**Reads**
+### When to use it?
 
-- [Returning R-val-references](https://stackoverflow.com/questions/4986673/how-to-return-an-object-from-a-function-considering-c11-rvalues-and-move-seman/4986802#4986802)
+Typical use case: moving resources from one object to another instead of copying.
 
-**Rvalue References: &&**
-Used for:
 
-- Implementing move semantics
-- Perfect forwarding
+
+**Example:** swapping
 
 ```cpp
-void foo(X& x); // lvalue reference overload
-void foo(X&& x); // rvalue reference overload
-X x;
-X foobar();
-foo(x); // argument is lvalue: calls foo(X&)
-foo(foobar()); // argument is rvalue: calls foo(X&&)
+template <class T>
+swap(T& a, T& b) {
+    T tmp(a);   // we now have two copies of a
+    a = b;      // we now have two copies of b (+ discarded a copy of a)
+    b = tmp;    // we now have two copies of tmp (+ discarded a copy of b)
+}
 ```
 
-- The compiler treats a named rvalue reference as an lvalue and an unnamed rvalue reference as an rvalue
-- In `f(const MemoryBlock&)`. This version cannot modify the parameter.
-- In `f(MemoryBlock&&)`. This version can modify the parameter.
+with std::move
 
-- `const auto&&` will only bind to rvalue references. In this case you basically just want to say: "my_variable should bind to a (any) reference so I can make sure the return value does not get copied".
-- Hence, usually people choose `const auto &` instead of `const auto &&` as it is more concise and 'const auto &&' does not really offer any advantage over 'const auto &&'.
+```cpp
+template <class T>
+swap(T& a, T& b) {
+    // move construction
+    T tmp(std::move(a));
+    // move assignement
+    a = std::move(b);   
+    b = std::move(tmp);
+}
+```
 
-- Wouldn't you always use `auto&&` whenever you want to bind something to a mutable reference? `auto&` only binds lvalue types, hence `auto&&` would be more concise for this case as it allows to bind both `rvalue` and `lvalue` types.
+- read and write just the 3 pointers to the vectors' buffers, plus the 3 buffers' sizes
+- class `T` needs to know how to do the moving; your class should have a move-assignment operator and a move-constructor for class `T` for this to work.
+
+
+
+#### Example: Moving a Class Member
+
+- `std::move(object).member` safe - "a member of an rvalue"
+- `std::move(object.member)`
 
 
 
@@ -188,9 +255,55 @@ foo(foobar()); // argument is rvalue: calls foo(X&&)
 
 
 
-## Move Semantics for Custom Data Structures
+
+
+## Default Move Semantics
+
+
+
+
+
+**Example:** `push_back(std::move)`
+
+- `.push_back(input)` will call `vector<T>::push_back(const T&)`
+- `.push_back(std::move(input)` will call `vector<T>::push_back(T&&)`
+
+> The implicitly-defined copy/move constructor for a non-union class X performs a memberwise copy/move of its bases and members.
+
+- only more effective if implementing custom copy constructor
+  - automatically generated move ctr: Will do the same as copy str - assign values. No allocations to safe.
+- `std::move` just tells `push_back` that it may "steal" the content
+
+```cpp
+struct A {
+  int a;
+  int b;
+}
+A input = {30, 4};
+std::vector<A> my_list;
+my_list.push_back(std::move(input));
+```
+
+
+
+
+
+
+
+## Push and Emplace
+
+
+
+TODO
+
+
+
+
+
+## Custom Move Semantics
 
 In general you have to implement:
+
 1) Copy ctor
 2) Move ctor
 3) Copy assignment operator
@@ -207,7 +320,7 @@ Foo (vector<int> vec) : _member{std::move(vec)} {}
 >
 > ```
 > struct X {
->     X(const X&, int);
+>  X(const X&, int);
 > };
 > ```
 >
@@ -390,109 +503,4 @@ class VertexShader : public Shader {
     }
 }
 ```
-
-
-
-## std::reference_wrapper
-
-
-
-
-
-## Examples
-
-
-
-
-
-#### Moving a Class Member
-
-- `std::move(object).member` safe - "a member of an rvalue"
-- `std::move(object.member)`
-
-
-
-
-
-
-
-# std::move
-
-
-
-### What is it?
-
-While `std::move()` is technically a function - I would say **it isn't \*really\* a function**. It's sort of a *converter* between ways the compiler considers an expression's value.
-
-
-
-### What does it do?
-
-The first thing to note is that `std::move()` **doesn't actually move anything**. It changes an expression from being an [lvalue](http://en.cppreference.com/w/cpp/language/value_category) (such as a named variable) to being an [xvalue](http://en.cppreference.com/w/cpp/language/value_category). An xvalue tells the compiler:
-
-> You can plunder me, **move** anything I'm holding and use it elsewhere (since I'm going to be destroyed soon anyway)".
-
-in other words, when you use `std::move(x)`, you're allowing the compiler to cannibalize `x`. Thus if `x` has, say, its own buffer in memory - after `std::move()`ing the compiler can have another object own it instead.
-
-
-
-### When to use it?
-
-Typical use case: moving resources from one object to another instead of copying.
-
-
-
-**Example:** swapping
-
-```cpp
-template <class T>
-swap(T& a, T& b) {
-    T tmp(a);   // we now have two copies of a
-    a = b;      // we now have two copies of b (+ discarded a copy of a)
-    b = tmp;    // we now have two copies of tmp (+ discarded a copy of b)
-}
-```
-
-with std::move
-
-```cpp
-template <class T>
-swap(T& a, T& b) {
-    // move construction
-    T tmp(std::move(a));
-    // move assignement
-    a = std::move(b);   
-    b = std::move(tmp);
-}
-```
-
-- read and write just the 3 pointers to the vectors' buffers, plus the 3 buffers' sizes
-- class `T` needs to know how to do the moving; your class should have a move-assignment operator and a move-constructor for class `T` for this to work.
-
-
-
-
-
-**Example:** push_back(std::move)
-
-- `.push_back(input)` will call `vector<T>::push_back(const T&)`
-- `.push_back(std::move(input)` will call `vector<T>::push_back(T&&)`
-
-> The implicitly-defined copy/move constructor for a non-union class X performs a memberwise copy/move of its bases and members.
-
-- only more effective if implementing custom copy constructor
-  - automatically generated move ctr: Will do the same as copy str - assign values. No allocations to safe.
-- `std::move` just tells `push_back` that it may "steal" the content
-
-```cpp
-struct A {
-  int a;
-  int b;
-}
-A input = {30, 4};
-std::vector<A> my_list;
-my_list.push_back(std::move(input));
-```
-
-
 
