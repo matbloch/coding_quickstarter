@@ -100,11 +100,14 @@ Will be installed to:
 **Install Swiss Keyboard Layout**
 
 - Install **Ukulele**
-- Download swiss keyboard layout: [Download](https://www.krenger.ch/blog/mac-os-x-standard-de_ch-keymap/)
-- Copy Layout to: `/Users/Matthias/Library/Keyboard Layouts`
-- Go to "preferences > Language & Region > Keyboard settings" and add "Logitech Swiss German" from the "Others" tab
-- Also check "show in menubar"
-- restart if icon to switch layout does not show up
+- Download swiss keyboard layout (or copy it from this repository): [Download](https://www.krenger.ch/blog/mac-os-x-standard-de_ch-keymap/)
+- Copy Layout (the .keylayout file) to: `~/Library/Keyboard Layouts`
+- Restart computer
+- Go to "System Settings > Keyboard > Text Input > Input Sources, Edit ..."
+- Click on the "+" icon to add a new source
+- Search for "Logitech Swiss German" and add it
+
+
 
 **Speed up scroll speed**
 
