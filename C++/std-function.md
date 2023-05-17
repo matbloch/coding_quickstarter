@@ -20,30 +20,29 @@ std::function<void(int)> f_display = print_num;
 f_display(-9);
 ```
 
-**Storing member function**
+**Binding an external member function**
 
 - non-static member function must be called with an object
 
+
+
+**Binding to member function**
+
+- use a lambda (looks nicer) or `std::bind`
+
 ```cpp
-struct Foo {
-    Foo(int num) : num_(num) {}
-    void print_add(int i) const { std::cout << num_+i << '\n'; }
-    int num_;
-};
-
-// A. Store call to member function
-std::function<void(const Foo&, int)> f_add_display = &Foo::print_add;
-const Foo foo(314159);
-// Option A.1: call with instance
-f_add_display(foo, 1);
-// Option A.2: create new instance
-f_add_display(314159, 1);
-
-// B. Store call to member function and instance
-using std::placeholders::_1;
-// Note: if method has arguments, use placeholders
-std::function<void(const Foo&, int)> f_add_display = std::bind(&Foo::print_add, foo, _1);
+class MyClass {
+      MyClass() : myFunction_([this](int arg1, int arg2) { 
+        return myMemberFunction(arg1, arg2); 
+      }) {
+        // ... rest of the constructor
+    }
+  private:
+    std::function<int(int, int)> myFunction_;
+}
 ```
+
+
 
 **Binding to static member function**
 

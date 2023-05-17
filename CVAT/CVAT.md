@@ -9,11 +9,11 @@
 
 
 
+## Getting started
 
+> Guide for local setup
 
-### Local Setup
-
-1. Install
+1. Clone repo and start the cvat services through docker compose
 
 ```bash
 git clone https://github.com/opencv/cvat
@@ -21,15 +21,35 @@ cd cvat
 docker compose up -d
 ```
 
-2. Create an admin account
+2. Create an admin account (you will be asked to specify the user/password)
 
 ```bash
 docker exec -it cvat_server bash -ic 'python3 ~/manage.py createsuperuser'
 ```
 
-3. Open GUI
+3. Open the GUI
 
 head to http://localhost:8080
+
+
+
+## Controls
+
+**Editing polygons**
+
+- You should [shift+click] on an existing point of your polygon first. It will take you to the polygon editing view. Then you can add additional points to your polygon.
+
+**Moving annotations**
+
+- disable the pin annotation
+- select the cursor tool [esc]
+- click on the annotation and drag it
+
+![operation-move](img/operation-move.png)
+
+
+
+## Tutorials
 
 
 
@@ -58,37 +78,46 @@ head to http://localhost:8080
    
    ```
 
-3. When defining tasks, select ...
+3. When defining tasks, select "connected file share" - your shared folder will then appear there
 
 
 
+### Implementing a custom annotation format
 
+- instructions: https://opencv.github.io/cvat/docs/contributing/new-annotation-format/
 
-### Trackers for annotation
+1. Implement the annotation format in a new file under `cvat/apps/dataset_manager/formats`
+2. Import it in the registry at  `cvat/apps/dataset_manager/formats/registry.py`
+3. Rebuild the docker image
 
-- see https://opencv.github.io/cvat/docs/manual/advanced/ai-tools/#trackers
+```bash
+docker build -f Dockerfile.ui . --tag cvat/ui:dev
+```
 
+Or
 
+4. Link the code into your container for local development
 
-### Custom annotation format
+   in `docker-compose.yml` at the following to the `volumes` section after line 58:
 
-- https://opencv.github.io/cvat/docs/contributing/new-annotation-format/
+   ```
+   - ./cvat:/home/django/cvat
+   ```
 
-
-
-
-
-### Detectors
-
-- see https://opencv.github.io/cvat/docs/manual/advanced/ai-tools/#detectors-models
+   
 
 
 
 ### Semi-automatic/automatic annotation
 
+> Annotation helpers are deployed as FAS/serverless functions using Nuclio
+
+- Introduction to AI/CV tools, see https://opencv.github.io/cvat/docs/manual/advanced/ai-tools/#trackers
 - Install instructions: https://opencv.github.io/cvat/docs/administration/advanced/installation_automatic_annotation/
-- Releases: https://github.com/nuclio/nuclio/releases
-- download: https://github.com/nuclio/nuclio/releases/tag/1.8.14
+- Nuclio releases: https://github.com/nuclio/nuclio/releases
+- Nuclio CLI download: https://github.com/nuclio/nuclio/releases/tag/1.8.14
+- serverless tutorial: https://opencv.github.io/cvat/docs/manual/advanced/serverless-tutorial/
+- see your installed models: http://localhost:8080/models?page=1
 
 
 
@@ -112,22 +141,24 @@ docker compose -f docker-compose.yml -f components/serverless/docker-compose.ser
 - download `nuclt` with the same version as specified in `components/serverless/docker-compose.serverless.yml`
 - change to executable using `chmod +x nuctl`
 - move it into the `cvat` folder
-- use it `nuctl --help`
-
-
+- use it `./nuctl --help`
 
 **03. Create a new project**
 
 - `nuctl create project cvat`
 
-
-
-**04. Launch a serverless client**
+**04. Launch a serverless function**
 
 - display available functions: `nuctl get functions`
 - Available models: https://github.com/opencv/cvat/tree/develop/serverless
 
+**05. Check the Nuclio control panel** 
 
+- Head to `http://localhost:8070`
+
+
+
+**Example**: Yolo
 
 ```bash
 ./nuctl deploy --project-name cvat \
@@ -136,40 +167,10 @@ docker compose -f docker-compose.yml -f components/serverless/docker-compose.ser
   --platform local
 ```
 
-
-
-Siamese tracker
+**Example:** Siamese tracker
 
 ```bash
-nuctl deploy --project-name cvat --path "./serverless/pytorch/foolwood/siammask/nuclio" --platform local
+./nuctl deploy --project-name cvat --path "./serverless/pytorch/foolwood/siammask/nuclio" --platform local
 ```
 
 
-
-
-
-
-
-
-
-- how to use: https://opencv.github.io/cvat/docs/manual/advanced/automatic-annotation/
-
-
-
-
-
-- serverless tutorial: https://opencv.github.io/cvat/docs/manual/advanced/serverless-tutorial/
-
-- see available models: http://localhost:8080/models?page=1
-
-
-
-### Controls
-
-**Moving annotations**
-
-- disable the pin annotation
-- select the cursor tool [esc]
-- click on the annotation and drag it
-
-![operation-move](img/operation-move.png)

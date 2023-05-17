@@ -115,6 +115,16 @@ git rebase -i HEAD~10 --onto another_branch
 
 
 
+**Remove a submodule**
+
+- git rm <path>
+- remove entry from .gitmodules
+- (remove git data in .git/modules/<path>)
+
+
+
+
+
 ## Git LFS
 
 
