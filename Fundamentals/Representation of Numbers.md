@@ -99,85 +99,26 @@ add 1 -> 1101 110**1** = -35
 
 
 
+### Printing the representation
+
+**In C++**
+
+```cpp
+std::bitset<8> x(12);
+std::cout << x << std::endl;
+```
+
+
+
+
+
+
+
 ## Floating Point Numbers
 
 
 
 ![float-point-numbers](img/float-point-numbers.png)
-
-
-
-
-
-## Bit Operations
-
-> See also [Bit Hacks](./Bit Hacks.md)
-
-```
-&   -  bitwise and
-|   -  bitwise or
-^   -  bitwise xor
-~   -  bitwise not
-<< -  bitwise shift left
->>  -  bitwise shift right
-```
-
-
-
-- arithmetic right shift: shifts right and fills with left-most bit
-
-
-
-### Bit Shifting
-
-
-
-**Right Shifts**
-
-> Move bits to the right and pad to the left. Can be interpreted by **division by 2** (arithemtic shift).
-
-- To handle signed numbers:
-  - padd by `0` for unsigned numbers, by the `sign bit` for signed numbers (see example below)
-  - **NOTE**: Some compilers might not fill with the sign bit, it is not guaranteed. Vary rare though.
-
-
-
-**Example**: `-16 << 1`
-
--16 in binary representation:
-
-- 16:              `0000 0000 0001 0000`
-- inverted:    `1111 1111 1110 1111`
-- Add 1:        `1111 1111 1111 0000` = -16
-
-Shift the bits by padding with the sign bit:
-
-- Shift by 1:  `1111 1111 1111 1000`
-
-Interpret as a positive number (easier to read):
-
-- To positive: `0000 0000 0000 1000` = 8, hence `-16 << 1 == -8`
-
-
-
-**Left Shifts**
-
-- **NOTE:** right-shift a 32bit variable by 32 or more bit is undefined behavior
-- most of the time the output will be 0 (if `int` is 32 bits or less) since you're shifting the 1 until it drops off again and nothing but 0 is left. But the compiler may optimize it to do whatever it likes.
-
-
-
-
-
-
-
-### Arithmetic vs Logical Shift
-
-
-
-**logical shift**
-
-- does not preserve sign bit
 
 
 
@@ -229,7 +170,7 @@ Interpret as a positive number (easier to read):
 
 
 
-![big-endian](file:///Users/matthias/dev/coding_quickstarter/Fundamentals/img/big-endian.png?lastModify=1636108255)![little-endian](file:///Users/matthias/dev/coding_quickstarter/Fundamentals/img/little-endian.png?lastModify=1636108255)
+![big-endian](img/big-endian.png?lastModify=1636108255)![little-endian](img/little-endian.png?lastModify=1636108255)
 
 **When to care about Endianness?**
 

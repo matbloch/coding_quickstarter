@@ -6,6 +6,23 @@
 
 
 
+
+
+### Transform
+
+```cpp
+std::vector<std::size_t> ordinals;
+std::transform(s.cbegin(), s.cend(), std::back_inserter(ordinals),
+                   [](unsigned char c) { return c; });
+ 
+```
+
+
+
+### Copy if
+
+
+
 **Filter Map of Objects**
 
 ```cpp

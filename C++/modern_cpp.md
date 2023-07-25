@@ -85,22 +85,6 @@ namespace {
     // B b1 = 1; // NOT ALLOWED
 ```
 
-**`static` and `constexpr`**
-
-- `static`
-  - must be initialized before the program starts
-  - has to be thread-safe
-  - initialization order is undefined
-- `constexpr` 
-  - forces constant compile-time initialisation
-  - all other static variables are zero initialized
-  - shouldn't have non-trivial destructior (e.g. freeing of memory). e.g. for `std::string`
-
-...
-
-- https://stackoverflow.com/questions/14116003/difference-between-constexpr-and-const
-
-
 
 ### Braced Initialization
 
@@ -206,94 +190,6 @@ T *obj = new T();					// allocate object
 T obj2;
 (T.*method)(123);
 ```
-
-
-## Lambdas
-
-`[capture clause] (parameters) -> return-type {body}`
-
-**Capture Clause**
-- `[=]` capture all of the variables from the enclosing scope by value
-- `[&]` capture all of the variables from the enclosing scope by reference
-- `[this]` capture all of the data members of the enclosing class
-- `[a, &b]` a by copy, b by reference
-- `[]` no external variables
-
-**Parameters**
-
-
-### Usage
-
-**Store in variable**
-`auto factorial = [](int i, int j) {return i * j;};`
-
-**Const variable assignment**
-```cpp
-const int my_var = [&normal]() {
-	if (normal.x() > 3) {
-    	return 2;
-    }
-    return 3;
-}();
-```
-
-**Member variables in capture list**
-```cpp
-const int my_var = [this]() {
-	if (this.x() > 3) {
-    	return 2;
-    }
-    return 3;
-}();
-```
-
-
-**Lambdas as Function Parameters**
-```cpp
-template <typename T>
-void call(T);
-
-int main() {
-  auto fn = []() { cout<<"Lambda"<<endl; };
-  call(fn);
-  return 0;
-}
-
-template <typename T>
-void call(T fn) {
-  fn();
-}
-```
-
-**Capture current scope as reference**
-```cpp
-const int myVariable = [&] {
-    if (bCondition)
-        return bCond ? computeFunc(inputParam) : 0;
-    else
-       return inputParam * 2;
-}();
-```
-
-**❗caution❗️**
-
-- lambda shall not outlive any of its reference captured objects (use copy instead)
-
-Bad example:
-
-```cpp
-auto g() {
-  int i = 12;
-  return [&] {
-    i = 100;
-    return i;
-  };
-}
-```
-
-
-
-
 
 
 

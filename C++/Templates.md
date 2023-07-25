@@ -37,7 +37,17 @@ class mypair {
   public:
     T getmax ();
 };
+```
 
+## Implementation
+
+
+
+**1. In header**
+
+- no template instantiation necessary. Compiler can look up which types to generate.
+
+```cpp
 template <class T>
 T mypair<T>::getmax () {
   T retval;
@@ -45,6 +55,20 @@ T mypair<T>::getmax () {
   return retval;
 }
 ```
+
+**2. In source file**
+
+```cpp
+...
+```
+
+
+
+// static methods/function arguments
+
+
+
+
 
 
 

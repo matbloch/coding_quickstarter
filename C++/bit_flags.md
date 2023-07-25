@@ -1,6 +1,10 @@
 # Bit Flags
 
-### Using Plain Enums
+
+
+## Declaration
+
+### 01. Plain Enums
 
 ```cpp
 enum State
@@ -36,7 +40,9 @@ myState &= ~MAXIMIZED; // resets that bit
 
 Then, you can combine multiple values with bitwise or (minimizing | maximized) and test for values with bitwise and (bool is_minimized = (flags & minimized);).
 
-### Using Class Enums
+
+
+### 02. Using Class Enums
 
 - class enums are scoped but cannot be converted to other types implicitly
 - Need overload for operations
