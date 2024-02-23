@@ -4,10 +4,6 @@
 
 
 
-
-
-
-
 ### Compiling for debugging
 
 TODO
@@ -19,7 +15,7 @@ TODO
 
 
 
-## Examples
+## Examples
 
 ### Running Gtest with GDB
 

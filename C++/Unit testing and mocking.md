@@ -121,6 +121,37 @@ TEST_F(FooTest, Test2) {
 
 
 
+## Test Parametrization
+
+
+
+
+
+**Testing for all value permutation**
+
+```cpp
+// Define the test parameter set
+INSTANTIATE_TEST_SUITE_P(MyTestParams, MyTest, testing::Combine(testing::Values(1, 2, 3), testing::Values(4, 5, 6)));
+
+// Define the test case(s)
+TEST_P(MyTest, MyTestCase) {
+    // Retrieve parameters
+    auto params = GetParam();
+    int param1 = std::get<0>(params);
+    int param2 = std::get<1>(params);
+
+    // Your test logic using param1 and param2
+    // For example:
+    EXPECT_GT(param1, param2);
+}
+```
+
+
+
+
+
+
+
 ## Mocking
 
 
@@ -166,7 +197,7 @@ class TestableFoo : public Foo {
 };
 ```
 
-### 
+
 
 ### Mocking
 

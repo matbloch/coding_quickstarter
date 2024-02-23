@@ -1,13 +1,49 @@
 # SQL
 
+
+
+
+
+## Selection
+
+
+
+```
+```
+
+
+
+
+
+
+
 ## Sorting and grouping
+
+
+
+
+
 
 
 ### Group by
 
 - `select` and `group by` must match
+
 ```sql
-SELECT ZIP
+SELECT zip
 FROM Customers
-GROUP BY ZIP
+GROUP BY zip
 ```
+
+
+
+
+
+
+
+## Joining tables
+
+
+
+
+

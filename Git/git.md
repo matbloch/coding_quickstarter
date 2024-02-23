@@ -90,6 +90,28 @@ git rebase -i HEAD~10 --onto another_branch
 
 
 
+
+
+## Cheatsheet
+
+
+
+| Task                                                         | Operation                          |
+| ------------------------------------------------------------ | ---------------------------------- |
+| Undo a conflicting  `stash pop` . Stash can be applied again. | `git reset --merge`                |
+| Reset last `5` commits into staged                           | `git reset --soft HEAD~5`          |
+| Cherrypick a specific commit                                 | `git cherry-pick -m 1 <commit-id>` |
+
+
+
+
+
+
+
+
+
+
+
 ## Submodules
 
 

@@ -295,6 +295,18 @@ if __name__ == '__main__':
 
 
 
+## Challenges
+
+
+
+- N+1 problem
+- request overload: score complexity of query first
+- Pagination
+
+
+
+
+
 
 
 

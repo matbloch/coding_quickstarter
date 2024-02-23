@@ -172,6 +172,36 @@ wrapper.return_value.b = 456
 
 
 
+**Testing multiple function calls**
+
+```python
+mocked = mocker.path("MyClass.method")
+expected_calls = [mocked.call(1,2,3), mocked.call("second-arg")]
+mocked.assert_has_calls(expected_calls, any_order=True)
+```
+
+
+
+**asserting function calls on mocked classes**
+
+```python
+class MyClass():
+  # ...
+  def call_this(a, b, c):
+    pass
+
+
+def my_fn():
+  instance = MyClass()
+  instance.call_this(1, 2, 3)
+
+def test_my_fn():
+  mocked_cls = mocker.patch("MyClass")
+  # get a link to the mocked instance
+  mocked_cls_instance = mocked_class.return_value
+  mocked_cls_instance.call_this.called_once_with(1, 2, 3)
+```
+
 
 
 **Triggering Side Effects / Exceptions**
@@ -201,6 +231,8 @@ class TestCalendar(unittest.TestCase):
         with self.assertRaises(Timeout):
             get_holidays()
 ```
+
+
 
 
 

@@ -8,6 +8,105 @@
 
 
 
+
+
+
+
+## Performance
+
+
+
+1. No unnecessary work
+   - no unnecessary copying
+   - no unnecessary allocations
+2. use all computing power
+   - use all cores
+   - use SIMD
+
+3. Avoid waits and stalls
+   - lockless data structures
+   - asynchronous APIs
+   - job system
+4. Use hardware efficiency (speculative execution heuristic & multi-level caches)
+   - cache friendliness
+   - well predictable code
+5. OS-level efficiency
+   - thread suspension
+   - thread core migration
+
+
+
+### Performance Todo List
+
+- TODO, see full https://www.youtube.com/watch?v=qCjEN5XRzHc&t=1806s
+
+
+
+
+
+1. **Build Pipeline modification**
+
+   - GCC, LLVM, ICC: `-O2 or -O3`
+
+2. Set target architecture
+
+   > Micro optimizations, tells compiler which SIMD to use
+
+   - GCC, LLVM, ICC: `-mcpu=native` (for ARM), `-march=native -mtune=native` (for X86)
+
+3. Use fast math
+
+   > Numerical accuracy will be non-standard compliant.
+
+   - GCC, LLVM, ICC: `-ffast-match`
+
+4. Disable exceptions and RTTI
+
+   -  GCC, LLVM, ICC: `-fno-exceptions`
+
+5. Enable Link Time Optimization
+
+   > inlining a function from a different translation unit is not possible
+
+   - Compiler doesn't have enough optimizations options within the translationio unit
+
+6. Use Unity Builds
+
+   > Merges multiple source files into a single "uber" source file which only produce a few large translation units which the compiler can better optimize. Compilation is also faster (e.g. headers only need to be passed once).
+
+   - CMake: `-DCMAKE_UNITY_BUILD=ON`
+   - Downsides:
+     - Cpp files aren't compiled in isolation - things defined in one .cpp file can influence compilation of another .cpp file
+     - using namespaces and preprocessor defines/macros etc can clash
+     - when modifying a single source files, that source file will get rebuild together with all the other source files of the same batch
+     - peak memory usage increases (translation units will get bigger)
+
+7. Link statically with dependencies
+
+   > use static instead of shared libraries or dlls. Provides more opportinities for optimization at the call site of the function. 
+
+   - creates bigger binaries
+
+8. Use profile guided optimization
+
+   > Make building code a 3-step process:
+   >
+   > 1. Code is compiled with performance counters embedded
+   > 2. Program is run, producing a file with profiling results
+   > 3. Code is compiled again using the profiling results (for better branch prediction)
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Optimizing Compilers
 
 - always use optimization flags (gcc turnes optimization off by default,`-O0`)
