@@ -44,22 +44,47 @@ command1 | xargs -I{} command2 {}
 
 
 
-
-
 ## Scripting
 
 
 
-**Create a script**
+**01. Create a script that takes an argument**
 
 ```bash
 #!/bin/bash
-echo "Well, hello there!"
+
+# Check if argument is provided
+if [ $# -eq 0 ]; then
+    echo "Usage: my_script.sh <argument>"
+    exit 1
+fi
+
+# Access the first argument
+arg="$1"
+
+# Execute your desired command using the argument
+echo "Argument provided: $arg"
+# Replace the following line with your actual command that uses the argument
+# For example:
+# python /path/to/script.py "$arg"
 ```
 
-**Make it executable**
+**02. Make it executable**
 
-`chmod -x my_script.sh`
+`chmod +x my_script.sh`
+
+**03. Setup an alias**
+
+```bash
+echo "alias myalias='/path/to/my_script.sh'" >> ~/.zshrc
+```
+
+**04. Source the config and use the command**
+
+```
+source ~/.zshrc
+my_alias some-argument
+```
 
 
 
@@ -82,6 +107,8 @@ echo "Well, hello there!"
 2. Add to server: Installs the key as an authorized key on the server. Grants access to server without a password.
    - Copy default key: `ssh-copy-id user@host`
    - Copy specific key: `ssh-copy-id -i ~/.ssh/mykey user@host` (`mykey` entered as keyname during `ssh-keygen`)
+
+
 
 ## Rsync
 
@@ -115,6 +142,10 @@ rsync -avz root@<remote-ip>:/var/www/public_html/ /var/www/public_html/.htaccess
 ```bash
 rsync -avz --exclude=.git --exclude=_build --exclude=.idea /my/local/path user@remote.com:/path/on/remote
 ```
+
+
+
+
 
 ## Misc Commands
 

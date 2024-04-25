@@ -162,3 +162,54 @@ git rebase -i HEAD~10 --onto another_branch
 
 
 
+## Mirrors
+
+
+
+**Origin vs Remote**
+
+- **Origin**: The default name given to the remote repository that your local repository was cloned from. It's the primary remote repository for your local repository.
+- **Remote**: A generic term referring to any remote repository your local repository interacts with, including "origin" and any additional remotes you may configure.
+
+
+
+**Remote upstreams**
+
+> "Remote upstream" specifically refers to the remote repository that your local repository is configured to track for updates. This remote is typically named "upstream" by convention.
+
+- `git remote -v` display all remote upstreams
+
+
+
+**Example:** Fetching changes from a remote upstream
+
+1. add the remote upstream
+
+   - if non is set: `git remote add upstream git@github.com:opencv/opencv.git`
+
+   - to overwrite: `git remote set-url upstream git@github.com:opencv/opencv.git`
+
+2. display and confirm active upstream
+
+   - `git remote -v`
+
+   example output:
+
+   ```
+   origin	git@gitlab.mycompany.com:mirrors/opencv.git (fetch)
+   origin	git@gitlab.mycompany.com:mirrors/opencv.git (push)
+   upstream	git@github.com:opencv/opencv.git (fetch)
+   upstream	git@github.com:opencv/opencv.git (push)
+   ```
+
+3. fetch the latest changes from upstream (the repository we've mirrored)
+
+   - `git fetch upstream`
+
+4. create a new local branch from a remote upstream branch
+   - `git checkout -b <new_local_branch_name> upstream/<upstream_branch>`
+5. push new branch to origin (the hosted mirror)
+   - `git push origin <new_local_branch_name>`
+
+
+

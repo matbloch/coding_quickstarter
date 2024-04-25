@@ -94,10 +94,6 @@ auto g() {
 
 
 
-
-
-
-
 ## std::function
 
 - general-purpose function wrapper
@@ -110,8 +106,6 @@ auto g() {
 ```cpp
 std::function<void(int)> may_lambda = nullptr;
 ```
-
-
 
 **Storing free functions**
 
@@ -126,7 +120,17 @@ f_display(-9);
 
 
 
-#### Binding (`std::bind`)
+#### 1. Binding using Lambdas 
+
+```cpp
+std::function<void(int)> func = [&obj](int value) {
+    obj.nonStaticFunction(value);
+};
+```
+
+
+
+#### 2. Binding using `std::bind` (deprecated)
 
 - creates a temporary function
 - **NOTE:** deprecated in favor for lamda's
@@ -156,6 +160,10 @@ class MyClass {
 ```cpp
 std::function<void(int)> my_lambda = std::bind(&Foo::foo_static);
 ```
+
+
+
+
 
 
 
@@ -217,5 +225,4 @@ std::function<void(int)> generateLambda(int input) {
   };
 }
 ```
-
 

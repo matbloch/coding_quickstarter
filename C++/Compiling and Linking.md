@@ -9,12 +9,12 @@
 ## Static and Inline Functions
 
 
-
 - defining function implementation in header: will automatically be inlined
+- anonymous namespace: TBD
 
 
 
-
+static vs inline vs anonymous namespace
 
 
 
