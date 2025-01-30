@@ -262,6 +262,32 @@ sum = up + down + left + right;
 
 
 
+## Compiler-performed optimizations
+
+
+
+
+
+### Return Value Optimization (RVO)
+
+- if named non-`const` object with automatic storage duration is returned
+- copy/move is elided: compiler generates `a` already in the place that is reserved for the return value
+
+
+
+```cpp
+std::vector<int> getVector() {
+  std::vector<int> a = {1, 2, 3};
+  // temporary copy at return is avoided by RVO constructing the object in the memory
+  // location of the caller
+  return a;
+}
+
+auto a = getVector();
+```
+
+
+
 
 
 
@@ -282,3 +308,10 @@ sum = up + down + left + right;
 - Caching / memory locality / fragmentation
 - inheritance: V-tables, indirection/fragmentation
 - C++ aliasing: https://developers.redhat.com/blog/2020/06/02/the-joys-and-perils-of-c-and-c-aliasing-part-1#
+
+
+
+
+
+
+
