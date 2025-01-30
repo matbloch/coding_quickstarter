@@ -169,6 +169,36 @@ class MyClass {
 
 
 
+
+
+
+
+
+
+### Variable data containers
+
+Options:
+
+1. use `std::variant` return type
+2. Use `dynamic_cast`
+   - requires virtual inheritance > all access through pointer/heap, through v-table
+
+
+
+
+
+```cpp
+struct MyVariant {
+  std::variant<int, std::string, float> data_;
+}
+```
+
+
+
+
+
+
+
 ## 3. Behavioral Patterns
 
 
@@ -186,6 +216,38 @@ class MyClass {
 
 
 ### Observer
+
+
+
+### Views
+
+- prevents copies of expensive data
+
+```cpp
+template<typename K, typename V>
+class MapView {
+public:
+    using MapType = std::map<K, V>;
+    using KeyVector = std::vector<K>;
+    using IteratorVector = std::vector<typename MapType::const_iterator>;
+    MapView(const MapType& map, const KeyVector& keys) {
+        for (const auto& key : keys) {
+            auto it = map.find(key);
+            if (it != map.end()) {
+                iterators.push_back(it);
+            }
+        }
+    }
+    typename IteratorVector::const_iterator begin() const {
+        return iterators.begin();
+    }
+    typename IteratorVector::const_iterator end() const {
+        return iterators.end();
+    }
+private:
+    IteratorVector iterators;
+};
+```
 
 
 
