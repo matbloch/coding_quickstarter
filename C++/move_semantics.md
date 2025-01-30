@@ -34,23 +34,15 @@ cout << x << endl;
 
 
 
-
-
-
-
 ## Rvalue References (&&)
 
 - see also http://thbecker.net/articles/rvalue_references/section_01.html
-
-
 
 ### Lifetime
 
 
 
 ### Non-const References
-
-
 
 **Reads**
 
@@ -189,81 +181,31 @@ Possible outputs (dependent on compiler):
 
 
 
-# std::move
-
-
-
-### What is it?
-
-While `std::move()` is technically a function - I would say **it isn't \*really\* a function**. It's sort of a *converter* between ways the compiler considers an expression's value.
-
-
-
-### What does it do?
-
-The first thing to note is that `std::move()` **doesn't actually move anything**. It changes an expression from being an [lvalue](http://en.cppreference.com/w/cpp/language/value_category) (such as a named variable) to being an [xvalue](http://en.cppreference.com/w/cpp/language/value_category). An xvalue tells the compiler:
-
-> You can plunder me, **move** anything I'm holding and use it elsewhere (since I'm going to be destroyed soon anyway)".
-
-in other words, when you use `std::move(x)`, you're allowing the compiler to cannibalize `x`. Thus if `x` has, say, its own buffer in memory - after `std::move()`ing the compiler can have another object own it instead.
-
-
-
-### When to use it?
-
-Typical use case: moving resources from one object to another instead of copying.
-
-
-
-**Example:** swapping
-
-```cpp
-template <class T>
-swap(T& a, T& b) {
-    T tmp(a);   // we now have two copies of a
-    a = b;      // we now have two copies of b (+ discarded a copy of a)
-    b = tmp;    // we now have two copies of tmp (+ discarded a copy of b)
-}
-```
-
-with std::move
-
-```cpp
-template <class T>
-swap(T& a, T& b) {
-    // move construction
-    T tmp(std::move(a));
-    // move assignement
-    a = std::move(b);   
-    b = std::move(tmp);
-}
-```
-
-- read and write just the 3 pointers to the vectors' buffers, plus the 3 buffers' sizes
-- class `T` needs to know how to do the moving; your class should have a move-assignment operator and a move-constructor for class `T` for this to work.
-
-
-
-#### Example: Moving a Class Member
-
-- `std::move(object).member` safe - "a member of an rvalue"
-- `std::move(object.member)`
-
-
-
-
-
-
-
 
 
 ## Default Move Semantics
 
+A `move` constructor for a class X will be implicitly declared as defaulted exactly when:
+
+- X does not have a user-declared copy constructor,
+- X does not have a user-declared copy assignment operator,
+- X does not have a user-declared move assignment operator,
+- X does not have a user-declared destructor, and
+- the move constructor would not be implicitly defined as deleted.
 
 
 
+**Automatic Moves:**
 
-**Example:** `push_back(std::move)`
+- The compiler automatically moves objects in specific situations, such as returning local objects by value, using temporaries, and when STL containers reallocate elements.
+
+**`const` Impact:**
+
+- `const` prevents move semantics because moving involves modifying the source object. Therefore, `const` objects cannot be moved, and functions returning `const` objects will not benefit from move optimizations.
+
+
+
+#### **Example:** `push_back(std::move)`
 
 - `.push_back(input)` will call `vector<T>::push_back(const T&)`
 - `.push_back(std::move(input)` will call `vector<T>::push_back(T&&)`
@@ -283,18 +225,6 @@ A input = {30, 4};
 std::vector<A> my_list;
 my_list.push_back(std::move(input));
 ```
-
-
-
-
-
-
-
-## Push and Emplace
-
-
-
-TODO
 
 
 
@@ -503,4 +433,68 @@ class VertexShader : public Shader {
     }
 }
 ```
+
+
+
+
+
+# std::move
+
+
+
+### What is it?
+
+While `std::move()` is technically a function - I would say **it isn't \*really\* a function**. It's sort of a *converter* between ways the compiler considers an expression's value.
+
+
+
+### What does it do?
+
+The first thing to note is that `std::move()` **doesn't actually move anything**. It changes an expression from being an [lvalue](http://en.cppreference.com/w/cpp/language/value_category) (such as a named variable) to being an [xvalue](http://en.cppreference.com/w/cpp/language/value_category). An xvalue tells the compiler:
+
+> You can plunder me, **move** anything I'm holding and use it elsewhere (since I'm going to be destroyed soon anyway)".
+
+in other words, when you use `std::move(x)`, you're allowing the compiler to cannibalize `x`. Thus if `x` has, say, its own buffer in memory - after `std::move()`ing the compiler can have another object own it instead.
+
+
+
+### When to use it?
+
+Typical use case: moving resources from one object to another instead of copying.
+
+
+
+**Example:** swapping
+
+```cpp
+template <class T>
+swap(T& a, T& b) {
+    T tmp(a);   // we now have two copies of a
+    a = b;      // we now have two copies of b (+ discarded a copy of a)
+    b = tmp;    // we now have two copies of tmp (+ discarded a copy of b)
+}
+```
+
+with std::move
+
+```cpp
+template <class T>
+swap(T& a, T& b) {
+    // move construction
+    T tmp(std::move(a));
+    // move assignement
+    a = std::move(b);   
+    b = std::move(tmp);
+}
+```
+
+- read and write just the 3 pointers to the vectors' buffers, plus the 3 buffers' sizes
+- class `T` needs to know how to do the moving; your class should have a move-assignment operator and a move-constructor for class `T` for this to work.
+
+
+
+#### Example: Moving a Class Member
+
+- `std::move(object).member` safe - "a member of an rvalue"
+- `std::move(object.member)`
 
